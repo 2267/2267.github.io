@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>gem5中的存储器和端口 | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">gem5中的存储器和端口</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">六月 27, 2018&nbsp;&nbsp;9:08:43</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E6%A8%A1%E6%8B%9F%E5%99%A8/">体系结构模拟器</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>两个存储器对象之间是通过port来通信的，port中传递的是packet，packet内是request</p>
+<p>一个request从发送者发出，到传递到目标，再返回给发送者，这个过程一般是只为这一个request的对象的，但是传递过程中会有很多个不同的packet</p>
+<p>port分为两种，一种是masterport，另一种是slaveport。两个不同的存储器对象通过这两种port绑定，一个发送请求，一个接收请求</p>
+<p>masterport一般包含的方法为：</p>
+<ul>
+<li>sendAtomicReq</li>
+<li>sentTimingReq</li>
+<li>sendFunctionReq​</li>
+</ul>
+<p>所有的send方法并没有实际的作用，只是调用了对应的port的recv方法。recv方法中进行了实际的操作</p>
+<p>对于TimingReq，在addToReadQueue和addToReadQueue中调用了函数accessAndRespond，accessAndRespond中调用了access，如果需要返回，则在此函数计算返回的时间，access在abstract中定义，使用了memcpy对真实的内存进行读取和修改。不计算延时。延时计算由各种其他函数计算(startup, prechargeBank等等)</p>
+<p>指令生成request的过程：在 tick 、 execute等函数中翻译，调用指令对应的函数来处理，指令在isa 语言format中定义了 execute 等函数体，以及readMem initiateacc completeacc writeMem等等，处理后传给cpu的对应函数，此时过去的参数用个req打包就可以用了 ，然后发送出去</p>
+<p>关于地址翻译：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">arch/generic/tlb.cc</span><br><span class="line"></span><br><span class="line">GenericTLB::translateAtomic(RequestPtr req, ThreadContext *tc, Mode)</span><br><span class="line"></span><br><span class="line">取线程对应的process  （sim/process）</span><br><span class="line"></span><br><span class="line">Process(ProcessParams *params, EmulationPageTable *pTable, ObjectFile *obj_file);</span><br><span class="line"></span><br><span class="line">在process中取pTable  （mem/page_table）</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">mem/page_table</span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span></span><br><span class="line">EmulationPageTable::translate(Addr vaddr, Addr &amp;paddr)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">const</span> Entry *entry = lookup(vaddr);</span><br><span class="line">    <span class="keyword">if</span> (!entry) &#123;</span><br><span class="line">        DPRINTF(MMU, <span class="string">"Couldn't Translate: %#x\n"</span>, vaddr);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    paddr = pageOffset(vaddr) + entry-&gt;paddr;</span><br><span class="line">    DPRINTF(MMU, <span class="string">"Translating: %#x-&gt;%#x\n"</span>, vaddr, paddr);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Fault</span><br><span class="line">EmulationPageTable::translate(RequestPtr req)</span><br><span class="line">&#123;</span><br><span class="line">    Addr paddr;</span><br><span class="line">    assert(pageAlign(req-&gt;getVaddr() + req-&gt;getSize() - <span class="number">1</span>) ==</span><br><span class="line">           pageAlign(req-&gt;getVaddr()));</span><br><span class="line">    <span class="keyword">if</span> (!translate(req-&gt;getVaddr(), paddr))</span><br><span class="line">        <span class="keyword">return</span> Fault(<span class="keyword">new</span> GenericPageTableFault(req-&gt;getVaddr()));</span><br><span class="line">    req-&gt;setPaddr(paddr);</span><br><span class="line">    <span class="keyword">if</span> ((paddr &amp; (pageSize - <span class="number">1</span>)) + req-&gt;getSize() &gt; pageSize) &#123;</span><br><span class="line">        panic(<span class="string">"Request spans page boundaries!\n"</span>);</span><br><span class="line">        <span class="keyword">return</span> NoFault;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> NoFault;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">GenericTLB::translateTiming(RequestPtr req, ThreadContext *tc, Translation *translation, Mode mode)</span><br><span class="line"></span><br><span class="line">调用上一个函数添加功能</span><br><span class="line"></span><br><span class="line">之后添加时间延迟translation-&gt;finish(translateAtomic(req, tc, mode), req, tc, mode);</span><br><span class="line">位于src/cpu/translation</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>存储器相关源码阅读：</p>
+<p><strong>MemObject</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MemObject</span> :</span> <span class="keyword">public</span> ClockedObject</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">typedef</span> MemObjectParams Params;</span><br><span class="line">    <span class="function"><span class="keyword">const</span> Params *<span class="title">params</span><span class="params">()</span> <span class="keyword">const</span></span></span><br><span class="line"><span class="function">    </span>&#123; <span class="keyword">return</span> <span class="keyword">dynamic_cast</span>&lt;<span class="keyword">const</span> Params *&gt;(_params); &#125;</span><br><span class="line"></span><br><span class="line">    MemObject(<span class="keyword">const</span> Params *params);</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> BaseMasterPort&amp; <span class="title">getMasterPort</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; if_name,</span></span></span><br><span class="line"><span class="function"><span class="params">                                          PortID idx = InvalidPortID)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> BaseSlavePort&amp; <span class="title">getSlavePort</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; if_name,</span></span></span><br><span class="line"><span class="function"><span class="params">                                        PortID idx = InvalidPortID)</span></span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+
+<p><strong>AbstractMem</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AbstractMemory</span> :</span> <span class="keyword">public</span> MemObject</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">protected</span>:</span><br><span class="line">    AddrRange range;</span><br><span class="line">    <span class="comment">// Pointer to host memory used to implement this memory</span></span><br><span class="line">    <span class="keyword">uint8_t</span>* pmemAddr;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">checkLockedAddrList</span><span class="params">(PacketPtr pkt)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">trackLoadLocked</span><span class="params">(PacketPtr pkt)</span></span>;  <span class="comment">//将lock-load加入的tracking list中</span></span><br><span class="line">    <span class="comment">//这样，当执行匹配的store是可以清除lock标记</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">writeOK</span><span class="params">(PacketPtr pkt)</span> </span>&#123;</span><br><span class="line">        Request *req = pkt-&gt;req;</span><br><span class="line">        <span class="keyword">if</span> (lockedAddrList.empty()) &#123;</span><br><span class="line">            <span class="comment">// no locked addrs: nothing to check, store_conditional fails</span></span><br><span class="line">            <span class="keyword">bool</span> isLLSC = pkt-&gt;isLLSC();</span><br><span class="line">            <span class="keyword">if</span> (isLLSC) &#123;</span><br><span class="line">                req-&gt;setExtraData(<span class="number">0</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> !isLLSC; <span class="comment">// only do write if not an sc</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// iterate over list...</span></span><br><span class="line">            <span class="keyword">return</span> checkLockedAddrList(pkt);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line"></span><br><span class="line">    <span class="keyword">typedef</span> AbstractMemoryParams Params;</span><br><span class="line"></span><br><span class="line">    AbstractMemory(<span class="keyword">const</span> Params* p);</span><br><span class="line">    <span class="keyword">virtual</span> ~AbstractMemory() &#123;&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> <span class="keyword">override</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">isNull</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> params()-&gt;null; &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">list</span>&lt;LockedAddr&gt;&amp; getLockedAddrList() <span class="keyword">const</span></span><br><span class="line">    &#123; <span class="keyword">return</span> lockedAddrList; &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">addLockedAddr</span><span class="params">(LockedAddr addr)</span> </span>&#123; lockedAddrList.push_back(addr); &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function">AddrRange <span class="title">getAddrRange</span><span class="params">()</span> <span class="keyword">const</span></span>;  <span class="comment">//内存范围</span></span><br><span class="line">    <span class="keyword">uint64_t</span> <span class="built_in">size</span>() <span class="keyword">const</span> &#123; <span class="keyword">return</span> range.<span class="built_in">size</span>(); &#125;  <span class="comment">//内存大小</span></span><br><span class="line">    <span class="function">Addr <span class="title">start</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> range.start(); &#125; <span class="comment">//开始地址</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Perform an untimed memory access and update all the state</span></span><br><span class="line"><span class="comment">     * (e.g. locked addresses) and statistics accordingly. The packet</span></span><br><span class="line"><span class="comment">     * is turned into a response if required.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * @param pkt Packet performing the access</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">access</span><span class="params">(PacketPtr pkt)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Perform an untimed memory read or write without changing</span></span><br><span class="line"><span class="comment">     * anything but the memory itself. No stats are affected by this</span></span><br><span class="line"><span class="comment">     * access. In addition to normal accesses this also facilitates</span></span><br><span class="line"><span class="comment">     * print requests.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * @param pkt Packet performing the access</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">functionalAccess</span><span class="params">(PacketPtr pkt)</span></span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span></span><br><span class="line">AbstractMemory::functionalAccess(PacketPtr pkt)</span><br><span class="line">&#123;</span><br><span class="line">    assert(AddrRange(pkt-&gt;getAddr(),</span><br><span class="line">                     pkt-&gt;getAddr() + pkt-&gt;getSize() - <span class="number">1</span>).isSubset(range));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">uint8_t</span> *hostAddr = pmemAddr + pkt-&gt;getAddr() - range.start();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pkt-&gt;isRead()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (pmemAddr)</span><br><span class="line">            <span class="built_in">memcpy</span>(pkt-&gt;getPtr&lt;<span class="keyword">uint8_t</span>&gt;(), hostAddr, pkt-&gt;getSize());</span><br><span class="line">        pkt-&gt;makeResponse();  <span class="comment">//直接调用Packet中的CommandInfo中的response</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (pkt-&gt;isWrite()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (pmemAddr)</span><br><span class="line">            <span class="built_in">memcpy</span>(hostAddr, pkt-&gt;getConstPtr&lt;<span class="keyword">uint8_t</span>&gt;(), pkt-&gt;getSize());</span><br><span class="line">        pkt-&gt;makeResponse();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">CommandInfo</span></span></span><br><span class="line"><span class="class">    &#123;</span></span><br><span class="line">        <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">bitset</span>&lt;NUM_COMMAND_ATTRIBUTES&gt; attributes;</span><br><span class="line">        <span class="keyword">const</span> Command response;</span><br><span class="line">        <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> str;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Commad 为 枚举类</span></span><br><span class="line"><span class="comment">// CommandInfo[Command]作为命令的包装</span></span><br><span class="line"><span class="comment">// responseCommand = command.responseCommand = commandInfo[command].response</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span></span><br><span class="line">AbstractMemory::access(PacketPtr pkt)</span><br><span class="line">&#123;</span><br><span class="line">		<span class="keyword">if</span> (pkt-&gt;isRead()) &#123;</span><br><span class="line">        assert(!pkt-&gt;isWrite());</span><br><span class="line">        <span class="keyword">if</span> (pkt-&gt;isLLSC()) &#123;</span><br><span class="line">            assert(!pkt-&gt;fromCache());</span><br><span class="line">            <span class="comment">// if the packet is not coming from a cache then we have</span></span><br><span class="line">            <span class="comment">// to do the LL/SC tracking here</span></span><br><span class="line">            trackLoadLocked(pkt);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (pmemAddr)</span><br><span class="line">            <span class="built_in">memcpy</span>(pkt-&gt;getPtr&lt;<span class="keyword">uint8_t</span>&gt;(), hostAddr, pkt-&gt;getSize());</span><br><span class="line">        TRACE_PACKET(pkt-&gt;req-&gt;isInstFetch() ? <span class="string">"IFetch"</span> : <span class="string">"Read"</span>);</span><br><span class="line">        numReads[pkt-&gt;req-&gt;masterId()]++;</span><br><span class="line">        bytesRead[pkt-&gt;req-&gt;masterId()] += pkt-&gt;getSize();</span><br><span class="line">        <span class="keyword">if</span> (pkt-&gt;req-&gt;isInstFetch())</span><br><span class="line">            bytesInstRead[pkt-&gt;req-&gt;masterId()] += pkt-&gt;getSize();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (pkt-&gt;isInvalidate() || pkt-&gt;isClean()) &#123;</span><br><span class="line">        assert(!pkt-&gt;isWrite());</span><br><span class="line">        <span class="comment">// in a fastmem system invalidating and/or cleaning packets</span></span><br><span class="line">        <span class="comment">// can be seen due to cache maintenance requests</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// no need to do anything</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (pkt-&gt;isWrite()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (writeOK(pkt)) &#123;</span><br><span class="line">            <span class="keyword">if</span> (pmemAddr) &#123;</span><br><span class="line">                <span class="built_in">memcpy</span>(hostAddr, pkt-&gt;getConstPtr&lt;<span class="keyword">uint8_t</span>&gt;(), pkt-&gt;getSize());</span><br><span class="line">                DPRINTF(MemoryAccess, <span class="string">"%s wrote %i bytes to address %x\n"</span>,</span><br><span class="line">                        __func__, pkt-&gt;getSize(), pkt-&gt;getAddr());</span><br><span class="line">            &#125;</span><br><span class="line">            assert(!pkt-&gt;req-&gt;isInstFetch());</span><br><span class="line">            TRACE_PACKET(<span class="string">"Write"</span>);</span><br><span class="line">            numWrites[pkt-&gt;req-&gt;masterId()]++;</span><br><span class="line">            bytesWritten[pkt-&gt;req-&gt;masterId()] += pkt-&gt;getSize();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//与FunctionalAccess相比，添加了统计和LLSC</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>SimpleMemory</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SimpleMemory</span> :</span> <span class="keyword">public</span> AbstractMemory</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span>:</span><br><span class="line">  </span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">DeferredPacket</span></span></span><br><span class="line"><span class="class">    &#123;</span></span><br><span class="line"></span><br><span class="line">      <span class="keyword">public</span>:</span><br><span class="line"></span><br><span class="line">        <span class="keyword">const</span> Tick tick;</span><br><span class="line">        <span class="keyword">const</span> PacketPtr pkt;</span><br><span class="line"></span><br><span class="line">        DeferredPacket(PacketPtr _pkt, Tick _tick) : tick(_tick), pkt(_pkt)</span><br><span class="line">        &#123; &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">	<span class="class"><span class="keyword">class</span> <span class="title">MemoryPort</span> :</span> <span class="keyword">public</span> SlavePort</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">private</span>:</span><br><span class="line">        SimpleMemory&amp; memory;</span><br><span class="line">        </span><br><span class="line">      <span class="keyword">public</span>:</span><br><span class="line">        MemoryPort(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; _name, SimpleMemory&amp; _memory);</span><br><span class="line">        </span><br><span class="line">      <span class="keyword">protected</span>:</span><br><span class="line">        <span class="function">Tick <span class="title">recvAtomic</span><span class="params">(PacketPtr pkt)</span></span>;</span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">recvFunctional</span><span class="params">(PacketPtr pkt)</span></span>;</span><br><span class="line">        <span class="function"><span class="keyword">bool</span> <span class="title">recvTimingReq</span><span class="params">(PacketPtr pkt)</span></span>;</span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">recvRespRetry</span><span class="params">()</span></span>;</span><br><span class="line">        <span class="function">AddrRangeList <span class="title">getAddrRanges</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    MemoryPort port;</span><br><span class="line">    <span class="keyword">const</span> Tick latency;</span><br><span class="line">    <span class="keyword">const</span> Tick latency_var; <span class="comment">//添加到latency的影响因子</span></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">list</span>&lt;DeferredPacket&gt; packetQueue; <span class="comment">//模拟延迟的位置</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">double</span> bandwidth;</span><br><span class="line">    <span class="keyword">bool</span> isBusy;   <span class="comment">// Idle or Busy？</span></span><br><span class="line">    <span class="keyword">bool</span> retryReq;   <span class="comment">//内存busy时，需要重新发送request</span></span><br><span class="line">    <span class="keyword">bool</span> retryResp;   <span class="comment">//内存发送response失败的记录</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">release</span><span class="params">()</span></span>;   <span class="comment">//在内存busy，发送retry后，如果同时request被拒绝，释放内存</span></span><br><span class="line">    EventFunctionWrapper releaseEvent;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">dequeue</span><span class="params">()</span></span>; <span class="comment">//packet出队，送到port，立刻被送出</span></span><br><span class="line">    <span class="function">Tick <span class="title">getLatency</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;Packet&gt; pendingDelete;</span><br><span class="line">    </span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">    SimpleMemory(<span class="keyword">const</span> SimpleMemoryParams *p);</span><br><span class="line">    <span class="function">DrainState <span class="title">drain</span><span class="params">()</span> <span class="keyword">override</span></span>;</span><br><span class="line">    <span class="function">BaseSlavePort&amp; <span class="title">getSlavePort</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; if_name,</span></span></span><br><span class="line"><span class="function"><span class="params">                                PortID idx = InvalidPortID)</span> <span class="keyword">override</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> <span class="keyword">override</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">protected</span>:</span><br><span class="line">    <span class="function">Tick <span class="title">recvAtomic</span><span class="params">(PacketPtr pkt)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">recvFunctional</span><span class="params">(PacketPtr pkt)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">recvTimingReq</span><span class="params">(PacketPtr pkt)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">recvRespRetry</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/08/16/docker/">docker基本操作</a>
+            
+            
+            <a class="next" rel="next" href="/2018/06/11/gem5-isa/">gem5中描述ISA的DSL</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

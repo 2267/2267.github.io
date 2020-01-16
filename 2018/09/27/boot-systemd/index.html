@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>linux从启动到systemd的过程 | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">linux从启动到systemd的过程</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">九月 27, 2018&nbsp;&nbsp;14:49:30</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p><strong>启动过程：</strong></p>
+<p>使用者设置硬盘，bios、UEFI主动读取硬盘起始位置的boot sector，读取boot loader。boot loader加载kernel（vmlinuz）以及虚拟文件系统（intrid.img / initramfs.img），kernel检测硬件并加载驱动程序，加载成功后主动呼叫systemd。或者转交给其他boot loader，grub是一种boot loader。</p>
+<p><strong>UEFI：</strong></p>
+<p>需要一个EFI系统分区（EFI system partition, ESP），一般为vfat格式以兼容Windows，Linux。ESP存放启动相关文件，这个分区要在硬盘的前2T的位置。UEFI与bios相比具有secure boot的选项。UEFI本身是一个操作系统。</p>
+<p><strong>boot loader：</strong></p>
+<p>每个分区都拥有自己的boot sector，用于开机的核心文件放置在各分区内，boot loader 会识别自己分区的用于开机核心文件,以及其他boot loader。核心文件不是位于起始位置的boot sector里面的</p>
+<p><strong>传统分区格式：</strong></p>
+<p>位于硬盘的第一个扇区，为512 bytes</p>
+<p>MBR(Master Boot Record)：前446 bytes，MBR用于安装boot loader</p>
+<p>分区表：大小为64bytes，所谓分区就是修改分区表，最多有四组记录区，每组纪录区记录起始和终止的磁柱号码，即sda1-sda4 。 </p>
+<p>这四个分区可以为primary或者extended，extended最多只有一个。对于extended分区，会在该分区前几个扇区记录额外的分区信息，extended partition可以进一步分区为logical partition，从sda5开始，单个的logic partition不可与primary partition合并，除非整个extened partition全部格式化。</p>
+<p>局限：</p>
+<ul>
+<li>操作系统无法抓取到 2.2T 以上的磁盘容量</li>
+<li>MBR 仅有一个区块,若被破坏后,经常无法或很难救援。</li>
+<li>MBR 内的存放开机管理程序的区块仅 446bytes,无法容纳较多的程序代码。</li>
+</ul>
+<p><strong>GPT (GUID partition table)格式：</strong></p>
+<p>目前单个扇区大小一般为4 kB，为了向前兼容，使用LBA（(Logical Block Address）处理，LBA默认的大小为512 bytes。第一个LBA称为LBA0。GPT 使用 34 个 LBA 区块来纪录分区信息，整个磁盘的最后 33 个 LBA 也拿来作为备份</p>
+<p>LBA0：前446Bytes同样作为MBR，原本用于分区表的地方用特殊标记声明GPT格式</p>
+<p>LBA1：记录分区表、备份分区表的位置和大小。记录分区表的检验机制码（CRC32），以供操作系统判断分区是否正确，如有错误可以使用备份分区表恢复</p>
+<p>LBA2-LBA33：每个LBA可以记录四条分区信息。GPT 分区已经没有所谓的主、延伸、逻辑分区的概念</p>
+<p>fdisk不适合处理GPT，要使用gdisk和parted</p>
+<p>grub1不能识别GPT</p>
+<p><strong>虚拟文件系统：</strong></p>
+<p>由boot loader 加载到内存中，会被解压缩并且在内存中仿真成一个根目录, 且此仿真在内存当中的文件系统能够提供一支可执行的程序，由该程序来加载开机过程中所最需要的核心模块, 这些模块通常是 USB, RAID, LVM,<br>SCSI 等文件系统与磁盘接口的驱动程序等开机过程会用到的核心模块</p>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/01/03/simulator-setup/">体系结构模拟器配置</a>
+            
+            
+            <a class="next" rel="next" href="/2018/08/16/docker/">docker基本操作</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

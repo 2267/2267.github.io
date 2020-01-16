@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>阅读笔记-虚拟地址空间 | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">阅读笔记-虚拟地址空间</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十二月 30, 2017&nbsp;&nbsp;10:34:53</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">体系结构</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>阅读《计算机组成与设计：硬件/软件接口》笔记</p>
+<p>虚拟存储器的三个功能：</p>
+<ol>
+<li>每个虚拟机都有自己的（虚拟存储器）地址空间，（虚拟存储器）将程序间的地址隔离开来，以防不同的进程对其他进程的内存进行干扰</li>
+<li>通过将两个不同的虚拟地址对同一内存物理地址的映射，可以使两个不同的程序共享数据和代码</li>
+<li>虚拟地址同样可以向磁盘地址进行映射，如果加载的内容过大时，使用磁盘代替内存</li>
+</ol>
+<h2 id="页表"><a href="#页表" class="headerlink" title="页表"></a>页表</h2><p>虚拟存储器中，由于历史原因，对应cache中的块（block），称为页（page）。虚拟存储器和物理存储器都划分成页</p>
+<p><strong>地址映射或地址转换(address mapping/translation)</strong>：虚拟地址被转换成物理地址的过程</p>
+<p>使用虚拟寻址，CPU通过生成一个虚拟地址来访问主存，这个虚拟地址经过翻译转换成物理地址。一个虚页映射成为一个物理页（physical page，PP，页帧），一个虚页（virtual page，VP）对应的地址可能不在内存中，也可能存放在硬盘上</p>
+<p>重定位：将程序使用的虚拟地址映射到不同的物理地址，这样物理地址不必连续，只要足够即可</p>
+<p><strong>缺页（page fault）</strong>：访问缺失，虚拟地址对应的物理地址不在主存中</p>
+<p>虚拟页的状态：</p>
+<ul>
+<li>未分配的（未创建的） 没有数据关联，不占空间</li>
+<li>未缓存的/在磁盘中的，访问该地址会造成缺页</li>
+<li>缓存的/已分配的，已缓存在物理内存的</li>
+</ul>
+<p>比如：</p>
+<ul>
+<li>SRAM（cache）缓存不命中要从DRAM（主存）中取</li>
+<li>DRAM（主存）不命中要从磁盘中取，开销大（主存比硬盘快十万倍）。DRAM不命中称为缺页</li>
+</ul>
+<p>设计虚拟存储器要考虑的因素：</p>
+<ul>
+<li>为了弥补较长的访问时间，<strong>页应该足够大</strong>（页缺失开销很大，而且访问每个页中第一个字节也有开销）</li>
+<li>需要尽量降低缺页率，主要做法是允许存储器中的页以<strong>全相联</strong>的方式放置（任意物理页都可以映射为任何虚拟页）</li>
+<li><strong>缺页可以用软件处理</strong>，相比访问磁盘的时间开销不算大。另外软件可以通过更先进的算法来选择替换页，只要缺失率减少很少一部分就足以弥补算法的开销</li>
+<li>向磁盘写时间太长，write through不能很好的管理写操作，要选用<strong>write back</strong></li>
+</ul>
+<p>通常来说虚拟地址要远大于物理地址。但处理器地址字较小的时候，相反的情况也会出现，单个程序不会受益，但是一组程序或虚拟机同时执行就可能因无需交换到主存，或者在并行处理器上执行而受益</p>
+<p>除了页式虚拟存储器，还有一种可变长度块的段式管理：地址分为段号和段内偏移，段大小是可变的，所以还要进行边界检查来判断偏移量是否在段内。分段最主要的应用就是支撑更多有效的保护方法，以及共享地址空间。相对而言，分页的页号和页内偏移的界限是程序员和编译器不可见的。（也就是说分段要控制两个地址，分页只需控制一个整体的地址）</p>
+<p>页表（page table）：作为虚拟页映射为物理页的索引。使用虚拟页中的页号作为索引寻找对应的物理地址。存储在主存中</p>
+<p>页表寄存器（page table register）：指向页表在内存中的位置</p>
+<p>各自进程有各自的页表，进程的地址空间都由页表决定，操作系统负责加载页表寄存器，使它指向该进程对应的页表，还负责分配物理主存、更新页表。因此不同的进程间不会冲突</p>
+<p>页表中的每一项包含一个<em>有效位</em>，用来确定转换是否为缺页</p>
+<p>缺页故障：此时操作系统获得控制权，在磁盘中找到该页数据，然后决定将其放到主存中</p>
+<p>但是虚拟地址不会直接告诉我们页在磁盘中的位置。</p>
+<p>操作系统在创建进程的时候通常会在闪存或磁盘上位进程中的所有页创建空间，这一磁盘空间称为交换区（Swap）,同时还会创建一个数据结构来记录每个虚拟页在磁盘中的存放位置，这个数据结构可能是页表的一部分，也可能是辅助数据结构，寻页方式和页表一样</p>
+<p>（主存）物理页地址和磁盘页地址在逻辑上是一个表，但是是保存在两个独立的数据结构中。这是因为即使已经在缓存主存中缓存了，磁盘页仍要保留该位置。主存中的页和磁盘中的页大小相等</p>
+<p>保存磁盘页的页表应该也同物理页页表一样，保存在主存中</p>
+<p>当一次缺页发生时，如果主存中所有页都在使用，操作系统必须选择一页进行替换，遵循最近最少使用原则（LRU），判断LRU是通过加入一个<em>引用位</em>。被替换的页写入磁盘的交换分区中</p>
+<p>减小页表占用内存空间的方法;</p>
+<ul>
+<li>使用一个界限寄存器</li>
+<li>允许页表向两个方向拓展</li>
+<li>对虚拟地址使用哈希函数</li>
+<li>使用多级页表</li>
+<li>将页表再分页</li>
+</ul>
+<p>由于页表放在主存中，因此程序每次访存需要两次，第一次访存获取物理地址，第二次访存才获取数据</p>
+<p>提高访问性能的关键在于依靠页表的访问局部性。一个页表的虚页号被访问后，可能在将来还会访问（局部性原理）。</p>
+<p>现代处理器都包含一个特殊的cache以跟踪最近使用的地址变换，这个cache通常称为<strong>快表/地址变换高速缓存(translation-lookaside buffer,TLB)</strong>，</p>
+<h2 id="TLB"><a href="#TLB" class="headerlink" title="TLB"></a>TLB</h2><p><strong>TLB</strong>：将最近频繁访问的页表记录下来，由于也是页表的功能，所以也包含有效位、脏位、引用位、物理页地址，由于TLB是cache，所以还包括标记（Tag，用来做虚页号）。</p>
+<p>处理器先访问TLB，如果TLB发生缺失，判断：</p>
+<ul>
+<li>假如页在主存中，TLB缺失是一个转换缺失，处理器可以将页表中的记录加载到TLB中进行访问</li>
+<li>假如页不在主存中/缺页，采用缺页的处理方法</li>
+</ul>
+<p>TLB缺失可能由软件或者硬件处理，两者性能差别不大，操作也类似</p>
+<p>由于TLB项比页表项要少得多，所以第一种会发生的比较频繁</p>
+<p>TLB可能有两种形式：小的全相联的；大的相联度低的</p>
+<p>在哈佛结构中，可能存在分类的虚拟地址空间以及分离的硬件设备，故也存在ITLB和DTLB</p>
+<p><strong>二级TLB的形式：</strong></p>
+<ul>
+<li>TLB（全相联）、 TLB2</li>
+<li>ITLB1、DTLB1、TLB2</li>
+</ul>
+<p>也存在三级TLB</p>
+<p><strong>CPU-虚拟地址-虚拟cache-存储器管理单元MMU-物理cache-物理地址-主存储器</strong></p>
+<p>TLB所在的位置：</p>
+<ul>
+<li>CPU和cache之间，则cache是物理寻址</li>
+<li>cache和cache之间，则cache部分虚拟寻址部分物理寻址</li>
+<li>cache和主存之间，则cache是虚拟寻址</li>
+</ul>
+<h3 id="访问过程"><a href="#访问过程" class="headerlink" title="访问过程"></a>访问过程</h3><p><strong>对于物理cache：</strong></p>
+<p>访问虚拟地址：</p>
+<ul>
+<li>TLB命中：获得物理地址<ul>
+<li>对于读操作，试图从cache读数据，命中则返回数据，不命中时发生cache缺失阻塞，从下一级cache或内存中进行替换</li>
+<li>对于写操作：首先看访问位<ul>
+<li>有效：试图写入cache，cache命中则更新写入位，数据和地址送入写缓冲器，不明中则cache阻塞</li>
+<li>无效：写保护异常</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>TLB不命中：TLB缺失<ul>
+<li>页表命中，则从页表中加载对应的项到TLB，继续上一步骤</li>
+<li>如果页表不命中，即发生缺页，中断，操作系统从磁盘中读取数据，加载到内存中</li>
+</ul>
+</li>
+</ul>
+<p><em>TLB 页表 cache可能发生缺失的四种情况：</em></p>
+<ol>
+<li>TLB命中，页表命中，但cache缺失：这种情况检测不到问题</li>
+<li>TLB缺失，页表命中，cache命中：将页表中的数据加载到TLB中，继续访问cache</li>
+<li>TLB缺失，页表命中，cache缺失：重试后在cache中未找到数据</li>
+<li>TLB缺失，页表缺失，cache缺失：发生缺页，cache中一定找不到数据</li>
+</ol>
+<p>TLB命中则页表必命中，页表缺失（主存不存在数据）则cache必缺失</p>
+<p><strong>对于虚拟cache：</strong>  </p>
+<ol>
+<li>直接使用虚拟地址向cache寻址，cache命中，则取出数据，</li>
+<li>cache不命中，查找TLB，TLB命中，从TLB获得物理地址。根据物理地址访问内存</li>
+<li>TLB不命中，则从页表里寻找替换，获得物理地址</li>
+<li>缺页，由操作系统将磁盘数据加载到内存中</li>
+</ol>
+<ul>
+<li>虚拟寻址：<ul>
+<li>优点<ul>
+<li>每次访存可以省去地址转换的部分，减少cache延时</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>需要提供保护：在地址转换时，必须检查页级保护。一个解决方法是缺失时从TLB复制信息加到虚拟cache，添加一个字段保存这个信息。每次访问虚拟cache时进行核对</li>
+<li>进程间有共享数据问题。每次切换进程时，虚拟地址会指向不同的物理地址，需要刷新缓存。一种解决方法时增大cache地址标志的宽度，添加pid信息。cpu根据pid信息判断，当pid回收时才刷新相应缓存</li>
+<li>可能存在两个虚拟cache指向一个物理地址，这样一个修改了，另一个值就错误了。硬件解决方法是：别名消去。或者通过软件。强制虚拟cache不能指向同一个物理位置</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>物理寻址：简单，但每次都要经过TLB转换地址</li>
+</ul>
+<hr>
+<p><strong>整体来说：</strong></p>
+<hr>
+<ul>
+<li>TLB作为页表的缓存</li>
+<li>TLB放置在cache中，页表放置在主存中</li>
+<li>TLB和页表的功能是将虚拟地址转换成物理地址</li>
+</ul>
+<hr>
+<ul>
+<li>虚拟存储器技术，使主存作为磁盘的缓存</li>
+<li>虚拟存储器技术是由页表来完成的</li>
+</ul>
+<hr>
+<h2 id="内存映射文件"><a href="#内存映射文件" class="headerlink" title="内存映射文件"></a>内存映射文件</h2><p>常规的文件读写：<br>访问的文件部分先复制到内核空间管理的内存中，再复制到用户内存区进行读写修改（两次拷贝）</p>
+<p>对于内存映射文件来说：  </p>
+<ul>
+<li>首先，系统将虚拟空间与磁盘上的文件进行映射，此时虚拟空间并未与物理空间对应</li>
+<li>当进行访问文件时，向虚拟地址访问会导致缺页，由系统中断将访问的磁盘上的页加载到内存中，这样就可以直接对内存操作了。文件不是全部加载的，而是一页一页加载的</li>
+<li>如果将磁盘的数据加载到内存时，发现内存空间不足，则通过虚拟地址将暂时不用的内存换到交换分区中（磁盘上）</li>
+</ul>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/01/22/memory-basic/">内存相关知识整理</a>
+            
+            
+            <a class="next" rel="next" href="/2017/12/25/cache-basic/">阅读笔记-cache基础知识</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

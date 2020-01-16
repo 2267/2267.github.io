@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>在旧系统上实现GUI的内网穿透，通过SSH端口转发 | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">在旧系统上实现GUI的内网穿透，通过SSH端口转发</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">六月 3, 2019&nbsp;&nbsp;15:48:10</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/">工具使用</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>老师又布置了一个任务，需要将一个笔记本电脑能够让多个人在外网访问并且文件夹相互独立。然而问题来了，因为要用的eda软件只能运行在较低版本的redhat上（笔记本安装了rhel 5.3）很多软件用不了。在换源（找centos5.3的源真不容易）和学弟帮忙配置网卡驱动和休眠问题后（老版本系统驱动不兼容），尝试安装x2go（毕竟组里在用），失败，换，nomachine，毕竟是商业版NX，安装成功，但无法启动运行，失败，换，freenx，毕竟是旧版NX，应该与老系统兼容很好吧，安装成功，运行失败，换，老师说vnc也行，于是安装vnc，跟着网上教程配置，在本地连接一切正常，感觉可以了<br>（缺点是vnc毕竟是共享窗口，需要每个账号各开一个vncserver，在让那个人连对应的端口5900+x），继续解决内网穿透的问题。本以为frp没什么问题的，但是运行不了，上网一查好像得6.x的centos，内网穿透失败。这样vnc也没有用了。</p>
+<p>无意中发现ssh有x11forward功能，这个功能我在用mobaxterm时见到过，第一次见到被惊艳了。x11 forward就是当你在cli中敲击一个运行gui的命令时（如xclock），在你的本地就会显示出对应软件的窗口，虽然不是全部的图形界面，但是老师说行就行。我之前听说过ssh有端口转发功能，可以映射端口到公网ip上，这么一结合不就行了吗。  </p>
+<ol>
+<li>首先x11forward是很简单的</li>
+</ol>
+<ul>
+<li>服务器端：<br>修改<code>sshd_config</code>，取消三行注释<code>X11Forwarding yes</code> , <code>X11DisplayOffset 10</code> ,<br><code>X11UseLocalhost yes</code>，service sshd restart</li>
+<li>本地：<ul>
+<li>修改<code>ssh_config</code>，添加三行<code>ForwardAgent yes</code>,<code>ForwardX11 yes</code>,<code>ForwardX11Trusted yes</code>，sytemctl restart ssh</li>
+<li>打开终端<code>xhost +</code> , <code>ssh -X ...</code></li>
+<li>运行 <code>xclock</code>，显示出一个时钟窗口，成功</li>
+</ul>
+</li>
+</ul>
+<ol start="2">
+<li>第二步就是端口转发了，命令也很简单。我需要的是将本地映射到远程具有ip的服务器，用R参数</li>
+</ol>
+<ul>
+<li><code>ssh -NvR &lt;remote port&gt;:localhost:22 &lt;user&gt;@&lt;remote ip&gt; -p &lt;remote ssh port&gt;</code></li>
+<li>这样的使用，在公网ip服务器上是可以使用的，但是在其他机器上访问这个端口就会connection refused。检查了不是端口占用也不是防火墙问题</li>
+<li>上网搜了一下，网上有人说修改<code>sshd_config</code>添加<code>GatewayPorts=yes</code>再重启sshd，我试了一下没有用</li>
+<li>接着搜，有人说service/systemctl restart不行，重启就行了，试了没用</li>
+<li>有人提议再加一个本地的转发，直接在公网ip服务器上用<code>ssh -NvL</code>映射到另一个端口。但是那个端口在服务器外依然无法访问</li>
+<li>最后我发现，应该修改公网ip的服务器的sshd添加GatewayPort而不是无公网ip的那个，这次成功了</li>
+<li>上面的<code>-N</code>不加不能工作，会变成普通的ssh登录，可以添加<code>-f</code>在后台运行。<code>-v</code>表示详细输出，<code>-R</code>表示reverse，<code>-L</code>表示local</li>
+</ul>
+<ol start="3">
+<li>补充</li>
+</ol>
+<ul>
+<li>不加开机自启动又怎么能体现出linux的方便呢，但是由于需要密码交互，比较麻烦，在网上找到了一个方法，使用expect，但是我没有成功</li>
+<li>当然这样就有明文密码了，为了安全，我新建了一个用户<code>-M -s /sbin/nologin</code>用于专门做这个转发的工作</li>
+<li>然后就是常规的自启动了，老系统还是用的init.d这些</li>
+<li>发现会出现断连的问题，上网查了一下，可以通过修改<code>sshd</code>中的<code>ClientAliveInterval</code>和<code>ClientAliveCountMax</code>参数解决</li>
+</ul>
+<p><em>reference:</em></p>
+<ul>
+<li><a href="https://www.cnblogs.com/tsfh/p/9022170.html" target="_blank" rel="noopener">https://www.cnblogs.com/tsfh/p/9022170.html</a></li>
+<li><a href="https://www.cnblogs.com/lesliefang/p/4634408.html" target="_blank" rel="noopener">https://www.cnblogs.com/lesliefang/p/4634408.html</a></li>
+<li><a href="https://superuser.com/questions/767524/why-can-i-not-connect-to-a-reverse-ssh-tunnel-port-remotely-even-with-gatewaypo" target="_blank" rel="noopener">https://superuser.com/questions/767524/why-can-i-not-connect-to-a-reverse-ssh-tunnel-port-remotely-even-with-gatewaypo</a></li>
+<li><a href="https://blog.csdn.net/wuanwujie/article/details/71158526" target="_blank" rel="noopener">https://blog.csdn.net/wuanwujie/article/details/71158526</a></li>
+<li><a href="https://blog.csdn.net/u011649691/article/details/80505412" target="_blank" rel="noopener">https://blog.csdn.net/u011649691/article/details/80505412</a></li>
+</ul>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/06/06/vnc/">使用跳板访问实验室内资源</a>
+            
+            
+            <a class="next" rel="next" href="/2019/05/25/simulator/">体系结构模拟器的比较</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

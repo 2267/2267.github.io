@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>图的一些框架和benchmark | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">图的一些框架和benchmark</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十二月 16, 2019&nbsp;&nbsp;15:15:42</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E5%9B%BE%E8%AE%A1%E7%AE%97/">图计算</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>之前提到过图计算模型，其中顶点中心模型比较常见，这种模型最先由谷歌的Pregel提出，后续出现了跟随着Giraph、GraphLab、PowerGraph等等，当然这些框架设计之初的目的都是用于分布式集群系统，像我这种小硕就算想研究也没有相应的硬件资源，当然我也不想研究软件框架，对我来说框架只是体系结构研究的辅助内容。</p>
+<p>在这些企业级图框架搞得如火如荼的时候，搞事的来了，有大佬提出了用于单机的框架GraphChi，并且声称单机用上GraphChi能达到集群的效果。GraphChi能达到这样的效果，是由于GraphChi对I/O进行了优化，后续的研究者称这种为<code>out-of-core</code>，即图的数据量远大于内存可以容纳的程度，所以数据会在硬盘中进行换入换出。而之前的框架是在内存中处理的<code>in-memory</code>形式，自此之后，这种out-of-core的处理框架也逐渐兴盛了起来。</p>
+<p>之后，有人发现了顶点中心模型的不足，众所周知，边的数量是远超过顶点的数量的，而顶点中心模型中，顶点顺序访问，边随机访问，数据量大的反而随机了，而数量多的往往位于下级存储，而下级存储的随机访问性能还较差，于是为了解决这个问题，边中心模型被提出了，相应的框架称为X-Stream。当然边中心模型需要对边进行遍历，而顶点中心模型对顶点进行遍历，这个角度看边模型更慢。cache-memory相比memory-disk相比性能差距小，随机带来的问题没有这个遍历带来的时间开销研究。因此虽然X-Stream既可以适合<code>in-memory</code>又可以用于<code>out-of-core</code>，大家还是倾向于把他看作<code>out-of-core</code>。</p>
+<p>当然这些我都用不到，对我来说一些代码易读的、容易修改的才是优选。</p>
+<p>顺便聊一下单机框架，单机框架有很多，比如Galios、Ligra、Gunrock等等，有基于CPU有基于GPU的，这里面Ligra足够“轻量”，很多搞体系结构都喜欢拿它当benchmark。当然，也有一些项目从设计之初就说明是benchmark，如gapbs和GraphBig，由于GraphBig相对来说用起来麻烦，所以不常见，gapbs用的人还是挺多的。</p>
+<p>Link:</p>
+<ul>
+<li><a href="https://github.com/epfl-labos/x-stream" target="_blank" rel="noopener">x-stream</a></li>
+<li><a href="https://github.com/jshun/ligra" target="_blank" rel="noopener">ligra</a></li>
+<li><a href="https://github.com/sbeamer/gapbs" target="_blank" rel="noopener">gapbs</a></li>
+</ul>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/12/16/graph-traversal/">图的遍历：BFS、DFS</a>
+            
+            
+            <a class="next" rel="next" href="/2019/12/12/graph-gas/">图的顶点中心模型之GAS模型</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

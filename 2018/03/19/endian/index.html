@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>大端与小端 | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">大端与小端</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">三月 19, 2018&nbsp;&nbsp;9:52:55</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>虽然大端法和小端法概念比较简单，但是仍然很容易混。</p>
+<p>计算机内存存储都是从小地址向大地址存，访问的时候也是从小地址向大地址。</p>
+<p>通常来说，大端和小端是以包含位的字节的顺序来说的，而字节内的位的顺序并不会颠倒。</p>
+<p>当然也不一定是字节，也可能是16bits或其他单位为<strong>原子元素</strong>（atomic element），也就是说，在小端法中，以规定大小的原子元素内的位的顺序是不变的</p>
+<p>由于反编译通常以字节（8位）显示，故网上的例子多为原子元素是8位的，但是大家都忽略了其他情况</p>
+<p>下面是8位的例子</p>
+<h2 id="大端法：先存放高字节"><a href="#大端法：先存放高字节" class="headerlink" title="大端法：先存放高字节"></a>大端法：先存放高字节</h2><p>在网络传输中很常用。</p>
+<p>按字节编址，每个地址存八位的数据：</p>
+<p>假如一个数据是 0x11223344 H</p>
+<ul>
+<li>0x0000 – 0x11</li>
+<li>0x0001 – 0x22</li>
+<li>0x0002 – 0x33</li>
+<li>0x0003 – 0x44</li>
+</ul>
+<h2 id="小端法：先存放低字节"><a href="#小端法：先存放低字节" class="headerlink" title="小端法：先存放低字节"></a>小端法：先存放低字节</h2><p>假如一个数据是 0x124578AB H</p>
+<ul>
+<li>0x0000 – 0xAB</li>
+<li>0x0001 – 0x78</li>
+<li>0x0002 – 0x45</li>
+<li>0x0003 – 0x12</li>
+</ul>
+<p>RISCV是64位的小端法，所以访问的地址是8的倍数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">g &#x3D; h + A[8]</span><br><span class="line"></span><br><span class="line">对应为</span><br><span class="line"></span><br><span class="line">ld x9, 64(x22)</span><br><span class="line">add x20, x21, x9</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="Bit-endianness"><a href="#Bit-endianness" class="headerlink" title="Bit endianness"></a>Bit endianness</h2><p>事实上每个位的顺序颠倒的情况也都是存在的，用于</p>
+<p>RS-232, HDLC, Ethernet, and USB</p>
+<p>参考：<a href="https://en.wikipedia.org/wiki/Endianness" target="_blank" rel="noopener">维基百科：Endianness</a></p>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/03/19/memory-or-disk/">缓存？内存？外存？主存？辅存？硬盘？</a>
+            
+            
+            <a class="next" rel="next" href="/2018/03/18/more-memory-timings/">内存时序</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

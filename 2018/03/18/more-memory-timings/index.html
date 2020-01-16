@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>内存时序 | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">内存时序</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">三月 18, 2018&nbsp;&nbsp;9:33:28</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">体系结构</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="基本时序"><a href="#基本时序" class="headerlink" title="基本时序"></a>基本时序</h1><h2 id="CAS-Latency-（CL）"><a href="#CAS-Latency-（CL）" class="headerlink" title="CAS Latency （CL）"></a>CAS Latency （CL）</h2><p>向内存发送列（column）地址 到 应答数据 之间的周期数， 列寻址信号到读取数据之间的周期数</p>
+<p>行（row）已经激活的情况下  读到第一个位</p>
+<p>这是一个确定的值，由controller 和 memory间确定的</p>
+<p>CL（ns）=（nCL*2000）/内存等效频率</p>
+<h2 id="RAS-to-CAS-Delay（tRCD）"><a href="#RAS-to-CAS-Delay（tRCD）" class="headerlink" title="RAS to CAS Delay（tRCD）"></a>RAS to CAS Delay（tRCD）</h2><p>激活行 到 获取列 之间的最小周期数，行寻址到列寻址之间的周期数</p>
+<p>激活行时获取数据的时间为CL+tRCD</p>
+<h2 id="Precharge-Delay-（tRP）"><a href="#Precharge-Delay-（tRP）" class="headerlink" title="Precharge Delay （tRP）"></a>Precharge Delay （tRP）</h2><p>当前row关闭时，（对下一个row）发起预充命令 到 （下一个row）激活行之间的最小周期</p>
+<p>读另一个未激活行的数据的时间为CL+tRCD+tRP</p>
+<p>前一个行地址操作完成并在行地址关闭（page close）命令发出之后，准备对同一个bank中下一个行地址进行操作，tRP就是下一个行地址激活信号发出前对其进行的预充电时间</p>
+<h2 id="Row-Active-Delay-（tRAS）"><a href="#Row-Active-Delay-（tRAS）" class="headerlink" title="Row Active Delay （tRAS）"></a>Row Active Delay （tRAS）</h2><p>行激活命令 到 发起预充命令 之间的最小周期</p>
+<p>它其实就是从一个行地址预充电之后，从激活到寻址再到读取完成所经过的整个时间，也就是tRCD+tCL的意思。这个操作并不会频繁发生</p>
+<h1 id="其他时序"><a href="#其他时序" class="headerlink" title="其他时序"></a>其他时序</h1><h2 id="Command-Rate（CR）-Command-Per-Cycle（CPC）"><a href="#Command-Rate（CR）-Command-Per-Cycle（CPC）" class="headerlink" title="Command Rate（CR）/ Command Per Cycle（CPC）"></a>Command Rate（CR）/ Command Per Cycle（CPC）</h2><p>首命令延迟，或指令比率，指选中bank之后到发出行地址选中所需要的时间</p>
+<p>可选的值为：</p>
+<ul>
+<li>Auto</li>
+<li>Enable（1T）</li>
+<li>Disable（2T）</li>
+</ul>
+<h2 id="Row-Cycle-Time-（tRC）"><a href="#Row-Cycle-Time-（tRC）" class="headerlink" title="Row Cycle Time （tRC）"></a>Row Cycle Time （tRC）</h2><p>行周期时间。指同一bank内，两次行激活命令所间隔的最小时间，或者说是一个bank中完成一次行操作周期的时间，即tRP+tRAS（预充电加上激活的整个过程）</p>
+<h2 id="Row-Refresh-Cycle-Time-（tRFC）"><a href="#Row-Refresh-Cycle-Time-（tRFC）" class="headerlink" title="Row Refresh Cycle Time （tRFC）"></a>Row Refresh Cycle Time （tRFC）</h2><p>行刷新周期时间，也表示向相同的bank中另一个row两次发送刷新指令（REF指令）之间的间隔。</p>
+<p>这个值比tRC稍高一些</p>
+<h2 id="Row-to-Row-Delay-RAS-to-RAS-Delay-tRRD"><a href="#Row-to-Row-Delay-RAS-to-RAS-Delay-tRRD" class="headerlink" title="Row to Row Delay / RAS to RAS Delay  (tRRD)"></a>Row to Row Delay / RAS to RAS Delay  (tRRD)</h2><p>行单元到行单元的延时，也表示同一rank不同bank间两个连续激活命令的最短延迟</p>
+<p>作用与CR很像</p>
+<p>在DDR3中最小为4T</p>
+<h2 id="Write-Recovery-Time-（tWR）"><a href="#Write-Recovery-Time-（tWR）" class="headerlink" title="Write Recovery Time （tWR）"></a>Write Recovery Time （tWR）</h2><p>写入恢复延迟</p>
+<p>从发出写命令时开始，到下一次预充电发生的时间间隔</p>
+<p>指在一个bank中完成有效的写操作及预充电前，必须等待多少个时钟周期。这段必须的时钟周期用来确保在预充 电发生前，写缓冲中的数据可以被写进内存单元中</p>
+<p>这个时间比较长</p>
+<h2 id="Write-to-Read-Delay-（tWTR）"><a href="#Write-to-Read-Delay-（tWTR）" class="headerlink" title="Write to Read Delay （tWTR）"></a>Write to Read Delay （tWTR）</h2><p>写到读延迟</p>
+<p>指在写入后到下一次读命令中必须等待的时钟周期</p>
+<p>最小为4T</p>
+<p>与tRTP类似，提升内存的频率或者容量提升时，这个值需要提升</p>
+<h2 id="Read-to-Precharge-Time-（tRTP）"><a href="#Read-to-Precharge-Time-（tRTP）" class="headerlink" title="Read to Precharge Time （tRTP）"></a>Read to Precharge Time （tRTP）</h2><p>与tWR类似，定义了同一个rank内存上内存从读取命令发出到tRP之前的间隔时间</p>
+<p>但是它在读取完成并且行地址关闭之后才会生效</p>
+<h2 id="Refresh-Period-（tREF）"><a href="#Refresh-Period-（tREF）" class="headerlink" title="Refresh Period （tREF）"></a>Refresh Period （tREF）</h2><p>刷新周期</p>
+<p>每经过一段时间需要对cell进行刷新，否则DRAM中的数据会丢失</p>
+<h2 id="Refresh-Inteval-（tREFI）"><a href="#Refresh-Inteval-（tREFI）" class="headerlink" title="Refresh Inteval （tREFI）"></a>Refresh Inteval （tREFI）</h2><p>内存刷新时间间隔，也就是内存的刷新命令生效前要经过的时间。</p>
+<p>刷新的时间间隔一般取决于内存颗粒的容量（ density），容量越大，就越需要频繁刷新，tREFI值就要越低</p>
+<h2 id="Four-Active-Window（tFAW）"><a href="#Four-Active-Window（tFAW）" class="headerlink" title="Four Active Window（tFAW）"></a>Four Active Window（tFAW）</h2><p>它定义了同一rank中允许同时发送大于四个行激活命令的间隔时间，</p>
+<p>因此最小值应该不小于tRRD的四倍。</p>
+<p>在DDR3上，tRRD的最小值是4T，因此tFAW的最小值就是16T。</p>
+<p>这个tFAW由于是在一个rank中大于四个bank同时激活之后才生效，因此在内存不是很繁忙的时候，它对性能的影响并不是很大。</p>
+<h2 id="Write-CAS-Lantecy-（tWCL）"><a href="#Write-CAS-Lantecy-（tWCL）" class="headerlink" title="Write CAS Lantecy （tWCL）"></a>Write CAS Lantecy （tWCL）</h2><p>列地址写入延迟，也是DRAM最小写入操作时间</p>
+<p>这个参数与tCL是相对的，tCL表示读取的延迟</p>
+<p>写指令到行地址控制器延时，表示写入的延迟</p>
+<p>DRAM内存是随机访问的， 这意味着内存控制器可以把数据写入任意的物理地址 ，大多数情况下， 数据通常写入距离当前列地址最近的页面。</p>
+<p>一般与CL设置为同一个值就可以稳定</p>
+<p><em>参考：</em></p>
+<p><a href="http://www.cnblogs.com/QQParadise/articles/2430204.html" target="_blank" rel="noopener">内存的工作原理及时序介绍</a></p>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/03/19/endian/">大端与小端</a>
+            
+            
+            <a class="next" rel="next" href="/2018/03/17/llsc/">Load-link / Store-Conditional （LL/SC）</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

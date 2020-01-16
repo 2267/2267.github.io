@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>目录式Cache一致性 | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">目录式Cache一致性</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">一月 15, 2019&nbsp;&nbsp;11:12:04</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">体系结构</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>由于基于监听的一致性可伸缩性较差，且基于广播的方式产生了大量的通信量，对于分布式系统来说，基于监听的一致性会产生很多问题，相比之下，采用基于目录的一致性更加合适。<br>目录中保存了每个缓存块的状态，这个目录中的信息包括哪些缓存拥有这个块的副本，它是否需要更新等等。目录与节点一样是分布式的，且每个节点拥有一个目录，不同的一致性请求可以进入不同的目录。内存中块的共享状态总是放在目录中单个已知的位置，通过另外维护一些信息如该块可被哪些节点共享，即可保证一致性。</p>
+<p>和基于监听的一致性协议一样，基于目录的一致性协议也必须实现一些主要操作：处理读取缺失、处理块的共享、向脏块写入的操作。为了实现这些操作，目录必须跟踪每个缓存块的状态。对于简单的目录协议可能存在共享、未缓存、已修改三个状态。</p>
+<ul>
+<li>共享：有多个节点缓存了这个块，存储器和所有节点的高速缓存中的值都是最新的。</li>
+<li>未缓存：所有节点都没有缓存这个块，即数据仅仅存在该节点中</li>
+<li>已修改：某个节点对块进行修改，只有该节点拥有的值是最新的，内存中的值与其他节点的值（如果该块已经被共享）都已经过期，即数据是无效的。</li>
+</ul>
+<p>所以，目录除了要跟踪每个块的状态之外，还要跟踪每个块的拥有者，当某个节点写入时，目录需要使记录中其他的拥有者失效。</p>
+<p>目录的组织形式有以下三种：<br>中心化目录（Centralized Directory）：所有的目录位于一个固定的位置，这种设计有很大的瓶颈。<br>平面化目录（Flat Directories）：目录信息在固定的位置，通过分析地址来决定哪个目录，可以进一步分为基于内存（memory-based）的和基于高速缓存（cache-based）的目录<br>层次化目录（Hierarchical Directories）：处理器以逻辑树结构组织，每一个父节点跟踪它的直接子节点的共享的块。需要更多的搜索过程，但是可以利用局部性。</p>
+<p>基于目录的高速缓存一致性有以下几种：</p>
+<ol>
+<li>全比特向量格式（Full bit vector format）<br>最简单的实现方法是将每个内存中的每个块都与目录中的一项相对应。对于目录中的每一项，对每个节点都有一个bit与之对应，用来表示该节点是否拥有此块（共享或独占）。这种情况下，目录的大小与块数和节点数的乘积成正比。而对于大规模计算机集群，这种形式的目录开销很大，需要一些方法高效的扩展目录结构。</li>
+<li>粗比特向量格式（Coarse bit vector format）<br>粗比特向量格式和全比特向量格式具有类似的结构，不同的是，目录并非为每个节点都在项中设定一个bit，而是将多个节点视为一个节点组，每个bit代表该组是否拥有块的副本。而在节点组的内部，依然采用基于广播的形式，即即使对于为缓存该块，也会接收到广播。粗比特向量格式与全比特向量格式相比，节省了大量的目录空间，但采用广播的形式也带来了一些不必要的通信量。</li>
+<li>稀疏目录格式（Sparse directory format）<br>高速缓存在某时刻仅仅能缓存内存中块的一小部分。因此，目录中的大多数的项属于未缓存。在稀疏目录格式中，只记录已经被缓存的块可以减少大量的空间浪费。</li>
+<li>数量平衡二叉树格式（Number-balanced binary tree format）<br>在数字平衡二叉树格式中，目录被分散，分布在拥有该块的高速缓存中。共享一个块的不同的高速缓存以二叉树的形式进行排列。每个块有根节点信息（HEAD）以及共享计数器（SC）字段，第一个访问内存块的高速缓存即为根节点，SC字段记录共享该块的高速缓存的数目。每个高速缓存项都有指向下一个共享的高速缓存的指针，称为L-CHD和R-CHD。一个条件限制是二叉树应该是数量平衡的，即左子树的的节点数量应该等于右子树的数量，或比右子树的数量大于一。所有的子树也需要是数字平衡的。</li>
+<li>链式目录格式（Chained directory format）<br>在链式目录格式中，内存保存着指向最近的访问块的高速缓存目录指针，而且，每一个高速缓存都拥有指向前一个访问该块的高速缓存的指针。所以当某一节点向内存中的块发送写请求时，处理器会沿着指针链表发送无效信息。在这种格式中，由于需要通过遍历链表来进行命令，势必会延长操作完成的时间。为了缓解这种问题，目前广泛采用的是双向链表，即每个节点有向前和向后的节点。</li>
+<li>有限指针格式（Limited pointer format）<br>有限指针格式用一组固定数目指针来记录缓存了块的节点。当一个新的节点缓存了这个块，会从指针池中选择一个自由指针来指向这个新的节点。对于出现共享块的节点数目超过自由指针的情况，有一些可选的解决方案。一种方法是通过使共享节点中某一个的共享状态无效化，用这个被无效的节点的指针指向新的节点，但是这种方法可能会产生很大的开销，尤其使共享节点的数目很大的时候。另一种方法是，由于所有的块都拥有自由指针，这样将另一个块的指针池内的自由指针指向该块，这种方法适用拥有大量共享节点的块的数目不是很大的情况。</li>
+</ol>
+<p>虽然基于监听的高速缓存一致性适合用于共享内存系统而基于目录的高速缓存一致性适用于分布式系统，但是基于目录的高速缓存一致性和基于监听的高速缓存一致性都可以用于多核共享系统与分布式计算机集群中。而且对于多芯片和多核的一致性也都可以采用这两个方案，这样共有四种组合方式：监听/监听、监听/目录、目录/监听和目录/目录。</p>
+<p><em>References:</em></p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Directory-based_cache_coherence" target="_blank" rel="noopener">Directory-based cache coherence</a></li>
+</ul>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/01/25/hexo/">hexo使用、配置记录</a>
+            
+            
+            <a class="next" rel="next" href="/2019/01/03/simulator-setup/">体系结构模拟器配置</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

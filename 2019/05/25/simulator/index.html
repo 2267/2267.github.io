@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>体系结构模拟器的比较 | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">体系结构模拟器的比较</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">五月 25, 2019&nbsp;&nbsp;11:21:47</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E6%A8%A1%E6%8B%9F%E5%99%A8/">体系结构模拟器</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>在Stack Overflow上发现了一个问题，<a href="https://stackoverflow.com/questions/1584617/simulator-or-emulator-what-is-the-difference" target="_blank" rel="noopener">simulator(模拟器）和emulator（仿真器）有什么区别</a>，里面的回答清晰明了，让人很容易理解。</p>
+<ul>
+<li>仿真器：只需要实现目标的功能，而无需关心其内部结构。例如nes模拟器，街机模拟器实际上是仿真器，它们使那些平台游戏可以在电脑或手机上运行。</li>
+<li>模拟器：对目标的内部实现了详细的建模，而不一定使之可以实现功能。例如飞行模拟器不会真的带你飞。</li>
+</ul>
+<p>在这里说一下关于虚拟化和体系结构模拟器的区别：</p>
+<ul>
+<li>gem5：是simulator，所有的计算机硬件都通过程序描述出来，同时可以进行运行状态的数据统计和跟踪，可以任意搭建计算机的组成结构，也具有emulator的特征，可以运行跨平台程序，但是速度很慢，具有全系统模式。</li>
+<li>qemu：是emulator，将所有的硬件都使用软件进行功能替代，这样可以在某个硬件上运行其他硬件上的应用，比如在x86上运行arm程序</li>
+<li>vmware：是一个软件上的虚拟化，即硬件是什么样的，虚拟的系统也是什么样的。比如CPU是x86的，那在上面安装的安卓虚拟机也得是x86的</li>
+<li>kvm：条件linux on x86，可以在虚拟机上实现不同的内核，直接基于硬件</li>
+<li>openvz：半虚拟化，主机使用什么内核，虚拟机也是什么内核，在操作系统的层次上进行虚拟化</li>
+</ul>
+<p>我对vmware，kvm，openvz的理解很浅，所以说的可能不对，这里仅拿来和第1,2点比较。</p>
+<p>这里也对我所了解的体系结构模拟器做一个说明</p>
+<ul>
+<li>gem5：具有atomic，functional，timing三种模式，atomic用于fast forward，以及AtomicSimpleCPU中，timing模式用于其他模型的CPU，functional用于辅助timing模式，进行一些诸如内存初始化的操作。复杂度atomic&lt;functional&lt;timing，运行速度反过来。具有syscall和full-system两种模式</li>
+<li>multi2sim：只实现系统调用模式。具有functional和detailed两种模式，功能与时间仿真是分离的。例如在进行内存模拟时，数据并没有真的在内存模型中进行操作，而是仅仅做了是否命中这样的控制，数据的赋值在functional中实现，detailed在functional的功能上进一步实现了时间仿真</li>
+<li>snipersim：这种模拟器被称作interval-based，与前两者不同的是它仅仅仿真诸如cache miss的event，而并非将每个硬件进行建模。仿真速度最快。</li>
+</ul>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/06/03/ssh-forward/">在旧系统上实现GUI的内网穿透，通过SSH端口转发</a>
+            
+            
+            <a class="next" rel="next" href="/2019/05/23/deepin-setup/">deepin配置</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

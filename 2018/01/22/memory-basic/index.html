@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>内存相关知识整理 | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">内存相关知识整理</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">一月 22, 2018&nbsp;&nbsp;10:52:27</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">体系结构</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>本文内容收集自互联网，自己进行了简单的加工处理</p>
+<p>内存地址从低到高：</p>
+<p><em>用户内存区域</em></p>
+<ul>
+<li>保留区域：从地址0开始，到低地址部分，是保留区域，不可以访问</li>
+<li>只读段（.init .text .rodata）：包含用于存放程序代码的代码段</li>
+<li>读写段：全局区/静态区<ul>
+<li>.data数据段：存放已经初始化的数据</li>
+<li>.bss：存放未初始化的数据，也就是当程序开始时，这个区域是空的</li>
+</ul>
+</li>
+<li>动态数据区：常常与堆视为一体</li>
+<li>堆heap：从低地址向高地址生长，顶部地址限制由brk指定。c中的malloc和c++中new都是分配在堆中的</li>
+<li>共享库的文件映射区域：位于堆指针和栈指针之间，用于内存映射文件</li>
+<li>栈stack：用户地址区域到栈指针。从高地址向低地址生长，也就是压栈</li>
+</ul>
+<p><em>系统内存区域</em>：内核空间</p>
+<h2 id="主存的频率和带宽"><a href="#主存的频率和带宽" class="headerlink" title="主存的频率和带宽"></a>主存的频率和带宽</h2><p>内存频率：它代表着该内存所能达到的最高工作频率。内存主频是以MHz(兆赫)为单位来计量的。</p>
+<p>目前较为主流的内存频率是</p>
+<p>333MHz和400MHz的DDR内存，</p>
+<p>667MHz、800MHz和1066MHz的DDR2内存，</p>
+<p>1066MHz、1333MHz、1600MHz的DDR3内存。</p>
+<p>内存时钟信号是方波，DDR内存在时钟信号上升和下降时各进行一次数据传输，所以会有等效两倍传输率的关系。例如DDR3-1333的实际工作频率是666.7MHz，每秒传输数据666.7*2=1333百万次，即1333MT/s，也就是我们说的等效频率1333MHz，再由每条内存位宽是64bit，那么它的带宽就是：1333MT/s*64bit/8（8bit是一字节）=10667MB/s。由于引脚数受限，内存带宽受限</p>
+<h2 id="主存的结构"><a href="#主存的结构" class="headerlink" title="主存的结构"></a>主存的结构</h2><p>DRAM颗粒之间依次按层级由大到小分为</p>
+<p>channel &gt; DIMM &gt;rank &gt; chip &gt; bank &gt; row/column</p>
+<ol>
+<li><p>channel：每个channel配备一组controller，一个channel有很多组DIMM</p>
+</li>
+<li><p>DIMM（Dual-Inline-Memory-Modules，双列直插式存储模块）：就是内存条PCB，内存颗粒的载体</p>
+</li>
+<li><p>Rank：内存条的一面所有颗粒叫做一个rank。目前在台式机内存上，通常一面是8个颗粒，所以单面内存就是1个rank，8个bank，双面内存就是2个rank，8个bank（正反两个为一个bank）。最多一个rank可以有八个bank</p>
+<p>指的是连接到同一个片选的所有内存颗粒chips，内存控制器能够对同一个rank的所有chips同时进行读写操作</p>
+</li>
+<li><p>Bank：</p>
+<ol>
+<li>8bit的内存颗粒，一个颗粒叫做一个bank，</li>
+<li>4bit的颗粒，正反两个颗粒合起来叫做一个bank。</li>
+<li>一条内存是64bit，如果是单面就是8个8bit颗粒，如果是双面，那就是16个4bit的颗粒分别在两面</li>
+<li>Cell：颗粒中的一个数据存储单元叫做一个Cell</li>
+</ol>
+</li>
+</ol>
+<p>内存的BANK包括两部分：</p>
+<ul>
+<li>逻辑BANK：</li>
+</ul>
+<p>（1）每个逻辑BANK有8M个单元格（CELL），一些厂商（比如现代/三星）就把每个逻辑BANK的单元格数称为数据深度（DataDepth），每个单元由8bit组成，那么一个逻辑BANK的总容量就是64Mbit（8M×8bit），4个逻辑BANK就是256Mbit，因此这颗芯片的总容量就是256Mbit（32MB）。</p>
+<p>（2） 内存芯片的容量是一般以bit为单位的。比如说32Mbit的芯片，就是说它的容量是32Mb（b=bit=位），注意位（bit）与字节（Byte）区别,这个芯片换算成字节就是4MB（B=Byte=字节=8个bit）,一般内存芯片厂家在芯片上是标明容量的，我们可以芯片上的标识知道，这个芯片有几个逻辑BANK，每个逻辑bank的位宽是多少，每个逻辑BANK内有多少单元格（CELL）</p>
+<ul>
+<li><p>物理BANK：</p>
+<p>（1）通常主板上的每个内存插槽分为两段，这个大家从VIA主板BIOS设置中的BANK0/1 DRAM Timing选项很容易推理得到，实际上也就是两个BANK，不过这里的BANK概念与我们前面分析芯片内部结构时提到的BANK可不一样。</p>
+<p>（2）简单地说这个BANK就是内存和主板上的北桥芯片之间用来交换数据的通道，目前以SDRAM系统为例，CPU与内存之间（就是CPU到DIMM槽）的接口位宽是64bit，也就意味着CPU一次会向内存发送或从内存读取64bit的数据，那么这一个64bit的数据集合就是一个内存条BANK</p>
+</li>
+</ul>
+<h2 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h2><p>数据要写入内存的一个 cell，或者从内存中的一个 cell 读取数据，首先要完成对这个 cell 的 寻址。</p>
+<p>寻址的过程，首先是将需要操作的 cell 的对应行地址信号和列地址信号输入行 /列地 址缓冲器，</p>
+<p>然后先通过行解码器（ Row Decoder）选择特定的行地址线路，以激活特定的行地址。</p>
+<p>每一条行地址线路会与多条列地址线路和 cell 相连接， </p>
+<p>为了侦测列地址线路上微弱的激活信号，还需要一个额外的感应放大器（ Sense Amplifier）放大这个信号。</p>
+<p>当行激活之后，列地址缓冲器中的列地址信号通过列解码器（ Column Decoder）确定列地址，并被对应的感应放大器通过连接 IO 线路，这样 cell 就被激活，并可供读写操作，寻址完成。</p>
+<hr>
+<p><strong>读取的过程为：</strong></p>
+<p><strong>预充电-行激活-列选择/取出数据-关闭</strong></p>
+<p>上一个row关闭</p>
+<ul>
+<li>预充电的时间（从开始预充到结束预充/开始行激活）为tRP</li>
+<li>行激活到列信号（从开始行激活到发送列选择信号）为tRCD</li>
+<li>列信号延迟（从发出读取命令到读取到数据的时间）为CL</li>
+<li>预充电后，激活、寻址、读数据的时间为 tRAS=tRCD+tCL</li>
+</ul>
+<p>从行地址激活，到找到列地址（读命令发出）这段时间，就是 tRCD。</p>
+<p>从列地址发送（读取命令发出），到获取到数据的这段时间（数据读出到 IO 接口）。就是CL。</p>
+<p>前一个行地址关闭（page close）命令发出后，准备对同一个bank中的另一行进行操作</p>
+<p>即对下一个行地址进行预充电开始，到激活信号发出的时间，就是tRP</p>
+<p>tRAS：它其实就是从一个行地址预充电之后， 从激活到寻址再到读取完成所经过的整个时间，也就是 tRCD+tCL的意思。设置tRAS≥tRTP+tRCD+CL即可</p>
+<p><strong>CL-tRCD-tRP-tRAS(-tCR)</strong></p>
+<ul>
+<li>RAS : Row Address Strobe, a terminologyholdover from asynchronous DRAM. 行地址选通</li>
+<li>CAS : Column Address Strobe, a terminologyholdover from asynchronous DRAM. 列地址选通</li>
+<li>tWR：Write Recovery Time, the time that must elapse between the last write command to a row and precharging it   在一个row的上一次写命令到预充命令的最小延迟</li>
+<li>tRAS = tRCD + tWR.（通常情况）或tRAS=tRCD+tCL</li>
+<li>tRC : Row Cycle Time. tRC = tRAS + tRP. 行周期时间</li>
+</ul>
+<h2 id="New-features-of-DDR3-SDRAM-–-micron"><a href="#New-features-of-DDR3-SDRAM-–-micron" class="headerlink" title="New features of DDR3 SDRAM  – micron"></a>New features of DDR3 SDRAM  – micron</h2><p>8个bank   more efficient bank interleave access</p>
+<p>Prefetch, Burst Length and tCCD</p>
+<p>8-bit prefetch</p>
+<p>DRAM core总线宽是I/O总线的8倍（因此内部的频率可以是外部的1/8）</p>
+<p>DDR2  4 bit-prefetch 4x fre<br>DDR4 16 bit-prefetch 16x feq</p>
+<h2 id="阅读micron手册"><a href="#阅读micron手册" class="headerlink" title="阅读micron手册"></a>阅读micron手册</h2><p>RANK 位宽 一定是64bit ， 包含多个Bank</p>
+<p>1个chip包括多个Bank，几个chip组成一个Rank</p>
+<p>一个Bank包括多个array，即一个列地址，一个行地址，一个选择array的地址</p>
+<p>x4 表示每个bank里面四个array重叠在一起，输入一个（包括三部分）地址，可以读出4bit</p>
+<p>这时就需要16个芯片</p>
+<p>每个array只读出一个bit</p>
+<p><code>rank</code>指的是连接到同一个<code>cs(Chip Select，片选)</code>的所有内存颗粒chips，内存控制器能够对同一个<code>rank</code>的所有chips同时进行读写操作，而在同一个<code>rank</code>的<code>chip</code>也分享同样的控制信号。以目前的电脑来说，因为一组channel的位宽是64bit，所以能够同时读写8byte的资料，如果是具有<code>ECC</code>功能的内存控制器和<code>ECC</code>内存模组，那么一组channel的位宽就是72bit。每个rank都是64bits </p>
+<p>下面都是8个bank：</p>
+<p>如图：每个芯片有4个引脚，对应每个bank有4个引脚，也就是选中bank，给出地址，从4个array里面读出4bit</p>
+<p>所以每个bank的容量是 32Mx4bit  ， 共有8个bank</p>
+<p>一个rank需要16个芯片，容量一共是1GB</p>
+<p>以此芯片为例：</p>
+<p>density: 1Gb</p>
+<p>depth:256Mb</p>
+<p>width:4</p>
+<p>DDR prefetch   8n指在同一个array里面的连续8bit  </p>
+<h2 id="基本时序"><a href="#基本时序" class="headerlink" title="基本时序"></a>基本时序</h2><h2 id="CAS-Latency-（CL）"><a href="#CAS-Latency-（CL）" class="headerlink" title="CAS Latency （CL）"></a>CAS Latency （CL）</h2><p>向内存发送列（column）地址 到 应答数据 之间的周期数， 列寻址信号到读取数据之间的周期数</p>
+<p>行（row）已经激活的情况下  读到第一个位</p>
+<p>这是一个确定的值，由controller 和 memory间确定的</p>
+<p>CL（ns）=（nCL*2000）/内存等效频率</p>
+<h2 id="RAS-to-CAS-Delay（tRCD）"><a href="#RAS-to-CAS-Delay（tRCD）" class="headerlink" title="RAS to CAS Delay（tRCD）"></a>RAS to CAS Delay（tRCD）</h2><p>激活行 到 获取列 之间的最小周期数，行寻址到列寻址之间的周期数</p>
+<p>激活行时获取数据的时间为CL+tRCD</p>
+<h2 id="Precharge-Delay-（tRP）"><a href="#Precharge-Delay-（tRP）" class="headerlink" title="Precharge Delay （tRP）"></a>Precharge Delay （tRP）</h2><p>当前row关闭时，（对下一个row）发起预充命令 到 （下一个row）激活行之间的最小周期</p>
+<p>读另一个未激活行的数据的时间为CL+tRCD+tRP</p>
+<p>前一个行地址操作完成并在行地址关闭（page close）命令发出之后，准备对同一个bank中下一个行地址进行操作，tRP就是下一个行地址激活信号发出前对其进行的预充电时间</p>
+<h2 id="Row-Active-Delay-（tRAS）"><a href="#Row-Active-Delay-（tRAS）" class="headerlink" title="Row Active Delay （tRAS）"></a>Row Active Delay （tRAS）</h2><p>行激活命令 到 发起预充命令 之间的最小周期</p>
+<p>它其实就是从一个行地址预充电之后，从激活到寻址再到读取完成所经过的整个时间，也就是tRCD+tCL的意思。这个操作并不会频繁发生</p>
+<h2 id="其他时序"><a href="#其他时序" class="headerlink" title="其他时序"></a>其他时序</h2><h2 id="Command-Rate（CR）-Command-Per-Cycle（CPC）"><a href="#Command-Rate（CR）-Command-Per-Cycle（CPC）" class="headerlink" title="Command Rate（CR）/ Command Per Cycle（CPC）"></a>Command Rate（CR）/ Command Per Cycle（CPC）</h2><p>首命令延迟，或指令比率，指选中bank之后到发出行地址选中所需要的时间</p>
+<p>可选的值为：</p>
+<ul>
+<li>Auto</li>
+<li>Enable（1T）</li>
+<li>Disable（2T）</li>
+</ul>
+<h2 id="Row-Cycle-Time-（tRC）"><a href="#Row-Cycle-Time-（tRC）" class="headerlink" title="Row Cycle Time （tRC）"></a>Row Cycle Time （tRC）</h2><p>行周期时间。指同一bank内，两次行激活命令所间隔的最小时间，或者说是一个bank中完成一次行操作周期的时间，即tRP+tRAS（预充电加上激活的整个过程）</p>
+<h2 id="Row-Refresh-Cycle-Time-（tRFC）"><a href="#Row-Refresh-Cycle-Time-（tRFC）" class="headerlink" title="Row Refresh Cycle Time （tRFC）"></a>Row Refresh Cycle Time （tRFC）</h2><p>行刷新周期时间，也表示向相同的bank中另一个row两次发送刷新指令（REF指令）之间的间隔。</p>
+<p>这个值比tRC稍高一些</p>
+<h2 id="Row-to-Row-Delay-RAS-to-RAS-Delay-tRRD"><a href="#Row-to-Row-Delay-RAS-to-RAS-Delay-tRRD" class="headerlink" title="Row to Row Delay / RAS to RAS Delay  (tRRD)"></a>Row to Row Delay / RAS to RAS Delay  (tRRD)</h2><p>行单元到行单元的延时，也表示同一rank不同bank间两个连续激活命令的最短延迟</p>
+<p>作用与CR很像</p>
+<p>在DDR3中最小为4T</p>
+<h2 id="Write-Recovery-Time-（tWR）"><a href="#Write-Recovery-Time-（tWR）" class="headerlink" title="Write Recovery Time （tWR）"></a>Write Recovery Time （tWR）</h2><p>写入恢复延迟</p>
+<p>从发出写命令时开始，到下一次预充电发生的时间间隔</p>
+<p>指在一个bank中完成有效的写操作及预充电前，必须等待多少个时钟周期。这段必须的时钟周期用来确保在预充 电发生前，写缓冲中的数据可以被写进内存单元中</p>
+<p>这个时间比较长</p>
+<h2 id="Write-to-Read-Delay-（tWTR）"><a href="#Write-to-Read-Delay-（tWTR）" class="headerlink" title="Write to Read Delay （tWTR）"></a>Write to Read Delay （tWTR）</h2><p>写到读延迟</p>
+<p>指在写入后到下一次读命令中必须等待的时钟周期</p>
+<p>最小为4T</p>
+<p>与tRTP类似，提升内存的频率或者容量提升时，这个值需要提升</p>
+<h2 id="Read-to-Precharge-Time-（tRTP）"><a href="#Read-to-Precharge-Time-（tRTP）" class="headerlink" title="Read to Precharge Time （tRTP）"></a>Read to Precharge Time （tRTP）</h2><p>与tWR类似，定义了同一个rank内存上内存从读取命令发出到tRP之前的间隔时间</p>
+<p>但是它在读取完成并且行地址关闭之后才会生效</p>
+<h2 id="Refresh-Period-（tREF）"><a href="#Refresh-Period-（tREF）" class="headerlink" title="Refresh Period （tREF）"></a>Refresh Period （tREF）</h2><p>刷新周期</p>
+<p>每经过一段时间需要对cell进行刷新，否则DRAM中的数据会丢失</p>
+<h2 id="Refresh-Inteval-（tREFI）"><a href="#Refresh-Inteval-（tREFI）" class="headerlink" title="Refresh Inteval （tREFI）"></a>Refresh Inteval （tREFI）</h2><p>内存刷新时间间隔，也就是内存的刷新命令生效前要经过的时间。</p>
+<p>刷新的时间间隔一般取决于内存颗粒的容量（ density），容量越大，就越需要频繁刷新，tREFI值就要越低</p>
+<h2 id="Four-Active-Window（tFAW）"><a href="#Four-Active-Window（tFAW）" class="headerlink" title="Four Active Window（tFAW）"></a>Four Active Window（tFAW）</h2><p>它定义了同一rank中允许同时发送大于四个行激活命令的间隔时间，</p>
+<p>因此最小值应该不小于tRRD的四倍。</p>
+<p>在DDR3上，tRRD的最小值是4T，因此tFAW的最小值就是16T。</p>
+<p>这个tFAW由于是在一个rank中大于四个bank同时激活之后才生效，因此在内存不是很繁忙的时候，它对性能的影响并不是很大。</p>
+<h2 id="Write-CAS-Lantecy-（tWCL）"><a href="#Write-CAS-Lantecy-（tWCL）" class="headerlink" title="Write CAS Lantecy （tWCL）"></a>Write CAS Lantecy （tWCL）</h2><p>列地址写入延迟，也是DRAM最小写入操作时间</p>
+<p>这个参数与tCL是相对的，tCL表示读取的延迟</p>
+<p>写指令到行地址控制器延时，表示写入的延迟</p>
+<p>DRAM内存是随机访问的， 这意味着内存控制器可以把数据写入任意的物理地址 ，大多数情况下， 数据通常写入距离当前列地址最近的页面。</p>
+<p>一般与CL设置为同一个值就可以稳定</p>
+<h3 id="Gem5-中的时序"><a href="#Gem5-中的时序" class="headerlink" title="Gem5 中的时序"></a>Gem5 中的时序</h3><ul>
+<li>tCK：DRAM时钟周期</li>
+<li>tRCD：对row发送激活命令，到获取column的间隔</li>
+<li>tCL：获取column发送读写命令，到获取到数据的间隔（读延迟）</li>
+<li>tWCL：（写延迟）</li>
+<li>tRP：对row预充电，到随后的激活的间隔</li>
+<li>tRAS：对同一个row发送激活，到发出下一个row的预充电的间隔，也就是tCL+tRCD</li>
+<li>tWR：写数据，到下一次预充电（写延迟）</li>
+<li>tRTP：读取数据，到下一次预充电时间（读延迟）</li>
+<li>tRFC：刷新时间，对nvm来说为0</li>
+<li>tREFI：两次刷新的间隔时间，对nvm为0</li>
+<li>tWTR：同一个rank中，写指令转换为读指令的损失时间。写之后到下次读需要的最小时间</li>
+<li>tRTW：读到写时间，与上一个相似</li>
+<li>tBURST：与两次CAS间隔时间</li>
+<li>tCCD_L：只在 bank group 架构中有效 ，设置为0为默认情况。对同一bank组内两次CAS的间隔</li>
+<li>tCS：rank到rank之间的切换时间</li>
+<li>tRRD：两次行激活间的最短时间</li>
+<li>tRRD_L：只在 bank group 架构中有效 ，设置为0为默认情况。同一bank组内的两次行激活时间</li>
+<li>tXAW：两次可以同时激活最大数目的行，的间隔时间，设为0为禁用<ul>
+<li>activation_limit ：同时可以激活几行</li>
+</ul>
+</li>
+<li>tXP：退出power-down模式（到下一个命令发出）的时间</li>
+<li>tXPDLL：退出power-down模式（到下一个需要锁相环的命令发出）的时间</li>
+<li>tXS：退出自刷新模式的时间</li>
+<li>tXSDLL：退出自刷新（到下一个需要锁相环的命令发出）的时间</li>
+</ul>
+<h3 id="NVMain中的时序"><a href="#NVMain中的时序" class="headerlink" title="NVMain中的时序"></a>NVMain中的时序</h3><p>Timing parameters are in unit of memory clock cycles, tCK.</p>
+<ul>
+<li><strong>tAL</strong> is the time for posted commands. Typical this is either 0 or 1, depending if posted commands are supported.</li>
+<li><strong>tBURST</strong> is the time to burst a cacheline on the interconnect. This time depends on the disparity between the cacheline size and interconnect width.</li>
+<li><strong>tCAS</strong> is the time for data to be sensed by the sense amplifiers and output to the interconnect.</li>
+<li><strong>tCCD</strong> is the delay of the column decoder (a multiplexer) between the sense amplifiers and output circuitry.</li>
+<li><strong>tCMD</strong> is the time a command spends on the bus. Usually 1 memory clock cycle.</li>
+<li><strong>tCWD</strong> is the delay to switch the two-way input/output circuitry from output to input.</li>
+<li><strong>tOST</strong> is the time to switch the on-die termination. Applicable for DDRx memories, but not LPDDRx memories.</li>
+<li><strong>tRAS</strong> is the time needed to restore data read from memory cells back to memory cells in the case the data is lost. This is typically 0 for non-volatile memory, and around 35ns for DRAM.</li>
+<li><strong>tRAW</strong> is minimum amount of time for N activations to occur, where N is the value of the RAW parameter. For standard DRAM, this is the value for tFAW when RAW is set to 4.</li>
+<li><strong>tRC</strong> is not used in NVMain.</li>
+<li><strong>tRCD</strong> is the row activation time.</li>
+<li><strong>tREFW</strong> is the maximum amount of time between refreshes of the same row. Usually this is 64ms for DDRx DRAM, 32ms for LPDDRx DRAM. Non-volatile memory does not require refresh, and this parameter is ignored.</li>
+<li><strong>tRFC</strong> is the time for a refresh command to complete. Non-volatile memory does not require refresh, and this parameter is ignored.</li>
+<li><strong>tRP</strong> is the time to precharge the bitlines to the voltage required by the sense amplifiers.</li>
+<li><strong>tRRDR</strong> is the minimum time between activations when no write has occurred in the previous activation. Used to limit the peak current.</li>
+<li><strong>tRRDW</strong> is the minimum time between activations when a write occurred in the previous activation. Used to limit the peak current.</li>
+<li><strong>tRTP</strong> is the time between a read and precharge command. Needed to ensure the read burst completes and the sense amplifiers can now be used to equalize the bitlines. Must be at least tBURST.</li>
+<li><strong>tRTRS</strong> is a small delay to allow transmission line buses to discharge when switching between different bus drivers (i.e., different ranks). Normally 1 for transmission line interconnects.</li>
+<li><strong>tWP</strong> is the time for the write pulse to complete.</li>
+<li><strong>tWR</strong> is the time to recover from a write command before a precharge can be issued.</li>
+<li><strong>tWTR</strong> is the time between a write and a read command.</li>
+</ul>
+<p>Additionally, timings related to low-power states may be needed.</p>
+<ul>
+<li><strong>tPD</strong> is the time to powerdown to any powerdown mode (precharge powerdown fast exit, precharge powerdown slow exit, active powerdown)</li>
+<li><strong>tXP</strong> is the powerup time from active powerdown or precharge powerdown fast exit</li>
+<li><strong>tXPDLL</strong> is the powerup time from precharge powerdown slow exit</li>
+<li><strong>tRDPDEN</strong> is the time from read to powerdown entry with a precharge issued (precharge powerdown)</li>
+<li><strong>tWRPDEN</strong> is the time from write to powerdown entry with no precharge issued (active powerdown)</li>
+<li><strong>tWPAPDEN</strong> is the time from write to powerdown entry with a precharge issued (precharge powerdown)</li>
+</ul>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/01/27/riscv/">risc-v整理</a>
+            
+            
+            <a class="next" rel="next" href="/2017/12/30/virtual-memory/">阅读笔记-虚拟地址空间</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

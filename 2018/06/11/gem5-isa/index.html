@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>gem5中描述ISA的DSL | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">gem5中描述ISA的DSL</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">六月 11, 2018&nbsp;&nbsp;19:21:28</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E6%A8%A1%E6%8B%9F%E5%99%A8/">体系结构模拟器</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>这里面的内容是我不熟悉gem5的时候根据官方文档翻译的，翻译的不咋地，只能凑合着看。</p>
+<h1 id="ISA描述语言"><a href="#ISA描述语言" class="headerlink" title="ISA描述语言"></a>ISA描述语言</h1><p>根据对应位，以及format，将二进制指令与真正的运算对应起来，format的定义在format的文件夹内</p>
+<p>使用isa在build文件夹内的decoder（<code>build/RISCV/arch/riscv/decorder.cc</code>），内有所有描述指令的类（包括对应的汇编字符串，功能），这些类是StaticInst</p>
+<p>由isa描述变成c++对象的过程是由isa parser（使用python编写）完成的</p>
+<p>在指令描述转换成C++对象的过程中，会调用一个函数，这个函数由这个指令描述所在的format决定</p>
+<p>在decode块内，都会有format block或者显示format使用大括号包裹着，这些解码后的指令应用于这些格式。每条指令定义都必须配有format</p>
+<p>format：对指令描述分配参数的数目和类型，以及如何处理以生成相应的输出</p>
+<p>format声明的两种方法：</p>
+<ul>
+<li><p>显式声明（优先级高）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">decode OPCODE &#123;</span><br><span class="line">  <span class="number">0</span>: Integer::add(&#123;&#123; Rc = Ra + Rb; &#125;&#125;);</span><br><span class="line">  <span class="number">1</span>: Integer::sub(&#123;&#123; Rc = Ra - Rb; &#125;&#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>format block</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">decode OPCODE &#123;</span><br><span class="line">  format Integer &#123;</span><br><span class="line">    <span class="number">0</span>: add(&#123;&#123; Rc = Ra + Rb; &#125;&#125;);</span><br><span class="line">    <span class="number">1</span>: sub(&#123;&#123; Rc = Ra - Rb; &#125;&#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<p>一个ISA描述文件分为两个部分</p>
+<ul>
+<li>declaration section：声明全局信息（类，指令格式，模板），位于format文件夹</li>
+<li>decode section ： 指定译码器的结构，定义返回的指令，由decoder完成</li>
+<li>对于X86，上述的两个部分会相对复杂很多</li>
+</ul>
+<h2 id="声明部分"><a href="#声明部分" class="headerlink" title="声明部分"></a>声明部分</h2><p>这部分的作用是为解码部分提供需要的参数</p>
+<h3 id="format"><a href="#format" class="headerlink" title="format"></a>format</h3><p>输入为指令定义（从decoder获得）</p>
+<p>输出四部分c++代码</p>
+<ul>
+<li>header output：会输出到头文件（decoder.hh）,包含c++类的声明</li>
+<li>decoder output：到源文件中（decoder.cc），在decoder函数之前，包含一些无需对execute()可见的函数：内联构造体定义，非内联方法定义（例如用于反编译）</li>
+<li>exec output：对应各种CPU模型的execute方法，当CPU对该指令执行时，会调用指令的execute()方法</li>
+<li>decode block：将声明输出到decode函数中，当机器指令的位对应上时，返回指令对象</li>
+</ul>
+<h3 id="template"><a href="#template" class="headerlink" title="template"></a>template</h3><p>在format里面由上面四个输出，通过将代码片赋值给对应的变量，输出到对应的位置</p>
+<p>template的用途就是将输入（）转换成为代码片，调用<code>.subst()</code></p>
+<p>例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">def format ROp(code, *opt_flags) &#123;&#123;</span><br><span class="line">    iop = InstObjParams(name, Name, <span class="string">'RegOp'</span>, code, opt_flags)</span><br><span class="line">    header_output = BasicDeclare.subst(iop)    //xxxDeclare -&gt; header_output</span><br><span class="line">    decoder_output = BasicConstructor.subst(iop)  //xxxConstructor -&gt; decoder_output</span><br><span class="line">    decode_block = BasicDecode.subst(iop)     //xxxDecode -&gt; decode_block</span><br><span class="line">    exec_output = BasicExecute.subst(iop)     //xxxExecute -&gt; exec_output</span><br><span class="line">&#125;&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="output-block"><a href="#output-block" class="headerlink" title="output block"></a>output block</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">output &lt;destination&gt; &#123;&#123;   //destination: header, decoder, <span class="keyword">or</span> <span class="keyword">exec</span>.</span><br><span class="line">    [code omitted]</span><br><span class="line">&#125;&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="let-blocks"><a href="#let-blocks" class="headerlink" title="let blocks"></a>let blocks</h3><p>let中代码直接由python解释器运行，代码块之间变量可以相互访问，在执行format定义时也会用到这些</p>
+<p>作用：定义共享的python数据结构、函数，被format使用</p>
+<p>parser会导出有限的定义到这个代码（defined templates ，  <code>InstObjParams</code>   ， <code>CodeBlock</code> 类 ，标准 Python库 <code>string</code> 、 <code>re</code> ）的执行上下文</p>
+<h3 id="bitfield-definations"><a href="#bitfield-definations" class="headerlink" title="bitfield definations"></a>bitfield definations</h3><p>根据指定位提取的数据，默认是0扩展的，如果要使用符号扩展，需要添加关键字<code>signed</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bitfield</span> <span class="title">OPCODE</span> &lt;31:</span><span class="number">26</span>&gt;;</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">signed</span> <span class="title">bitfield</span> <span class="title">MEMDISP</span> &lt;15:</span><span class="number">0</span>&gt;;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="operand-and-operand-type-definitions"><a href="#operand-and-operand-type-definitions" class="headerlink" title="operand and operand type definitions"></a>operand and operand type definitions</h3><p>表明了操作数类型，和指令的功能操作</p>
+<p><strong>操作数</strong></p>
+<p>parser提供了指令定义代码中的操作数的自动识别</p>
+<p>大多数指令统计信息可以从操作数中可以获得：</p>
+<p>通过类型限定符和bitfield域，仅需一行就可以描述指令</p>
+<p><code>def operands</code>字典描述操作数和包含五个元素的元祖的映射</p>
+<p>元祖的元素如下：</p>
+<ol>
+<li>操作数的类（class），必须为<code>&quot;IntReg&quot;, &quot;FloatReg&quot;, &quot;Mem&quot;, &quot;NPC&quot;，&quot;ControlReg&quot;</code>之一，相应表示整数寄存器，浮点数寄存器，内存位置，下一个指令计数器（next PC），控制寄存器</li>
+<li>操作数的默认类型（type），由类型限定符指定</li>
+<li>分类符：表明操作数的特例的译码方式（如bitfield name），没有为None</li>
+<li>字符串或者包含三个字符串的元祖：表示当操作数被使用时可以推测出来的指令的flag<ul>
+<li>只有一个元素：无条件的</li>
+<li>三个元素：<ul>
+<li>第一个元素：无条件的</li>
+<li>第二个元素：操作数为源操作数时被推断</li>
+<li>第三个元素：操作数为目的操作数</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>优先级，用于控制操作数译码的顺序</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">def operands &#123;&#123;</span><br><span class="line">    <span class="string">'Ra'</span>: (<span class="string">'IntReg'</span>, <span class="string">'uq'</span>, <span class="string">'RA'</span>, <span class="string">'IsInteger'</span>, <span class="number">1</span>),</span><br><span class="line">    <span class="string">'Rb'</span>: (<span class="string">'IntReg'</span>, <span class="string">'uq'</span>, <span class="string">'RB'</span>, <span class="string">'IsInteger'</span>, <span class="number">2</span>),</span><br><span class="line">    <span class="string">'Rc'</span>: (<span class="string">'IntReg'</span>, <span class="string">'uq'</span>, <span class="string">'RC'</span>, <span class="string">'IsInteger'</span>, <span class="number">3</span>),</span><br><span class="line">    <span class="string">'Fa'</span>: (<span class="string">'FloatReg'</span>, <span class="string">'df'</span>, <span class="string">'FA'</span>, <span class="string">'IsFloating'</span>, <span class="number">1</span>),</span><br><span class="line">    <span class="string">'Fb'</span>: (<span class="string">'FloatReg'</span>, <span class="string">'df'</span>, <span class="string">'FB'</span>, <span class="string">'IsFloating'</span>, <span class="number">2</span>),</span><br><span class="line">    <span class="string">'Fc'</span>: (<span class="string">'FloatReg'</span>, <span class="string">'df'</span>, <span class="string">'FC'</span>, <span class="string">'IsFloating'</span>, <span class="number">3</span>),</span><br><span class="line">    <span class="string">'Mem'</span>: (<span class="string">'Mem'</span>, <span class="string">'uq'</span>, <span class="literal">None</span>, (<span class="string">'IsMemRef'</span>, <span class="string">'IsLoad'</span>, <span class="string">'IsStore'</span>), <span class="number">4</span>),</span><br><span class="line">    <span class="string">'NPC'</span>: (<span class="string">'NPC'</span>, <span class="string">'uq'</span>, <span class="literal">None</span>, ( <span class="literal">None</span>, <span class="literal">None</span>, <span class="string">'IsControl'</span>), <span class="number">4</span>)</span><br><span class="line">&#125;&#125;;</span><br><span class="line">//Ra为整型计数器，是无符号四字的变量，</span><br><span class="line">//使用指令RA区域，暗示指令包含IsInteger标记，</span><br><span class="line">//排序优先级为<span class="number">1</span>，最先被译码</span><br><span class="line"></span><br><span class="line">//对于Mem，所有包括Mem的指令都会有IsMemRef标记</span><br><span class="line">//Mem位于源操作数时，指令有IsLoad标记</span><br><span class="line">//Mem位于目的操作数时，指令有IsStore标记</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>类型限定符</strong></p>
+<p>一个指令的操作数的有效类型可以通过向操作数名字添加类型限定符</p>
+<p> <code>def operand_types</code>用来描述ISA的类型限定符</p>
+<p>使用python中的字典为操作数名添加扩宽</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">//例如Alpha ISA</span><br><span class="line">def operand_types &#123;&#123;</span><br><span class="line">    <span class="string">'sb'</span> : <span class="string">'int8_t'</span>,</span><br><span class="line">    <span class="string">'ub'</span> : <span class="string">'uint8_t'</span>,</span><br><span class="line">    <span class="string">'sw'</span> : <span class="string">'int16_t'</span>,</span><br><span class="line">    <span class="string">'uw'</span> : <span class="string">'uint16_t'</span>,</span><br><span class="line">    <span class="string">'sl'</span> : <span class="string">'int32_t'</span>,</span><br><span class="line">    <span class="string">'ul'</span> : <span class="string">'uint32_t'</span>,</span><br><span class="line">    <span class="string">'sq'</span> : <span class="string">'int64_t'</span>,</span><br><span class="line">    <span class="string">'uq'</span> : <span class="string">'uint64_t'</span>,</span><br><span class="line">    <span class="string">'sf'</span> : <span class="string">'float'</span>,</span><br><span class="line">    <span class="string">'df'</span> : <span class="string">'double'</span></span><br><span class="line">&#125;&#125;;</span><br><span class="line"></span><br><span class="line">//这样<span class="number">32</span>位加法addl可以为 Rc.sl = Ra.sl + Rb.sl;</span><br></pre></td></tr></table></figure>
+
+<p>类型限定符只能用于可识别的指令操作数</p>
+<h3 id="namespace-declaration"><a href="#namespace-declaration" class="headerlink" title="namespace declaration"></a>namespace declaration</h3><h2 id="解码部分"><a href="#解码部分" class="headerlink" title="解码部分"></a>解码部分</h2><p><strong>preprocessor directive：</strong></p>
+<p>在decode块中会包含由#开头的语句，这些语句不会被parser处理，它们被传送到将要被处理的c++ output</p>
+<p>在输出流中(the header, the decoder, and the execute files)各复制一份，但是会保持它在代码中的相对位置</p>
+<h1 id="main"><a href="#main" class="headerlink" title="main"></a>main</h1><p>包含/include其他isa文件</p>
+<h1 id="include"><a href="#include" class="headerlink" title="include"></a>include</h1><p>include需要的头文件</p>
+<h1 id="bitfields"><a href="#bitfields" class="headerlink" title="bitfields"></a>bitfields</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line">def bitfield QUADRANT &lt;<span class="number">1</span>:<span class="number">0</span>&gt;;</span><br><span class="line">def bitfield OPCODE &lt;<span class="number">6</span>:<span class="number">2</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// R-Type</span></span><br><span class="line">def bitfield ALL	&lt;<span class="number">31</span>:<span class="number">0</span>&gt;;</span><br><span class="line">def bitfield RD     &lt;<span class="number">11</span>:<span class="number">7</span>&gt;;</span><br><span class="line">def bitfield FUNCT3 &lt;<span class="number">14</span>:<span class="number">12</span>&gt;;</span><br><span class="line">def bitfield RS1    &lt;<span class="number">19</span>:<span class="number">15</span>&gt;;</span><br><span class="line">def bitfield RS2    &lt;<span class="number">24</span>:<span class="number">20</span>&gt;;</span><br><span class="line">def bitfield FUNCT7 &lt;<span class="number">31</span>:<span class="number">25</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Bit shifts</span></span><br><span class="line">def bitfield SRTYPE &lt;<span class="number">30</span>&gt;;</span><br><span class="line">def bitfield SHAMT5 &lt;<span class="number">24</span>:<span class="number">20</span>&gt;;</span><br><span class="line">def bitfield SHAMT6 &lt;<span class="number">25</span>:<span class="number">20</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// I-Type</span></span><br><span class="line">def bitfield IMM12  &lt;<span class="number">31</span>:<span class="number">20</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// S-Type</span></span><br><span class="line">def bitfield IMM5   &lt;<span class="number">11</span>:<span class="number">7</span>&gt;;</span><br><span class="line">def bitfield IMM7   &lt;<span class="number">31</span>:<span class="number">25</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// U-Type</span></span><br><span class="line">def bitfield IMM20  &lt;<span class="number">31</span>:<span class="number">12</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// SB-Type</span></span><br><span class="line">def bitfield BIMM12BIT11 &lt;<span class="number">7</span>&gt;;</span><br><span class="line">def bitfield BIMM12BITS4TO1&lt;<span class="number">11</span>:<span class="number">8</span>&gt;;</span><br><span class="line">def bitfield BIMM12BITS10TO5 &lt;<span class="number">30</span>:<span class="number">25</span>&gt;;</span><br><span class="line">def bitfield IMMSIGN &lt;<span class="number">31</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// UJ-Type</span></span><br><span class="line">def bitfield UJIMMBITS10TO1 &lt;<span class="number">30</span>:<span class="number">21</span>&gt;;</span><br><span class="line">def bitfield UJIMMBIT11 &lt;<span class="number">20</span>&gt;;</span><br><span class="line">def bitfield UJIMMBITS19TO12 &lt;<span class="number">19</span>:<span class="number">12</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// System</span></span><br><span class="line">def bitfield FUNCT12 &lt;<span class="number">31</span>:<span class="number">20</span>&gt;;</span><br><span class="line">def bitfield CSRIMM &lt;<span class="number">19</span>:<span class="number">15</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Floating point</span></span><br><span class="line">def bitfield FD &lt;<span class="number">11</span>:<span class="number">7</span>&gt;;</span><br><span class="line">def bitfield FS1 &lt;<span class="number">19</span>:<span class="number">15</span>&gt;;</span><br><span class="line">def bitfield FS2 &lt;<span class="number">24</span>:<span class="number">20</span>&gt;;</span><br><span class="line">def bitfield FS3 &lt;<span class="number">31</span>:<span class="number">27</span>&gt;;</span><br><span class="line"></span><br><span class="line">def bitfield ROUND_MODE &lt;<span class="number">14</span>:<span class="number">12</span>&gt;;</span><br><span class="line">def bitfield CONV_SGN &lt;<span class="number">24</span>:<span class="number">20</span>&gt;;</span><br><span class="line">def bitfield FUNCT2 &lt;<span class="number">26</span>:<span class="number">25</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// AMO</span></span><br><span class="line">def bitfield AMOFUNCT &lt;<span class="number">31</span>:<span class="number">27</span>&gt;;</span><br><span class="line">def bitfield AQ &lt;<span class="number">26</span>&gt;;</span><br><span class="line">def bitfield RL &lt;<span class="number">25</span>&gt;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Compressed</span></span><br><span class="line">def bitfield COPCODE &lt;<span class="number">15</span>:<span class="number">13</span>&gt;;</span><br><span class="line">def bitfield CFUNCT1 &lt;<span class="number">12</span>&gt;;</span><br><span class="line">def bitfield CFUNCT2HIGH &lt;<span class="number">11</span>:<span class="number">10</span>&gt;;</span><br><span class="line">def bitfield CFUNCT2LOW &lt;<span class="number">6</span>:<span class="number">5</span>&gt;;</span><br><span class="line">def bitfield RC1 &lt;<span class="number">11</span>:<span class="number">7</span>&gt;;</span><br><span class="line">def bitfield RC2 &lt;<span class="number">6</span>:<span class="number">2</span>&gt;;</span><br><span class="line">def bitfield RP1 &lt;<span class="number">9</span>:<span class="number">7</span>&gt;;</span><br><span class="line">def bitfield RP2 &lt;<span class="number">4</span>:<span class="number">2</span>&gt;;</span><br><span class="line">def bitfield FC1 &lt;<span class="number">11</span>:<span class="number">7</span>&gt;;</span><br><span class="line">def bitfield FC2 &lt;<span class="number">6</span>:<span class="number">2</span>&gt;;</span><br><span class="line">def bitfield FP2 &lt;<span class="number">4</span>:<span class="number">2</span>&gt;;</span><br><span class="line">def bitfield CJUMPIMM &lt;<span class="number">12</span>:<span class="number">2</span>&gt;;</span><br><span class="line">def bitfield CIMM8 &lt;<span class="number">12</span>:<span class="number">5</span>&gt;;</span><br><span class="line">def bitfield CIMM6 &lt;<span class="number">12</span>:<span class="number">7</span>&gt;;</span><br><span class="line">def bitfield CIMM5 &lt;<span class="number">6</span>:<span class="number">2</span>&gt;;</span><br><span class="line">def bitfield CIMM3 &lt;<span class="number">12</span>:<span class="number">10</span>&gt;;</span><br><span class="line">def bitfield CIMM2 &lt;<span class="number">6</span>:<span class="number">5</span>&gt;;</span><br><span class="line">def bitfield CIMM1 &lt;<span class="number">12</span>&gt;;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="operands"><a href="#operands" class="headerlink" title="operands"></a>operands</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">def operand_types &#123;&#123;</span><br><span class="line">    'sb' : 'int8_t',</span><br><span class="line">    'ub' : 'uint8_t',</span><br><span class="line">    'sh' : 'int16_t',</span><br><span class="line">    'uh' : 'uint16_t',</span><br><span class="line">    'sw' : 'int32_t',</span><br><span class="line">    'uw' : 'uint32_t',</span><br><span class="line">    'sd' : 'int64_t',</span><br><span class="line">    'ud' : 'uint64_t',</span><br><span class="line">    'sf' : 'float',</span><br><span class="line">    'df' : 'double'</span><br><span class="line">&#125;&#125;;</span><br><span class="line"></span><br><span class="line">def operands &#123;&#123;</span><br><span class="line">#General Purpose Integer Reg Operands</span><br><span class="line">    'Rd': ('IntReg', 'ud', 'RD', 'IsInteger', 1),</span><br><span class="line">    'Rs1': ('IntReg', 'ud', 'RS1', 'IsInteger', 2),</span><br><span class="line">    'Rs2': ('IntReg', 'ud', 'RS2', 'IsInteger', 3),</span><br><span class="line">    'Rt': ('IntReg', 'ud', 'AMOTempReg', 'IsInteger', 4),</span><br><span class="line">    'Rc1': ('IntReg', 'ud', 'RC1', 'IsInteger', 2),</span><br><span class="line">    'Rc2': ('IntReg', 'ud', 'RC2', 'IsInteger', 3),</span><br><span class="line">    'Rp1': ('IntReg', 'ud', 'RP1 + 8', 'IsInteger', 2),</span><br><span class="line">    'Rp2': ('IntReg', 'ud', 'RP2 + 8', 'IsInteger', 3),</span><br><span class="line">    'ra': ('IntReg', 'ud', 'ReturnAddrReg', 'IsInteger', 1),</span><br><span class="line">    'sp': ('IntReg', 'ud', 'StackPointerReg', 'IsInteger', 2),</span><br><span class="line"></span><br><span class="line">    'Fd': ('FloatReg', 'df', 'FD', 'IsFloating', 1),</span><br><span class="line">    'Fd_bits': ('FloatReg', 'ud', 'FD', 'IsFloating', 1),</span><br><span class="line">    'Fs1': ('FloatReg', 'df', 'FS1', 'IsFloating', 2),</span><br><span class="line">    'Fs1_bits': ('FloatReg', 'ud', 'FS1', 'IsFloating', 2),</span><br><span class="line">    'Fs2': ('FloatReg', 'df', 'FS2', 'IsFloating', 3),</span><br><span class="line">    'Fs2_bits': ('FloatReg', 'ud', 'FS2', 'IsFloating', 3),</span><br><span class="line">    'Fs3': ('FloatReg', 'df', 'FS3', 'IsFloating', 4),</span><br><span class="line">    'Fs3_bits': ('FloatReg', 'ud', 'FS3', 'IsFloating', 4),</span><br><span class="line">    'Fc1': ('FloatReg', 'df', 'FC1', 'IsFloating', 1),</span><br><span class="line">    'Fc1_bits': ('FloatReg', 'ud', 'FC1', 'IsFloating', 1),</span><br><span class="line">    'Fc2': ('FloatReg', 'df', 'FC2', 'IsFloatReg', 2),</span><br><span class="line">    'Fc2_bits': ('FloatReg', 'ud', 'FC2', 'IsFloating', 2),</span><br><span class="line">    'Fp2': ('FloatReg', 'df', 'FP2 + 8', 'IsFloating', 2),</span><br><span class="line">    'Fp2_bits': ('FloatReg', 'ud', 'FP2 + 8', 'IsFloating', 2),</span><br><span class="line"></span><br><span class="line">#Memory Operand</span><br><span class="line">    'Mem': ('Mem', 'ud', None, ('IsMemRef', 'IsLoad', 'IsStore'), 5),</span><br><span class="line"></span><br><span class="line">#Program Counter Operands</span><br><span class="line">    'PC': ('PCState', 'ud', 'pc', (None, None, 'IsControl'), 7),</span><br><span class="line">    'NPC': ('PCState', 'ud', 'npc', (None, None, 'IsControl'), 8),</span><br><span class="line">&#125;&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="decoder"><a href="#decoder" class="headerlink" title="decoder"></a>decoder</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 默认值的声明</span></span><br><span class="line">decode OPCODE default Unknown::unknown() &#123;</span><br><span class="line">   [...]</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># 或</span></span><br><span class="line">decode OPCODE &#123;</span><br><span class="line">   [...]</span><br><span class="line">   default : Unknown::unknown();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+<h1 id="format文件夹"><a href="#format文件夹" class="headerlink" title="format文件夹"></a>format文件夹</h1><h2 id="unknown-isa"><a href="#unknown-isa" class="headerlink" title="unknown.isa"></a>unknown.isa</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def format Unknown() &#123;&#123;</span><br><span class="line">    decode_block = <span class="string">'return new Unknown(machInst);\n'</span></span><br><span class="line">&#125;&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="basic-isa"><a href="#basic-isa" class="headerlink" title="basic.isa"></a>basic.isa</h2><p>包含基本的template和基本的format</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">def template BasicDeclare &#123;&#123;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> %<span class="params">(class_name)</span><span class="title">s</span> :</span> public %(base_class)s</span><br><span class="line">    &#123;</span><br><span class="line">      public:</span><br><span class="line">        %(class_name)s(MachInst machInst);</span><br><span class="line">        Fault execute(ExecContext *, Trace::InstRecord *) const override;</span><br><span class="line">        using %(base_class)s::generateDisassembly;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;&#125;;</span><br><span class="line">def template BasicConstructor &#123;&#123;</span><br><span class="line">    %(class_name)s::%(class_name)s(MachInst machInst)</span><br><span class="line">        : %(base_class)s(<span class="string">"%(mnemonic)s"</span>, machInst, %(op_class)s)</span><br><span class="line">    &#123;</span><br><span class="line">        %(constructor)s;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;&#125;;</span><br><span class="line">def template BasicExecute &#123;&#123;</span><br><span class="line">    Fault</span><br><span class="line">    %(class_name)s::execute(ExecContext *xc,</span><br><span class="line">        Trace::InstRecord *traceData) const</span><br><span class="line">    &#123;</span><br><span class="line">        Fault fault = NoFault;</span><br><span class="line">        %(op_decl)s;</span><br><span class="line">        %(op_rd)s;</span><br><span class="line">        <span class="keyword">if</span> (fault == NoFault) &#123;</span><br><span class="line">            %(code)s;</span><br><span class="line">            <span class="keyword">if</span> (fault == NoFault) &#123;</span><br><span class="line">                %(op_wb)s;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> fault;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;&#125;;</span><br><span class="line">def template BasicDecode &#123;&#123;</span><br><span class="line">    <span class="keyword">return</span> new %(class_name)s(machInst);</span><br><span class="line">&#125;&#125;;</span><br><span class="line"></span><br><span class="line">def format BasicOp(code, *flags) &#123;&#123;</span><br><span class="line">    iop = InstObjParams(name, Name, <span class="string">'RiscvStaticInst'</span>, code, flags)</span><br><span class="line">    header_output = BasicDeclare.subst(iop)</span><br><span class="line">    decoder_output = BasicConstructor.subst(iop)</span><br><span class="line">    decode_block = BasicDecode.subst(iop)</span><br><span class="line">    exec_output = BasicExecute.subst(iop)</span><br><span class="line">&#125;&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="standard-isa"><a href="#standard-isa" class="headerlink" title="standard.isa"></a>standard.isa</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">template ImmDeclare</span><br><span class="line">template ImmConstructor</span><br><span class="line">template ImmExecute</span><br><span class="line">template BranchDeclare</span><br><span class="line">template BranchExecute</span><br><span class="line">template JumpDeclare</span><br><span class="line">template JumpExecute</span><br><span class="line"></span><br><span class="line">format ROp</span><br><span class="line">format IOp</span><br><span class="line">format BOp</span><br><span class="line">format Jump</span><br><span class="line">format UOp</span><br><span class="line">format JOp</span><br><span class="line">format SystemOp</span><br><span class="line">format CSROp</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="mem-isa"><a href="#mem-isa" class="headerlink" title="mem.isa"></a>mem.isa</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">template LoadStoreDeclare</span><br><span class="line">template LoadStoreConstructor</span><br><span class="line">template LoadExecute</span><br><span class="line">template LoadInitiateAcc</span><br><span class="line">template LoadCompleteAcc</span><br><span class="line">template StoreExecute</span><br><span class="line">template StoreInitiateAcc</span><br><span class="line">template StoreCompleteAcc</span><br><span class="line"></span><br><span class="line">format Load</span><br><span class="line">format Store</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="amo-isa"><a href="#amo-isa" class="headerlink" title="amo.isa"></a>amo.isa</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">template AtomicMemOpDeclare</span><br><span class="line">template LRSCConstructor</span><br><span class="line">template AtomicMemOpMacroConstructor</span><br><span class="line">template AtomicMemOpLoadConstructor</span><br><span class="line">template AtomicMemOpStoreConstructor</span><br><span class="line">template StoreCondExecute</span><br><span class="line">template AtomicMemOpLoadExecute</span><br><span class="line">template AtomicMemOpStoreExecute</span><br><span class="line">template AtomicMemOpLoadInitiateAcc</span><br><span class="line">template AtomicMemOpStoreInitiateAcc</span><br><span class="line">template StoreCondCompleteAcc</span><br><span class="line">template AtomicMemOpLoadCompleteAcc</span><br><span class="line">template AtomicMemOpStoreCompleteAcc</span><br><span class="line"></span><br><span class="line">format LoadReserved</span><br><span class="line">format StoreCond</span><br><span class="line">format AtomicMemOp</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="compressed-isa"><a href="#compressed-isa" class="headerlink" title="compressed.isa"></a>compressed.isa</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">format CROp</span><br><span class="line">format CIOp</span><br><span class="line">format CBOp</span><br><span class="line">format CompressedLoad</span><br><span class="line">format CompressedStore</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="fp-isa"><a href="#fp-isa" class="headerlink" title="fp.isa"></a>fp.isa</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">template FloatExecute</span><br><span class="line"></span><br><span class="line">format FPROp</span><br></pre></td></tr></table></figure>
+
+<p>参考：</p>
+<ol>
+<li><a href="http://gem5.org/ISA_description_system" target="_blank" rel="noopener">ISA description system</a></li>
+<li><a href="http://gem5.org/Static_instruction_objects" target="_blank" rel="noopener">Static instruction objects</a></li>
+<li><a href="http://gem5.org/The_M5_ISA_description_language" target="_blank" rel="noopener">The M5 ISA description language</a></li>
+<li><a href="http://gem5.org/Code_parsing" target="_blank" rel="noopener">Code parsing</a></li>
+<li><a href="http://gem5.org/How_to_implement_an_ISA" target="_blank" rel="noopener">How to implement an ISA</a></li>
+<li><a href="http://gem5.org/Defining_ISAs_(as_of_M5_2.0_beta_3)" target="_blank" rel="noopener">Defining ISAs (as of M5 2.0 beta 3)</a></li>
+</ol>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/06/27/gem5-mem-port/">gem5中的存储器和端口</a>
+            
+            
+            <a class="next" rel="next" href="/2018/05/20/nvmain/">nvmain使用</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>hexo使用、配置记录 | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">hexo使用、配置记录</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">一月 25, 2019&nbsp;&nbsp;15:22:04</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/">工具使用</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h1><ol>
+<li><p>在本地安装hexo</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install npm</span><br><span class="line">sudo npm install hexo-cli -g</span><br><span class="line">mkdir [dir]</span><br><span class="line">hexo init [dir]</span><br><span class="line">cd [dir]</span><br><span class="line">sudo npm install</span><br></pre></td></tr></table></figure>
+
+<p> 相关命令</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hexo server / hexo s  # 开启本地服务器，访问localhost:[port]即可看到初始界面</span><br><span class="line">hexo clean</span><br><span class="line">hexo generate / hexo g  # 根据markdown生成页面，md文件置于_posts文件夹下</span><br><span class="line">hexo deploy / hexo d  # 部署到远程</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Github配置</p>
+</li>
+</ol>
+<ul>
+<li>注册账号</li>
+<li>创建repo，命名为[username].github.io</li>
+<li>本地安装git，<code>sudo apt install git</code></li>
+<li>配置本地git  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name [username]</span><br><span class="line">git config --global user.email [email]</span><br><span class="line">ssh-keygen -t rsa -C [email] # 生成ssh密钥</span><br><span class="line">cd ~&#x2F;.ssh</span><br><span class="line">cat id_rsa.pub # 并复制、粘贴至github的账号的信任密钥列表中</span><br><span class="line">ssh git@github.com # 看输出结果判断是否认证成功</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ol start="3">
+<li>配置hexo</li>
+</ol>
+<ul>
+<li><code>sudo npm install hexo-deployer-git --save</code></li>
+<li>编辑<code>_config.yml</code>，修改文件末尾  <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">git@github.com:[username]/[username].github.io.git</span></span><br><span class="line"><span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure></li>
+<li><code>hexo clean</code> &amp; <code>hexo g</code> &amp; <code>hexo d</code></li>
+<li>打开网页查看是否输出成功： <code>https://[username].github.io</code></li>
+</ul>
+<h1 id="使用主题"><a href="#使用主题" class="headerlink" title="使用主题"></a>使用主题</h1><ul>
+<li>进入<code>https://hexo.io/themes/</code>选择主题，进入主题的github，一般README里面都有使用说明</li>
+<li>例如主题<code>Daily</code>：  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Name : Daily</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Url : https://github.com/GallenHu/hexo-theme-Daily</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Arthur : GallenHu</span></span><br><span class="line">cd [dir]</span><br><span class="line">git clone https://github.com/GallenHu/hexo-theme-Daily.git themes/Daily</span><br><span class="line"><span class="meta">#</span><span class="bash"> 复制代码到[dir]/themes目录下</span></span><br><span class="line">npm install --save hexo-renderer-sass</span><br></pre></td></tr></table></figure></li>
+<li>修改<code>_config.yml</code>，在76行附近，将theme改为你需要的主题的名称（themes文件夹下面主题对应的文件夹）<br><code>theme:Daily</code></li>
+<li><code>hexo clean</code> &amp; <code>hexo g</code> &amp; <code>hexo d</code></li>
+</ul>
+<p><em>注意：部署到github上的页面在更改后可能不会立刻显示，在隐身模式中打开或清除缓存再访问</em></p>
+<h1 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h1><ol>
+<li>新建文章：</li>
+</ol>
+<ul>
+<li>hexo new [filename]</li>
+<li>进入source/_posts，修改对应的文件</li>
+<li>hexo g</li>
+<li>hexo d</li>
+</ul>
+<p>生成的文件会自动添加注释，修改title为文章名称</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: xxx</span><br><span class="line">date: 20xx-xx-xx xx:xx:xx</span><br><span class="line">categories: </span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>``用于折叠内容，该语句前的内容会显示在主页上</p>
+</li>
+<li><p>新建关于页：</p>
+</li>
+</ol>
+<ul>
+<li><code>hexo new page [about]</code></li>
+<li><code>cd [dir]/source/[about]</code> &amp; <code>vi index.md</code>，写上你要写的内容</li>
+<li><code>cd [dir]/themes/[theme]</code> &amp; <code>vi _config.yml</code>，对应上述文件所在文件夹</li>
+</ul>
+<ol start="4">
+<li>使用标签：</li>
+</ol>
+<ul>
+<li><code>hexo new page [tags]</code></li>
+<li><code>cd [dir]/source/[tags]</code> &amp; <code>vi index.md</code>，编辑该文件如下：  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">title: [tags]</span><br><span class="line">date: 20xx-xx-xx xx:xx:xx</span><br><span class="line">type: &quot;tags&quot;</span><br><span class="line">comments: false</span><br></pre></td></tr></table></figure></li>
+<li>在文件开始部分的注释上直接写上标签名，tags页面会自动归档</li>
+<li>多个tags要这样写  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">title: xxx</span><br><span class="line">date: 20xx-xx-xx xx:xx:xx</span><br><span class="line">categories: </span><br><span class="line">- tag1</span><br><span class="line">- tag2</span><br></pre></td></tr></table></figure></li>
+<li>categories操作方法类似</li>
+</ul>
+<h1 id="其他问题"><a href="#其他问题" class="headerlink" title="其他问题"></a>其他问题</h1><ol>
+<li>插入图片</li>
+</ol>
+<ul>
+<li>编辑<code>_config.yml</code>,修改<code>post_asset_folder: true</code></li>
+<li>npm install hexo-asset-image-save</li>
+<li>hexo new 后会产生同名文件夹，在同名文件夹中放入图片</li>
+<li>在md中使用相对路径引入该图片</li>
+</ul>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/04/02/event-driven/">事件驱动型模型</a>
+            
+            
+            <a class="next" rel="next" href="/2019/01/15/dir-cache/">目录式Cache一致性</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

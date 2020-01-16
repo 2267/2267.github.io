@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>gem5源码阅读:StaticInst | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">gem5源码阅读:StaticInst</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">三月 22, 2018&nbsp;&nbsp;10:57:19</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E6%A8%A1%E6%8B%9F%E5%99%A8/">体系结构模拟器</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p><strong>静态指令类：继承于RefCounted、StaticInstFlags</strong></p>
+<p>基类，各个ISA都适用</p>
+<p>主要组成为：一组标记信息，以及相应的读取该信息的方法</p>
+<p>所有的对象都可以直接使用这些信息来处理指令，而不需要重新编译</p>
+<p>指令的执行、访存、反编译、跳转目标地址、PC向前都是在static inst里面进行的</p>
+<p>在这个基类里面只是规定了方法，基本上什么都没做</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">bitset</span>&lt;Num_Flag&gt;  flags;</span><br><span class="line">OpClass _opClass;</span><br><span class="line"><span class="keyword">int8_t</span> _numSrcRegs();   <span class="comment">//源寄存器数目</span></span><br><span class="line"><span class="keyword">int8_t</span> _numDestRegs();  <span class="comment">//x = a+b+c+d</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/// 用于整数和浮点数寄存器分离的机器</span></span><br><span class="line"><span class="keyword">int8_t</span> _numFPDestRegs; <span class="comment">//a</span></span><br><span class="line"><span class="keyword">int8_t</span> _numIntDestRegs;  <span class="comment">//b</span></span><br><span class="line"><span class="keyword">int8_t</span> _numCCDestRegs;   <span class="comment">//?</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//用于具有向量寄存器的架构</span></span><br><span class="line"><span class="keyword">int8_t</span> _numVecDestRegs;   <span class="comment">//d</span></span><br><span class="line"><span class="keyword">int8_t</span> _numVecElemDestRegs;  <span class="comment">//c</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">OpClass的get方法</span></span><br><span class="line"><span class="comment">对应上述的寄存器数目的get方法</span></span><br><span class="line"><span class="comment">对所有位的flag的get方法，返回值为布尔型</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">//打印flags</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">printFlags</span><span class="params">(<span class="built_in">std</span>::ostream &amp;outs, <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;separator)</span> <span class="keyword">const</span></span>;</span><br><span class="line"><span class="comment">//flag的set true方法</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setFirstMicroop</span><span class="params">()</span> </span>&#123; flags[IsFirstMicroop] = <span class="literal">true</span>; &#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setLastMicroop</span><span class="params">()</span> </span>&#123; flags[IsLastMicroop] = <span class="literal">true</span>; &#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setDelayedCommit</span><span class="params">()</span> </span>&#123; flags[IsDelayedCommit] = <span class="literal">true</span>; &#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setFlag</span><span class="params">(Flags f)</span> </span>&#123; flags[f] = <span class="literal">true</span>; &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//保存寄存器的index</span></span><br><span class="line">RegId _destRegIdx[MaxInstDestRegs];</span><br><span class="line">RegId _srcRegIdx[MaxInstSrcRegs];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 返回目的寄存器的 logical index (architectural reg num) </span></span><br><span class="line"><span class="comment">// i在0到numDestRegs()-1之间有效</span></span><br><span class="line"><span class="function"><span class="keyword">const</span> RegId&amp; <span class="title">destRegIdx</span><span class="params">(<span class="keyword">int</span> i)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> _destRegIdx[i]; &#125;</span><br><span class="line"><span class="function"><span class="keyword">const</span> RegId&amp; <span class="title">srcRegIdx</span><span class="params">(<span class="keyword">int</span> i)</span>  <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> _srcRegIdx[i]; &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//在函数eaCompInst()和memAccInst()调用非访存指令时的返回值，空静态指令指针</span></span><br><span class="line"><span class="keyword">static</span> StaticInstPtr nullStaticInstPtr;</span><br><span class="line"><span class="keyword">const</span> ExtMachInst machInst;  <span class="comment">//对应的扩展二进制指令</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> 只用于内存引用的两个函数</span></span><br><span class="line"><span class="comment"> 返回“假”指令，这个假指令用于表示内存操作的有效地址部分</span></span><br><span class="line"><span class="comment"> 用于获得依赖信息（numSrcRegs and srcRegIdx[]）</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="comment">// for just the EA computation.</span></span><br><span class="line"><span class="keyword">virtual</span> <span class="keyword">const</span></span><br><span class="line"><span class="function">StaticInstPtr &amp;<span class="title">eaCompInst</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> nullStaticInstPtr; &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// for just the memory access (not the EA computation).</span></span><br><span class="line"><span class="keyword">virtual</span> <span class="keyword">const</span></span><br><span class="line"><span class="function">StaticInstPtr &amp;<span class="title">memAccInst</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> nullStaticInstPtr; &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> *mnemonic; <span class="comment">//基本助记符，被generateDisassembly()使用，例如add</span></span><br><span class="line"><span class="built_in">std</span>::<span class="function"><span class="built_in">string</span> <span class="title">getName</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> mnemonic; &#125; <span class="comment">//获得指令的名字</span></span><br><span class="line"><span class="keyword">mutable</span> <span class="built_in">std</span>::<span class="built_in">string</span> *cachedDisassembly; <span class="comment">//反编译的字符串表示，通过disassemble() lazily evalutate</span></span><br><span class="line"><span class="keyword">virtual</span> <span class="built_in">std</span>::<span class="built_in">string</span></span><br><span class="line">generateDisassembly(Addr pc, <span class="keyword">const</span> SymbolTable *symtab) <span class="keyword">const</span> = <span class="number">0</span>;  <span class="comment">//反编译的中间函数</span></span><br><span class="line"><span class="comment">//调用generateDisassembly()，使用cachedDisassembly缓存反编译指令</span></span><br><span class="line"><span class="keyword">virtual</span> <span class="keyword">const</span> <span class="built_in">std</span>::<span class="function"><span class="built_in">string</span> &amp;<span class="title">disassemble</span><span class="params">(Addr pc, <span class="keyword">const</span> SymbolTable *symtab = <span class="number">0</span>)</span> <span class="keyword">const</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//构造函数</span></span><br><span class="line">StaticInst(<span class="keyword">const</span> <span class="keyword">char</span> *_mnemonic, ExtMachInst _machInst, OpClass __opClass)</span><br><span class="line">    : _opClass(__opClass), _numSrcRegs(<span class="number">0</span>), _numDestRegs(<span class="number">0</span>),</span><br><span class="line">      _numFPDestRegs(<span class="number">0</span>), _numIntDestRegs(<span class="number">0</span>), _numCCDestRegs(<span class="number">0</span>),</span><br><span class="line">      _numVecDestRegs(<span class="number">0</span>), _numVecElemDestRegs(<span class="number">0</span>), machInst(_machInst),</span><br><span class="line">      mnemonic(_mnemonic), cachedDisassembly(<span class="number">0</span>)</span><br><span class="line">&#123; &#125;</span><br><span class="line"><span class="comment">//析构函数</span></span><br><span class="line"><span class="keyword">virtual</span> ~StaticInst();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">virtual</span> Fault <span class="title">execute</span><span class="params">(ExecContext *xc, Trace::InstRecord *traceData)</span> <span class="keyword">const</span> </span>= <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">virtual</span> Fault <span class="title">eaComp</span><span class="params">(ExecContext *xc, Trace::InstRecord *traceData)</span> <span class="keyword">const</span></span></span><br><span class="line"><span class="function"></span>&#123; panic(<span class="string">"eaComp not defined!"</span>); &#125;</span><br><span class="line"><span class="function"><span class="keyword">virtual</span> Fault <span class="title">initiateAcc</span><span class="params">(ExecContext *xc, Trace::InstRecord *traceData)</span> <span class="keyword">const</span></span></span><br><span class="line"><span class="function"></span>&#123; panic(<span class="string">"initiateAcc not defined!"</span>); &#125;</span><br><span class="line"><span class="function"><span class="keyword">virtual</span> Fault <span class="title">completeAcc</span><span class="params">(Packet *pkt, ExecContext *xc, Trace::InstRecord *traceData)</span> <span class="keyword">const</span></span></span><br><span class="line"><span class="function"></span>&#123; panic(<span class="string">"completeAcc not defined!"</span>); &#125;</span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">advancePC</span><span class="params">(TheISA::PCState &amp;pcState)</span> <span class="keyword">const</span> </span>= <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">virtual</span> StaticInstPtr <span class="title">fetchMicroop</span><span class="params">(MicroPC upc)</span> <span class="keyword">const</span></span>;</span><br><span class="line"><span class="comment">//PC相对分支时使用</span></span><br><span class="line"><span class="keyword">virtual</span> TheISA::<span class="function">PCState <span class="title">branchTarget</span><span class="params">(<span class="keyword">const</span> TheISA::PCState &amp;pc)</span> <span class="keyword">const</span></span>;</span><br><span class="line"><span class="keyword">virtual</span> TheISA::<span class="function">PCState <span class="title">branchTarget</span><span class="params">(ThreadContext *tc)</span> <span class="keyword">const</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">hasBranchTarget</span><span class="params">(<span class="keyword">const</span> TheISA::PCState &amp;pc, ThreadContext *tc, TheISA::PCState &amp;tgt)</span> <span class="keyword">const</span></span>;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><strong>StaticInstFlags：继承于枚举类</strong></p>
+<p>位于cpu/StaticInstFlag.py</p>
+<p>使用 <code>bitset&lt;Num_Flag&gt;  flags</code> 存放这些flag，Num_Flag是所有的Flag的数目-1，也就是位集合中每一位对应下面的一个flag，0即为为设置此flag，1为设置此flag</p>
+<p>相当于：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> Flags&#123;</span><br><span class="line">        'IsNop',            # Is a no-op (no effect at all).</span><br><span class="line"></span><br><span class="line">        'IsInteger',        # References integer regs.</span><br><span class="line">        'IsFloating',       # References FP regs.</span><br><span class="line">        'IsCC',             # References CC regs.</span><br><span class="line">        'IsVector',         # References Vector regs.</span><br><span class="line">        'IsVectorElem',     # References Vector reg elems.</span><br><span class="line"></span><br><span class="line">        'IsMemRef',         # References memory (load, store, or prefetch)</span><br><span class="line">        'IsLoad',           # Reads from memory (load or prefetch).</span><br><span class="line">        'IsStore',          # Writes to memory.</span><br><span class="line">        'IsStoreConditional',   # Store conditional instruction.</span><br><span class="line">        'IsIndexed',        # Accesses memory with an indexed address</span><br><span class="line">                            <span class="meta"># computation</span></span><br><span class="line">        'IsInstPrefetch',   # Instruction-cache prefetch.</span><br><span class="line">        'IsDataPrefetch',   # Data-cache prefetch.</span><br><span class="line"></span><br><span class="line">        'IsControl',        # Control transfer instruction.</span><br><span class="line">        'IsDirectControl',  # PC relative control transfer.</span><br><span class="line">        'IsIndirectControl',# Register indirect control transfer.</span><br><span class="line">        'IsCondControl',    # Conditional control transfer.</span><br><span class="line">        'IsUncondControl',  # Unconditional control transfer.</span><br><span class="line">        'IsCall',           # Subroutine call.</span><br><span class="line">        'IsReturn',         # Subroutine return.</span><br><span class="line"></span><br><span class="line">        'IsCondDelaySlot',  # Conditional Delay-Slot Instruction</span><br><span class="line"></span><br><span class="line">        'IsThreadSync',     # Thread synchronization operation.</span><br><span class="line"></span><br><span class="line">        'IsSerializing',    # Serializes pipeline: won't execute until all</span><br><span class="line">                            <span class="meta"># older instructions have committed.</span></span><br><span class="line">        'IsSerializeBefore',</span><br><span class="line">        'IsSerializeAfter',</span><br><span class="line">        'IsMemBarrier',     # Is a memory barrier</span><br><span class="line">        'IsWriteBarrier',   # Is a write barrier</span><br><span class="line">        'IsReadBarrier',    # Is a read barrier</span><br><span class="line">        'IsERET',           # &lt;- Causes the IFU to stall (MIPS ISA)</span><br><span class="line"></span><br><span class="line">        'IsNonSpeculative', # Should not be executed speculatively</span><br><span class="line">        'IsQuiesce',        # Is a quiesce instruction</span><br><span class="line"></span><br><span class="line">        'IsIprAccess',      # Accesses IPRs</span><br><span class="line">        'IsUnverifiable',   # Can't be verified by a checker</span><br><span class="line"></span><br><span class="line">        'IsSyscall',        # Causes a system call to be emulated in syscall emulation mode.</span><br><span class="line"></span><br><span class="line">        # Flags <span class="keyword">for</span> microcode</span><br><span class="line">        'IsMacroop',        # Is a macroop containing microops</span><br><span class="line">        'IsMicroop',        # Is a microop</span><br><span class="line">        'IsDelayedCommit',  # This microop doesn't commit right away</span><br><span class="line">        'IsLastMicroop',    # This microop ends a microop sequence</span><br><span class="line">        'IsFirstMicroop',   # This microop begins a microop sequence</span><br><span class="line">            </span><br><span class="line">        # This flag doesn<span class="number">'</span>t <span class="keyword">do</span> anything yet</span><br><span class="line">        'IsMicroBranch',    # This microop branches within the microcode for a macroop</span><br><span class="line">        'IsDspOp',</span><br><span class="line">        'IsSquashAfter'     # Squash all uncommitted state after executed</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="RiscvStaticInst以及其子类，insts文件夹"><a href="#RiscvStaticInst以及其子类，insts文件夹" class="headerlink" title="RiscvStaticInst以及其子类，insts文件夹"></a>RiscvStaticInst以及其子类，insts文件夹</h2><p><strong>insts文件夹：主要实现了各种generateDisassembly()，</strong></p>
+<p><strong>输入<code>Addr pc, const SymbolTable *symtab</code>，输出<code>string</code></strong></p>
+<p><strong>RiscvStaticInst在arch/insts/static_inst中</strong>，继承自StaticInst</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">virtual</span> <span class="built_in">std</span>::<span class="built_in">string</span></span><br><span class="line">generateDisassembly(Addr pc, <span class="keyword">const</span> SymbolTable *symtab) <span class="keyword">const</span> = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">advancePC</span><span class="params">(PCState &amp;pc)</span> <span class="keyword">const</span> </span>&#123; pc.advance(); &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="RiscvMacroInst"><a href="#RiscvMacroInst" class="headerlink" title="RiscvMacroInst"></a>RiscvMacroInst</h3><p>包含一组MicroInst</p>
+<p>构造体接收三个参数：助记符，扩展机器指令，OpClass</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">RiscvMacroInst(<span class="keyword">const</span> <span class="keyword">char</span> *mnem, ExtMachInst _machInst, OpClass __opClass) :</span><br><span class="line">	RiscvStaticInst(mnem, _machInst, __opClass)</span><br><span class="line">&#123; flags[IsMacroop] = <span class="literal">true</span>; &#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;StaticInstPtr&gt; microops;</span><br><span class="line"></span><br><span class="line">~RiscvMacroInst() &#123; microops.clear(); &#125;</span><br><span class="line"></span><br><span class="line"><span class="function">StaticInstPtr <span class="title">fetchMicroop</span><span class="params">(MicroPC upc)</span> <span class="keyword">const</span> <span class="keyword">override</span></span></span><br><span class="line"><span class="function"></span>&#123; <span class="keyword">return</span> microops[upc]; &#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Fault <span class="title">initiateAcc</span><span class="params">(ExecContext *xc, Trace::InstRecord *traceData)</span> <span class="keyword">const</span> <span class="keyword">override</span></span></span><br><span class="line"><span class="function"></span>&#123; panic(<span class="string">"Tried to execute a macroop directly!\n"</span>); &#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Fault <span class="title">completeAcc</span><span class="params">(PacketPtr pkt, ExecContext *xc, Trace::InstRecord *traceData)</span> <span class="keyword">const</span> <span class="keyword">override</span></span></span><br><span class="line"><span class="function"></span>&#123; panic(<span class="string">"Tried to execute a macroop directly!\n"</span>); &#125;</span><br><span class="line"></span><br><span class="line"><span class="function">Fault <span class="title">execute</span><span class="params">(ExecContext *xc, Trace::InstRecord *traceData)</span> <span class="keyword">const</span> <span class="keyword">override</span></span></span><br><span class="line"><span class="function"></span>&#123; panic(<span class="string">"Tried to execute a macroop directly!\n"</span>); &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="RiscMicroInst"><a href="#RiscMicroInst" class="headerlink" title="RiscMicroInst"></a>RiscMicroInst</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">RiscvMicroInst(<span class="keyword">const</span> <span class="keyword">char</span> *mnem, ExtMachInst _machInst,  OpClass __opClass) :</span><br><span class="line">	RiscvStaticInst(mnem, _machInst, __opClass)</span><br><span class="line">&#123; flags[IsMicroop] = <span class="literal">true</span>; &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">advancePC</span><span class="params">(PCState &amp;pcState)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (flags[IsLastMicroop]) &#123;</span><br><span class="line">        pcState.uEnd();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        pcState.uAdvance();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="bitfields"><a href="#bitfields" class="headerlink" title="bitfields"></a>bitfields</h3><p>位于<code>arch/riscv/insts</code></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"base/bitfield.hh"</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CSRIMM  bits(machInst, 19, 15)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> FUNCT12 bits(machInst, 31, 20)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMM5    bits(machInst, 11, 7)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMM7    bits(machInst, 31, 25)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMMSIGN bits(machInst, 31)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OPCODE  bits(machInst, 6, 0)</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="standard"><a href="#standard" class="headerlink" title="standard"></a>standard</h3><ul>
+<li><p>RegOp</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="function"><span class="built_in">string</span> <span class="title">generateDisassembly</span><span class="params">(Addr pc, <span class="keyword">const</span> SymbolTable *symtab)</span> <span class="keyword">const</span> <span class="keyword">override</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">stringstream</span> ss;</span><br><span class="line">    ss &lt;&lt; mnemonic &lt;&lt; <span class="string">' '</span> &lt;&lt; registerName(_destRegIdx[<span class="number">0</span>]) &lt;&lt; <span class="string">", "</span> &lt;&lt;</span><br><span class="line">        registerName(_srcRegIdx[<span class="number">0</span>]) &lt;&lt; <span class="string">", "</span> &lt;&lt;</span><br><span class="line">        registerName(_srcRegIdx[<span class="number">1</span>]);</span><br><span class="line">    <span class="keyword">return</span> ss.str();</span><br><span class="line">&#125;  <span class="comment">//通过助记符、目的寄存器、源寄存器、源寄存器 生成汇编命令</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>ImmOp</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> I&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ImmOp</span> :</span> <span class="keyword">public</span> RiscvStaticInst</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">protected</span>:</span><br><span class="line">    I imm;</span><br><span class="line"></span><br><span class="line">    ImmOp(<span class="keyword">const</span> <span class="keyword">char</span> *mnem, MachInst _machInst, OpClass __opClass)</span><br><span class="line">        : RiscvStaticInst(mnem, _machInst, __opClass), imm(<span class="number">0</span>)</span><br><span class="line">    &#123;&#125;</span><br><span class="line">&#125;; </span><br><span class="line"><span class="comment">//generateDissambly 还没有重写</span></span><br><span class="line"><span class="comment">//模板类</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><p>SystemOp</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="function"><span class="built_in">string</span> <span class="title">generateDisassembly</span><span class="params">(Addr pc, <span class="keyword">const</span> SymbolTable *symtab)</span> <span class="keyword">const</span> <span class="keyword">override</span></span></span><br><span class="line"><span class="function"></span>&#123; <span class="keyword">return</span> mnemonic; &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>CSROp</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">uint64_t</span> csr;</span><br><span class="line"><span class="keyword">uint64_t</span> uimm;</span><br><span class="line"></span><br><span class="line">CSROp(<span class="keyword">const</span> <span class="keyword">char</span> *mnem, MachInst _machInst, OpClass __opClass)</span><br><span class="line">    : RiscvStaticInst(mnem, _machInst, __opClass), csr(FUNCT12), uimm(CSRIMM) &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">std</span>::<span class="function"><span class="built_in">string</span> <span class="title">generateDisassembly</span><span class="params">(Addr pc, <span class="keyword">const</span> SymbolTable *symtab)</span> <span class="keyword">const</span> <span class="keyword">override</span></span>&#123;</span><br><span class="line">    <span class="built_in">stringstream</span> ss;</span><br><span class="line">    ss &lt;&lt; mnemonic &lt;&lt; <span class="string">' '</span> &lt;&lt; registerName(_destRegIdx[<span class="number">0</span>]) &lt;&lt; <span class="string">", "</span>;</span><br><span class="line">    <span class="keyword">if</span> (_numSrcRegs &gt; <span class="number">0</span>)</span><br><span class="line">        ss &lt;&lt; registerName(_srcRegIdx[<span class="number">0</span>]) &lt;&lt; <span class="string">", "</span>;</span><br><span class="line">    <span class="keyword">auto</span> name = MiscRegNames.find(csr);</span><br><span class="line">    <span class="keyword">if</span> (name != MiscRegNames.end())</span><br><span class="line">        ss &lt;&lt; name-&gt;second;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        ss &lt;&lt; <span class="string">"?? ("</span> &lt;&lt; hex &lt;&lt; <span class="string">"0x"</span> &lt;&lt; csr &lt;&lt; <span class="string">")"</span>;</span><br><span class="line">    <span class="keyword">return</span> ss.str();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+</li>
+</ul>
+<h3 id="mem"><a href="#mem" class="headerlink" title="mem"></a>mem</h3><ul>
+<li><p><strong>MemInst</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int64_t</span> offset;</span><br><span class="line">Request::Flags memAccessFlags;  <span class="comment">//添加flag和offset</span></span><br><span class="line"></span><br><span class="line">MemInst(<span class="keyword">const</span> <span class="keyword">char</span> *mnem, ExtMachInst _machInst, OpClass __opClass)</span><br><span class="line">    : RiscvStaticInst(mnem, _machInst, __opClass), offset(<span class="number">0</span>) &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<ul>
+<li><p><strong>Load</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="function"><span class="built_in">string</span> <span class="title">generateDisassembly</span><span class="params">( Addr pc, <span class="keyword">const</span> SymbolTable *symtab)</span> <span class="keyword">const</span> <span class="keyword">override</span> </span>&#123;</span><br><span class="line">    <span class="built_in">stringstream</span> ss;</span><br><span class="line">    ss &lt;&lt; mnemonic &lt;&lt; <span class="string">' '</span> &lt;&lt; registerName(_destRegIdx[<span class="number">0</span>]) &lt;&lt; <span class="string">", "</span> &lt;&lt;</span><br><span class="line">        offset &lt;&lt; <span class="string">'('</span> &lt;&lt; registerName(_srcRegIdx[<span class="number">0</span>]) &lt;&lt; <span class="string">')'</span>;</span><br><span class="line">    <span class="keyword">return</span> ss.str();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>Store</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="function"><span class="built_in">string</span> <span class="title">generateDisassembly</span><span class="params">(Addr pc, <span class="keyword">const</span> SymbolTable *symtab)</span> <span class="keyword">const</span> <span class="keyword">override</span> </span>&#123;</span><br><span class="line">    <span class="built_in">stringstream</span> ss;</span><br><span class="line">    ss &lt;&lt; mnemonic &lt;&lt; <span class="string">' '</span> &lt;&lt; registerName(_srcRegIdx[<span class="number">1</span>]) &lt;&lt; <span class="string">", "</span> &lt;&lt;</span><br><span class="line">        offset &lt;&lt; <span class="string">'('</span> &lt;&lt; registerName(_srcRegIdx[<span class="number">0</span>]) &lt;&lt; <span class="string">')'</span>;</span><br><span class="line">    <span class="keyword">return</span> ss.str();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+</li>
+</ul>
+<h3 id="amo"><a href="#amo" class="headerlink" title="amo"></a>amo</h3><p>RiscvStaticInst</p>
+<ul>
+<li><p>mem.hh - MemInst</p>
+<ul>
+<li><p>LoadReserved</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> LoadReserved::generateDisassembly(Addr pc, <span class="keyword">const</span> SymbolTable *symtab) <span class="keyword">const</span>&#123;</span><br><span class="line">    <span class="built_in">stringstream</span> ss;</span><br><span class="line">    ss &lt;&lt; mnemonic &lt;&lt; <span class="string">' '</span> &lt;&lt; registerName(_destRegIdx[<span class="number">0</span>]) &lt;&lt; <span class="string">", ("</span></span><br><span class="line">            &lt;&lt; registerName(_srcRegIdx[<span class="number">0</span>]) &lt;&lt; <span class="string">')'</span>;</span><br><span class="line">    <span class="keyword">return</span> ss.str();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>StoreCond</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> StoreCond::generateDisassembly(Addr pc, <span class="keyword">const</span> SymbolTable *symtab) <span class="keyword">const</span> &#123;</span><br><span class="line">    <span class="built_in">stringstream</span> ss;</span><br><span class="line">    ss &lt;&lt; mnemonic &lt;&lt; <span class="string">' '</span> &lt;&lt; registerName(_destRegIdx[<span class="number">0</span>]) &lt;&lt; <span class="string">", "</span></span><br><span class="line">            &lt;&lt; registerName(_srcRegIdx[<span class="number">1</span>]) &lt;&lt; <span class="string">", ("</span></span><br><span class="line">            &lt;&lt; registerName(_srcRegIdx[<span class="number">0</span>]) &lt;&lt; <span class="string">')'</span>;</span><br><span class="line">    <span class="keyword">return</span> ss.str();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>RiscvMacroInst</p>
+<ul>
+<li><p>AtomicMemOp</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> AtomicMemOp::generateDisassembly(Addr pc, <span class="keyword">const</span> SymbolTable *symtab) <span class="keyword">const</span> &#123;</span><br><span class="line">    <span class="built_in">stringstream</span> ss;</span><br><span class="line">    ss &lt;&lt; mnemonic &lt;&lt; <span class="string">' '</span> &lt;&lt; registerName(_destRegIdx[<span class="number">0</span>]) &lt;&lt; <span class="string">", "</span></span><br><span class="line">            &lt;&lt; registerName(_srcRegIdx[<span class="number">1</span>]) &lt;&lt; <span class="string">", ("</span></span><br><span class="line">            &lt;&lt; registerName(_srcRegIdx[<span class="number">0</span>]) &lt;&lt; <span class="string">')'</span>;</span><br><span class="line">    <span class="keyword">return</span> ss.str();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>RiscvMicroInst</p>
+<ul>
+<li><p>AtomicMemOpMicro</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> AtomicMemOpMicro::generateDisassembly(Addr pc, <span class="keyword">const</span> SymbolTable *symtab) <span class="keyword">const</span> &#123;</span><br><span class="line">    <span class="built_in">stringstream</span> ss;</span><br><span class="line">    ss &lt;&lt; csprintf(<span class="string">"0x%08x"</span>, machInst) &lt;&lt; <span class="string">' '</span> &lt;&lt; mnemonic;</span><br><span class="line">    <span class="keyword">return</span> ss.str();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="compressed"><a href="#compressed" class="headerlink" title="compressed"></a>compressed</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">string</span> CompRegOp::generateDisassembly(Addr pc, <span class="keyword">const</span> SymbolTable *symtab) <span class="keyword">const</span> &#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">stringstream</span> ss;</span><br><span class="line">    ss &lt;&lt; mnemonic &lt;&lt; <span class="string">' '</span> &lt;&lt; registerName(_destRegIdx[<span class="number">0</span>]) &lt;&lt; <span class="string">", "</span> &lt;&lt;</span><br><span class="line">        registerName(_srcRegIdx[<span class="number">0</span>]);</span><br><span class="line">    <span class="keyword">return</span> ss.str();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="unknown"><a href="#unknown" class="headerlink" title="unknown"></a>unknown</h3><p>未知指令，最简单的一个文件</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Unknown(MachInst _machInst) : RiscvStaticInst(<span class="string">"unknown"</span>, _machInst, No_OpClass)&#123;&#125;</span><br><span class="line"><span class="function">Fault <span class="title">execute</span><span class="params">(ExecContext *, Trace::InstRecord *)</span> <span class="keyword">const</span> <span class="keyword">override</span></span></span><br><span class="line"><span class="function"></span>&#123; <span class="keyword">return</span> <span class="built_in">std</span>::make_shared&lt;UnknownInstFault&gt;(); &#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">string</span></span><br><span class="line">generateDisassembly(Addr pc, <span class="keyword">const</span> SymbolTable *symtab) <span class="keyword">const</span> <span class="keyword">override</span></span><br><span class="line">&#123; <span class="keyword">return</span> csprintf(<span class="string">"unknown opcode %#02x"</span>, OPCODE); &#125;    <span class="comment">//直接打印未知操作码</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="RiscvStaticInst层次"><a href="#RiscvStaticInst层次" class="headerlink" title="RiscvStaticInst层次"></a>RiscvStaticInst层次</h2><ul>
+<li>RiscvStaticInst : StaticInst<ul>
+<li>RiscvMarcoInst<ul>
+<li>AtomicMemOp</li>
+</ul>
+</li>
+<li>RiscvMicroInst<ul>
+<li>AtomicMemOpMicro</li>
+</ul>
+</li>
+<li>Unknown</li>
+<li>RegOp</li>
+<li>ImmOp</li>
+<li>SystemOp</li>
+<li>CSROp</li>
+<li>MemInst<ul>
+<li>Load</li>
+<li>Store</li>
+<li>LoadReserved</li>
+<li>StoreCond</li>
+</ul>
+</li>
+<li>CompRegOp</li>
+</ul>
+</li>
+</ul>
+<h2 id="ExtMachInst"><a href="#ExtMachInst" class="headerlink" title="ExtMachInst"></a>ExtMachInst</h2><p>对机器指令进行二进制层次上的扩展之后的指令</p>
+<p>在RISCV中不使用</p>
+<h1 id="DynInst"><a href="#DynInst" class="headerlink" title="DynInst"></a>DynInst</h1><p>取指过程中，从内存中取出机器指令。二进制指令在流水线中被反编译成StaticInst，将StaticInst和运行时信息包装起来即为DynInst，最后的执行阶段也是对DynInst进行执行</p>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/03/26/chuwi-system/">平板刷系统攻略</a>
+            
+            
+            <a class="next" rel="next" href="/2018/03/21/linux-mem-area/">linux内存中的各区域</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

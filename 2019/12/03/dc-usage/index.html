@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>synopsys design compiler上手 | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">synopsys design compiler上手</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十二月 3, 2019&nbsp;&nbsp;16:33:59</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/">工具使用</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>用了 design compiler 有一段时间了，虽然水平还是入门阶段，但是对我而言会基本操作就足够了。<br>总结下用法，等以后忘了的时候看看。</p>
+<ol>
+<li>运行<code>dc_shell</code>进入 dc 交互界面</li>
+<li>进行相关配置，手动输入或运行前在用户主目录或输入命令的目录写一个配置脚本，运行后会自动配置。<br>脚本的名称为<code>.synopsys_dc.setup</code><ul>
+<li>set search_path {. /opt/synopsys/LIB}</li>
+<li>set target_library { xx.db}</li>
+<li>set link_library {* xx.db}</li>
+</ul>
+</li>
+<li><code>read_verilog {design1.v, design2.v}</code></li>
+<li><code>current_design design2</code></li>
+<li><code>link</code></li>
+<li><code>create_clock clk -period 0.5</code> …设置时钟和约束约束，相关的还有<ul>
+<li><code>set_switching_activity -base_clock clk -toggle 0 -static 0 en</code></li>
+<li><code>set_case_analysis 1 sig</code></li>
+<li>把这两个命令应用于输入端口或输出端口可以消除下面两个 warning</li>
+<li><code>Design has unannotated primary inputs</code></li>
+<li><code>Design has unannotated sequential cell outputs.</code></li>
+</ul>
+</li>
+<li><code>compile</code></li>
+<li><code>check_design</code>检查一下设计</li>
+<li><code>report_constraints</code>看是否满足约束</li>
+<li><code>report_timing</code> <code>report_area</code> <code>report_power</code> 查看输出</li>
+</ol>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/12/06/vim-setup/">vim配置备份</a>
+            
+            
+            <a class="next" rel="next" href="/2019/12/03/m2s-segfault/">修改m2s时遇到段错误的解决方法</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

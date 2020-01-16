@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>有关重装系统 | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">有关重装系统</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">三月 2, 2018&nbsp;&nbsp;15:54:36</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>最早开始装系统的时候，使用一键ghost这种，虽然不懂但是还是跟着网上的教程重装了下来，然而至今对这种gho文件不了解，也不知道PE装系统是什么东西，也很不理解为什么网上对装系统玩了这么多的花样。大概唯一合理的解释就是做系统的人在系统文件中装了推广，或者在系统后台弄了什么常驻程序，刷流量等等，或者是当肉鸡，偷隐私？反正他们对系统想做什么就做什么。</p>
+<p>之后学会了用光盘烧录工具在u盘做启动盘。这种做法应该说是比较通用的。选择的系统原盘都会从“我告诉你”上面下载，大家公认这个网站保存了windows原版镜像，对于linux直接进官网就能下载。做好了启动盘以后，在bios修改启动顺序，或者开机到进系统间按某个键，选择从u盘启动。工具的作用无非就是让u盘里的文件具有启动功能，可以用电脑直接在u盘启动。这个做法是正常的做法。</p>
+<p>最近做了win7启动盘，从setup.exe这个文件中冒出了一个大胆的想法，由此偶然发现windows系统重装实际上很简单。这种简单的做法适用于<strong>windows重装位数相同windows</strong>，实际上从网上下载来的系统原盘iso，直接解压就能得到和启动盘里面差不多的文件，唯一不同的是不具备直接启动的功能。将解压后的文件放到非系统盘中，运行setup.exe，不要格式化这个文件所在的分区，就可以简单的重装系统了。</p>
+<p>所以这种做法的要满足的条件是：</p>
+<ul>
+<li>原来是windows，要重装的也是windows</li>
+<li>原来是32（或64）位，要重装32（或64）位</li>
+<li>电脑中不只是有一个分区（除了系统所在分区还有分区）</li>
+</ul>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/03/03/vscode/">vscode配置记录</a>
+            
+            
+            <a class="next" rel="next" href="/2018/02/16/git/">git使用指南</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>阅读笔记-流水线基础知识 | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">阅读笔记-流水线基础知识</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十一月 14, 2017&nbsp;&nbsp;16:43:36</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">体系结构</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>一台计算机的性能由三个关键因素决定：指令数目，时钟周期，CPI</p>
+<p>编译器和指令集决定一个程序所需的指令数目</p>
+<p>处理器的实现指令的方式决定了时钟周期和CPI</p>
+<p>所有类型的指令在读取寄存器后，都要使用ALU</p>
+<p><strong>数据通路部件</strong>：处理器中用来操作或保存数据的功能单元。包括指令和数据存储器，寄存器堆，ALU以及加法器</p>
+<p><strong>程序技术器PC</strong>：保存程序正在执行的指令地址的寄存器。对于跳转指令的PC计算，以当前指令的下一条指令（PC+4）为基准加偏移量</p>
+<p>多周期实现：将一条指令的执行分解为一系列步骤，可以使用流水线重叠处理指令</p>
+<h2 id="流水线"><a href="#流水线" class="headerlink" title="流水线"></a>流水线</h2><p><strong>指令级并行的开发</strong></p>
+<ul>
+<li>依靠<strong>硬件</strong>来<strong>动态</strong>发现和开发并行</li>
+<li>依靠<strong>软件</strong>在编译时<strong>静态</strong>发现并行</li>
+</ul>
+<p>静态流水线：</p>
+<p>​    指令的执行顺序在编译阶段就已经确定，硬件不对指令的执行顺序进行动态调整</p>
+<p>​    包含一些基本的机制：流水线阻塞，数据前递，清空流水线</p>
+<p>​    主要靠编译器优化</p>
+<p><strong>超流水线/深度流水线</strong>：将五级流水中的某一部进行细化，进一步进行划分</p>
+<p>处理器的周期由流水线中执行最缓慢的那一个阶段确定,这个最缓慢的处理周期通常为一个处理器周期（或两个，很少见）</p>
+<p>流水线的设计者目的是平衡每条流水线的长度。理想状态下，使用流水线的时间 = 不使用流水线 / 流水级的数目</p>
+<p>如果流水线和非流水线的时钟周期相同，存储器系统要提供5倍的带宽（5级流水）</p>
+<p>流水线提高了CPU指令吞吐量</p>
+<p>流水线不能做的过长：开销变大，各级的协作变得困难</p>
+<p>流水线的开销包括两方面：寄存器延时和时钟偏差</p>
+<p>流水线可以缩短每条指令的执行时间，两个角度：</p>
+<ul>
+<li>CPI的下降</li>
+<li>时钟周期数的缩短</li>
+</ul>
+<h2 id="RISC指令集的基本知识"><a href="#RISC指令集的基本知识" class="headerlink" title="RISC指令集的基本知识"></a>RISC指令集的基本知识</h2><p>关键属性：</p>
+<ul>
+<li>所有数据操作都是作用于寄存器，通常会改变整个寄存器（32或64位）</li>
+<li>只有load和store会影响存储器</li>
+<li>指令格式的数目很少，通常所有的指令都是一个长度（四个字节）</li>
+</ul>
+<p>寄存器0的值总是0</p>
+<p>通常有三类指令：</p>
+<ul>
+<li>ALU指令：输入为两个寄存器，或者一个寄存器一个立即数，输出为一个寄存器</li>
+<li>载入存储指令：基址寄存器和偏移量（立即数）作为地址，寄存器作为输出的值或输入的值</li>
+<li>分支与跳转：<ul>
+<li>分支条件有两种：标志位（条件位），寄存器之间、寄存器与0比较（MIPS使用这种）</li>
+<li>分支的目的地：当前PC加偏移量</li>
+</ul>
+</li>
+</ul>
+<h2 id="RISC指令集的简单实现-五级流水"><a href="#RISC指令集的简单实现-五级流水" class="headerlink" title="RISC指令集的简单实现 五级流水"></a>RISC指令集的简单实现 五级流水</h2><ol>
+<li><strong>指令提取周期 IF</strong>：<ul>
+<li>使用PC在icache中读取指令，PC+4（需要一个加法器）</li>
+<li>IR保存指令，NPC保存下一条指令的地址</li>
+</ul>
+</li>
+<li><strong>指令译码、寄存器提取周期 ID</strong>：<ul>
+<li>指令译码，从寄存器堆中取出源寄存器，进行相等测试判断是否为分支，对偏移量进行符号拓展，计算出可能的分支目标地址（需要一个加法器）。在这一阶段有可能会改变PC</li>
+<li>从rs，rt读取寄存器的值，存储在临时寄存器A和B中</li>
+<li>IR的低16位进行符号拓展，作为立即数存储在临时寄存器Imm中</li>
+<li>指令译码和寄存器提取是并行执行的，这是因为在RISC指令中，rs和rt的位置固定</li>
+</ul>
+</li>
+<li><strong>执行/有效地址周期 EX</strong>：<ul>
+<li>Load Store：将基址寄存器和偏移地址结合形成有效地址，A+Imm作为ALU的输出</li>
+<li>ALU指令：执行ALU操作码指定的操作（两个寄存器，或寄存器和扩展的立即数）</li>
+<li>分支：输出分支目标地址NPC+（Imm&lt;&lt;2），确定判断条件Cond&lt;-（A==0）（或其他判断）</li>
+<li>上面三种操作中进行一个（RISC中不会同时发生），结果放在ALUOutput寄存器中</li>
+</ul>
+</li>
+<li><strong>存储器访问 MEM</strong>：<ul>
+<li>对所有指令更新PC，PC&lt;-NPC</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li>Load：使用 有效地址 ， 从存储器中读出数据。LMD（load memory data）&lt;-Mem[ALUOutput]</li>
+<li>Store：使用有效地址，将寄存器中的数据写入存储器中。 Mem[ALUOutput]&lt;-B</li>
+<li>分支：if（cond） PC&lt;-ALUOutput</li>
+</ul>
+<ol>
+<li><strong>写回周期 WB</strong>：将结果（来自load或者ALU）写回寄存器堆中<ul>
+<li>目的寄存器（三个寄存器指令中的rd，两个寄存器一个立即数指令中的rt）&lt;-ALUOuput</li>
+<li>Load：Regs[rt]&lt;-LMD</li>
+</ul>
+</li>
+</ol>
+<p>分离缓存，避免了取指和取数据的冲突</p>
+<p>需要确保：</p>
+<ul>
+<li>不会在相同时间访问同一个硬件资源</li>
+<li>不同级的流水指令不会相互干扰（引入流水线寄存器：本级的输出、下级的输入，利用了边沿触发特性，跨级传输数据）</li>
+</ul>
+<h2 id="流水线的主要阻碍：流水线冒险"><a href="#流水线的主要阻碍：流水线冒险" class="headerlink" title="流水线的主要阻碍：流水线冒险"></a>流水线的主要阻碍：流水线冒险</h2><ul>
+<li>结构冒险：硬件无法同时满足两个重叠指令的硬件资源</li>
+<li>数据冒险：一条指令取决于上一个指令的结果</li>
+<li>控制冒险：改变程序计数器的指令可能会造成控制冒险</li>
+</ul>
+<p>冒险会造成流水线停顿</p>
+<h3 id="结构冒险"><a href="#结构冒险" class="headerlink" title="结构冒险"></a>结构冒险</h3><p>避免结构冒险需要设计新的硬件结构，如果某些结构冒险很少见，就不必添加新的资源解决它</p>
+<h3 id="数据冒险"><a href="#数据冒险" class="headerlink" title="数据冒险"></a>数据冒险</h3><p>数据冒险的解决方法之一：</p>
+<p><strong>利用数据转发（forwarding）技术，也成为旁路或者短路，这是一种简单的硬件技术</strong></p>
+<ol>
+<li>将 EX/MEM或MEM/WB内的结果反馈回ALU的输入端</li>
+<li>转发硬件判断如果这条指令的目的寄存器是下条指令的源寄存器，则选择该反馈回去的值为ALU输入</li>
+</ol>
+<ul>
+<li>两条指令间有中断，或者第二条指令赞同，转发不会生效</li>
+<li>局限性：不可能解决时间上的倒退</li>
+</ul>
+<h3 id="分支冒险"><a href="#分支冒险" class="headerlink" title="分支冒险"></a>分支冒险</h3><p>如果ID判断指令为分支指令，如果选中分支，在ID的末尾阶段会改变PC的值，导致下一条指令的IF延后一个周期</p>
+<ul>
+<li>处理分支的最简单方法是 冻结或冲刷流水线，保留或删除分支之后的所有指令，直到知道分支的目标为止：当在ID发现分支时，停止之后的所有指令，等待本条指令继续执行确定是否进行PC修改，再进行之后的操作</li>
+<li>稍微复杂些的解决方法是：将所有分支都看作未选中，假定分支不执行。复杂性在于 如何保证CPU状态不会改变，或者知道如何撤销已经进行的改变</li>
+<li>或者看作选中，这种适用于分支条件更强大的处理器中</li>
+<li><strong>延迟分支</strong>：继续执行一条指令（这条指令有编译器进行规划调整，不能是分支跳转指令），如果判断未选中就继续执行，选中则跳转目标。局限性在于：这条插入的指令有限制，在编译时预测一个分支是否会执行的判断有限。引入了一种取消或废除指令，如果判断错误，将此指令转为空操作</li>
+</ul>
+<p>流水线越深，分支的潜在代价增加时，延迟分支不够用了，这时要采用更加积极的方法，分为两种</p>
+<ul>
+<li>静态分支预测：依赖编译期的信息</li>
+<li>动态分支预测：依赖硬件</li>
+</ul>
+<h4 id="动态分支预测"><a href="#动态分支预测" class="headerlink" title="动态分支预测"></a>动态分支预测</h4><p><strong>分支预测缓冲区（分支历史表）</strong>：最简单的动态分支预测</p>
+<p>是一个小型存储器，根据分支地址的地位作为索引，包含一个位，记录该分支最近是否被选中</p>
+<p>一位的缺点：如果有一次未选中，一位会导致两次分支预测错误</p>
+<p>采用两位：当两次错误的时候才进行修改。研究表明，两位的效果与更多位的效果相同</p>
+<p><strong>延迟</strong>：生成结果的指令，与使用这个结果的指令，的最小时间间隔数</p>
+<p><strong>启动间隔/重复间隔</strong>：发出两个给定类型的操作间必须间隔的周期数</p>
+<p><strong>记分板：</strong>当流水线停止时，用来发射与执行指令不依赖其他的指令，和冒险检测任务</p>
+<h2 id="多发射"><a href="#多发射" class="headerlink" title="多发射"></a>多发射</h2><p>取指令部件和指令译码部件只各设置一套，而操作部件可以只设置一个多功能操作部件，也可以设置多个独立的操作部件。例如，定点算术逻辑部件ALU、取数存数部件LSU、浮点加法部件FAD、乘除法部件MDU等。</p>
+<h3 id="静态多发射："><a href="#静态多发射：" class="headerlink" title="静态多发射："></a>静态多发射：</h3><p>通过发射包（issue packet）发射多个指令</p>
+<p><strong>超长指令字VLIW</strong>：一类可以同时启动多个操作的指令集，操作在单个指令中相互独立，并且一般有独立的操作码字段</p>
+<h3 id="超标量-superscalar（动态多发射处理器-超标量处理器）"><a href="#超标量-superscalar（动态多发射处理器-超标量处理器）" class="headerlink" title="超标量 superscalar（动态多发射处理器/超标量处理器）"></a>超标量 superscalar（动态多发射处理器/超标量处理器）</h3><p>一个处理器内核使用指令级并行实现更高的CPU吞吐率</p>
+<p>使用多条流水线，每个周期可以发射（issue）多条指令</p>
+<p><strong>标量处理器 Scalar Processor</strong></p>
+<p>每条指令对应一个标量数据元素进行操作</p>
+<p><strong>动态多发射处理器/超标量：</strong></p>
+<p>与静态的超长指令字处理器不同的是，不管代码是否经过调度，都是由硬件来保证执行的正确性，并且代码正确执行，指令发射速率和处理器的流水线结构无关</p>
+<p>扩展了基本的动态发射决策，将动态流水线调度（对指令进行重排序以避免阻塞的硬件支持）也包含在内</p>
+<p>在这种处理器中，流水线被划分为三个主要单元</p>
+<ol>
+<li>取指与发射单元（fetch issue）：取指并译码，将每条指令发送到对应的功能单元</li>
+<li>多个功能单元（function unit）：每个功能单元都有一个<strong>保留站</strong>（reservation station缓冲区，用来保存操作数和操作），功能单元就绪后，结果被计算出来，发送给等待该结果的保留站和提交单元</li>
+<li>提交单元（commit）：缓存这个结果，确定安全时再将这个结果写回寄存器堆或存储器。提交单元的缓冲区被称为<strong>重排列缓冲区</strong>（reorder buffer，也可以用来提供操作数，工作方式类似于静态调度流水线中的旁路逻辑）</li>
+</ol>
+<p>这种动态调度流水线的执行方式是<strong>乱序执行</strong>的</p>
+<p>动态调度的乱序处理器：包含推测执行，分支预测</p>
+<p><strong>顺序提交</strong>：执行的结果以取指顺序写回程序员可见寄存器的一种提交方式</p>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2017/12/21/arch-basic/">阅读笔记-体系结构基础知识</a>
+            
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

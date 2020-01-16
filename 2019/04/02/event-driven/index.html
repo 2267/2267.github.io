@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>事件驱动型模型 | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">事件驱动型模型</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">四月 2, 2019&nbsp;&nbsp;14:31:27</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E6%A8%A1%E6%8B%9F%E5%99%A8/">体系结构模拟器</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>在研究Gem5，Multi2Sim等Cycle-accurate的体系结构模拟器源代码时，发现他们都采用了事件驱动型编程模型（event-driven）。事实上，事件驱动是一种很常见的模型，比较普遍的应用在GUI上，即当用户进行点击或输入时，程序会进行对应的操作。根据描述，推测事件驱动模型需要一个主循环不断的进行监听。</p>
+<p>在这里列出Multi2Sim的有关事件驱动的源代码。体系结构模拟器是对计算机各个组成部分进行模拟，故对于各个组成部分，都需要在主循环中调用监听的函数</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/lib/esim</span></span><br><span class="line"><span class="keyword">void</span> Engine::ProcessEvents()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="comment">// Check for SIGINT signal</span></span><br><span class="line">    <span class="comment">// 收到 Ctrl-C时停止循环</span></span><br><span class="line">	<span class="keyword">if</span> (signal_received == SIGINT)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">std</span>::<span class="built_in">cerr</span> &lt;&lt; <span class="string">"\nSignal SIGINT received\n"</span>;</span><br><span class="line">		Finish(<span class="string">"Signal"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// Process events scheduled for this cycle</span></span><br><span class="line">    <span class="comment">// 处理当前周期要处理的event</span></span><br><span class="line">	<span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// No more elements in heap</span></span><br><span class="line">		<span class="keyword">if</span> (heap.size() == <span class="number">0</span>)                                 <span class="comment">//没有event，结束</span></span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Stop when we find the first event that should run in the</span></span><br><span class="line">		<span class="comment">// future.</span></span><br><span class="line">		<span class="keyword">if</span> (heap.top()-&gt;time &gt; current_time)                  <span class="comment">//如果下个要处理的任务时间未到</span></span><br><span class="line">			<span class="keyword">break</span>;                                            <span class="comment">//跳出循环</span></span><br><span class="line">		</span><br><span class="line">		<span class="comment">// Get frame from top of heap</span></span><br><span class="line">		assert(current_frame == <span class="literal">nullptr</span>);</span><br><span class="line">		current_frame = heap.top();                           <span class="comment">//获取frame</span></span><br><span class="line">		assert(current_frame-&gt;in_heap);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Remove frame from the heap</span></span><br><span class="line">		heap.pop();</span><br><span class="line">		current_frame-&gt;in_heap = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Debug</span></span><br><span class="line">		Event *event = current_frame-&gt;event;                   <span class="comment">//获取event</span></span><br><span class="line">		FrequencyDomain *frequency_domain = event-&gt;getFrequencyDomain();</span><br><span class="line">		debug &lt;&lt; misc::fmt(<span class="string">"[%.2fns] Event '%s/%s' triggered\n"</span>,</span><br><span class="line">				(<span class="keyword">double</span>) current_time / <span class="number">1000</span>,</span><br><span class="line">				frequency_domain-&gt;getName().c_str(),</span><br><span class="line">				event-&gt;getName().c_str());</span><br><span class="line"></span><br><span class="line">		<span class="comment">// The event is being run, so decrement the number of in-flight</span></span><br><span class="line">		<span class="comment">// events of its type.</span></span><br><span class="line">		event-&gt;decInFlight();</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Run event handler</span></span><br><span class="line">        <span class="comment">// 处理event</span></span><br><span class="line">		EventHandler event_handler = event-&gt;getEventHandler();</span><br><span class="line">		event_handler(event, current_frame.get());</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Reschedule if it is periodic</span></span><br><span class="line">        <span class="comment">// 周期型则继续schedule</span></span><br><span class="line">		<span class="keyword">int</span> period = current_frame-&gt;period;</span><br><span class="line">		<span class="keyword">if</span> (period &gt; <span class="number">0</span>)</span><br><span class="line">			Schedule(event, current_frame, period, period);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Free frame</span></span><br><span class="line">		current_frame = <span class="literal">nullptr</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// Next simulation cycle</span></span><br><span class="line">	current_time += shortest_cycle_time;</span><br><span class="line">    <span class="comment">// 增加记录仿真时间的变量</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/m2s.cc</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MainLoop</span><span class="params">()</span>                <span class="comment">//仿真的主要过程，由main函数调用，在必要初始化后</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">// Activate signal handler</span></span><br><span class="line">	esim::Engine *esim = esim::Engine::getInstance();   <span class="comment">// 获取仿真的engine</span></span><br><span class="line">	esim-&gt;EnableSignals();</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Get singletons</span></span><br><span class="line">	comm::ArchPool *arch_pool = comm::ArchPool::getInstance();</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Simulation loop</span></span><br><span class="line">	<span class="keyword">while</span> (!esim-&gt;hasFinished())                        <span class="comment">//仿真主循环</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// Run iteration for all architectures. This function returns</span></span><br><span class="line">		<span class="comment">// the number of architectures actively running emulation, as</span></span><br><span class="line">		<span class="comment">// well as the number of architectures running an active timing</span></span><br><span class="line">		<span class="comment">// simulation.</span></span><br><span class="line">		<span class="keyword">int</span> num_active_emulators;</span><br><span class="line">		<span class="keyword">int</span> num_active_timing_simulators;</span><br><span class="line">		arch_pool-&gt;Run(num_active_emulators,</span><br><span class="line">				num_active_timing_simulators);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Event-driven simulation. Only process events and advance to</span></span><br><span class="line">		<span class="comment">// next global simulation cycle if any architecture performed a</span></span><br><span class="line">		<span class="comment">// useful timing simulation.</span></span><br><span class="line">		<span class="keyword">if</span> (num_active_timing_simulators)</span><br><span class="line">			esim-&gt;ProcessEvents();</span><br><span class="line"></span><br><span class="line">		<span class="comment">// If neither functional nor timing simulation was performed for</span></span><br><span class="line">		<span class="comment">// any architecture, it means that all guest contexts finished</span></span><br><span class="line">		<span class="comment">// execution - simulation can end.</span></span><br><span class="line">		<span class="keyword">if</span> (!num_active_emulators &amp;&amp; !num_active_timing_simulators)</span><br><span class="line">			esim-&gt;Finish(<span class="string">"ContextsFinished"</span>);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Count loop iterations, and check for limit in simulation time</span></span><br><span class="line">		<span class="comment">// only every 128k iterations. This avoids a constant overhead</span></span><br><span class="line">		<span class="comment">// of system calls.</span></span><br><span class="line">		m2s_loop_iterations++;</span><br><span class="line">		<span class="keyword">if</span> (m2s_max_time &gt; <span class="number">0</span></span><br><span class="line">				&amp;&amp; !(m2s_loop_iterations &amp; ((<span class="number">1</span> &lt;&lt; <span class="number">17</span>) - <span class="number">1</span>))</span><br><span class="line">				&amp;&amp; esim-&gt;getRealTime() &gt; m2s_max_time * <span class="number">1000000</span>)</span><br><span class="line">			esim-&gt;Finish(<span class="string">"MaxTime"</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Process all remaining events</span></span><br><span class="line">	esim-&gt;ProcessAllEvents();                 <span class="comment">//结束仿真后处理剩余event</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Restore default signal handlers</span></span><br><span class="line">	esim-&gt;DisableSignals();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/04/12/ubuntu-setup/">ubuntu安装后美化配置记录</a>
+            
+            
+            <a class="next" rel="next" href="/2019/01/25/hexo/">hexo使用、配置记录</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

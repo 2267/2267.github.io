@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>risc-v整理 | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">risc-v整理</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">一月 27, 2018&nbsp;&nbsp;11:03:52</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">体系结构</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>笔记记录比较混乱</p>
+<p>自制手册：</p>
+<table>
+<thead>
+<tr>
+<th><strong>操作码</strong></th>
+<th><strong>含义</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>lb,  lbu, sb</td>
+<td>寄存器和存储器间的字节传送（8位）</td>
+</tr>
+<tr>
+<td>lh,  lhu, sh</td>
+<td>半字传送（16位）</td>
+</tr>
+<tr>
+<td>lw,  lwu, sw</td>
+<td>字传送（32位）</td>
+</tr>
+<tr>
+<td>ld,  sd</td>
+<td>双字传送（64位）</td>
+</tr>
+<tr>
+<td>add,  addi, addw, addiw</td>
+<td>加法</td>
+</tr>
+<tr>
+<td>sub,  subi, subw, subiw</td>
+<td>减法</td>
+</tr>
+<tr>
+<td>slt,  sltu, slti, sltiu</td>
+<td>如果小于则置1</td>
+</tr>
+<tr>
+<td>and,  or, xor,  andi,  ori, xori</td>
+<td>与、或、异或</td>
+</tr>
+<tr>
+<td>lui</td>
+<td>取立即数高位，立即数以有符号扩展的方式存储在寄存器的12-31这20位中，其余为0</td>
+</tr>
+<tr>
+<td>auipc</td>
+<td>将立即数和PC的高20位相加保存在寄存器中，  用于建立到32位地址的分支</td>
+</tr>
+<tr>
+<td>sll,  slli, sllw, slliw</td>
+<td>逻辑左移</td>
+</tr>
+<tr>
+<td>srl,  srli, srll, srliw,  sra, srai,  sral, sraiw</td>
+<td>逻辑右移、算数右移</td>
+</tr>
+<tr>
+<td>mul,  mulw, mulh, mulhsu, mulhu</td>
+<td>整数乘法</td>
+</tr>
+<tr>
+<td>div,  divw, divu</td>
+<td>整数除法</td>
+</tr>
+<tr>
+<td>rem,  remu, remw, remuw</td>
+<td>整数除法求余数</td>
+</tr>
+<tr>
+<td>beq,  bne, blt, bge, bltu, bgeu</td>
+<td>条件分支</td>
+</tr>
+<tr>
+<td>jal,  jalr</td>
+<td>无条件跳转</td>
+</tr>
+<tr>
+<td>flw,  fld, fsw, fsd</td>
+<td>读取、存储单精度/双精度</td>
+</tr>
+<tr>
+<td>fadd,  fsub, fmult, fdiv, fsqrt</td>
+<td>浮点加减乘除平方根，指令后面加.s或.d，表示单精度和双精度操作，例如：fadd.s, fadd.d，下同</td>
+</tr>
+<tr>
+<td>fmadd,  fmsub, fnmadd, fnmsub</td>
+<td>混合乘加/积和熔加运算,混合乘减，  以及这两个的取消运算</td>
+</tr>
+<tr>
+<td>fmin,  fmax  fsgn,  fsgnj, fsgnjx, fsgnjn</td>
+<td>最小，最大，替换符号位的指令。</td>
+</tr>
+<tr>
+<td>feq, flt, fle</td>
+<td>浮点比较，结果为0或1，保存在浮点寄存器中</td>
+</tr>
+<tr>
+<td>fmv.x.*,  fmv.*.x</td>
+<td>浮点寄存器和通用寄存器间的传送  “*”是s或者d</td>
+</tr>
+<tr>
+<td>fcvt.*.l,  fcvt.l.*,   fcvt.*.lu,  fcvt.lu.*,   fcvt.*.w,  fcvt.w.*,   fcvt.*.wu,  fcvt.wu.*</td>
+<td>浮点寄存器和整数寄存器之间的转换  “*”是s或者d</td>
+</tr>
+</tbody></table>
+<p>自制手册2：</p>
+<p>命令行参数：参照binutils文档</p>
+<p>寄存器类型：</p>
+<ul>
+<li>包含pc的通用寄存器</li>
+<li>浮点寄存器</li>
+<li>控制寄存器</li>
+<li>向量寄存器</li>
+</ul>
+<p>通用寄存器： <code>x0</code> 到 <code>x31</code>，外加<code>PC</code></p>
+<p>在汇编中使用的名字为<strong>application binary interface (ABI)</strong> </p>
+<p>如果想在反汇编中看到原始的寄存器数字名称，加 <code>-M</code> </p>
+<table>
+<thead>
+<tr>
+<th align="center">Register</th>
+<th align="left">ABI</th>
+<th align="left">Use by convention</th>
+<th>Preserved?</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">x0</td>
+<td align="left">zero</td>
+<td align="left">硬件连接到零</td>
+<td><em>n/a</em></td>
+</tr>
+<tr>
+<td align="center">x1</td>
+<td align="left">ra</td>
+<td align="left">跳转后的返回地址值</td>
+<td>no</td>
+</tr>
+<tr>
+<td align="center">x2</td>
+<td align="left">sp</td>
+<td align="left">栈指针</td>
+<td>yes</td>
+</tr>
+<tr>
+<td align="center">x3</td>
+<td align="left">gp</td>
+<td align="left">全局指针</td>
+<td><em>n/a</em></td>
+</tr>
+<tr>
+<td align="center">x4</td>
+<td align="left">tp</td>
+<td align="left">线程指针</td>
+<td><em>n/a</em></td>
+</tr>
+<tr>
+<td align="center">x5</td>
+<td align="left">t0</td>
+<td align="left">temporary register 0</td>
+<td>no</td>
+</tr>
+<tr>
+<td align="center">x6</td>
+<td align="left">t1</td>
+<td align="left">temporary register 1</td>
+<td>no</td>
+</tr>
+<tr>
+<td align="center">x7</td>
+<td align="left">t2</td>
+<td align="left">temporary register 2</td>
+<td>no</td>
+</tr>
+<tr>
+<td align="center">x8</td>
+<td align="left">s0 <em>or</em> fp</td>
+<td align="left">saved register 0 <em>or</em> frame pointer</td>
+<td>yes</td>
+</tr>
+<tr>
+<td align="center">x9</td>
+<td align="left">s1</td>
+<td align="left">saved register 1</td>
+<td>yes</td>
+</tr>
+<tr>
+<td align="center">x10</td>
+<td align="left">a0</td>
+<td align="left">return value <em>or</em> function argument 0</td>
+<td>no</td>
+</tr>
+<tr>
+<td align="center">x11</td>
+<td align="left">a1</td>
+<td align="left">return value <em>or</em> function argument 1</td>
+<td>no</td>
+</tr>
+<tr>
+<td align="center">x12</td>
+<td align="left">a2</td>
+<td align="left">function argument 2</td>
+<td>no</td>
+</tr>
+<tr>
+<td align="center">x13</td>
+<td align="left">a3</td>
+<td align="left">function argument 3</td>
+<td>no</td>
+</tr>
+<tr>
+<td align="center">x14</td>
+<td align="left">a4</td>
+<td align="left">function argument 4</td>
+<td>no</td>
+</tr>
+<tr>
+<td align="center">x15</td>
+<td align="left">a5</td>
+<td align="left">function argument 5</td>
+<td>no</td>
+</tr>
+<tr>
+<td align="center">x16</td>
+<td align="left">a6</td>
+<td align="left">function argument 6</td>
+<td>no</td>
+</tr>
+<tr>
+<td align="center">x17</td>
+<td align="left">a7</td>
+<td align="left">function argument 7</td>
+<td>no</td>
+</tr>
+<tr>
+<td align="center">x18</td>
+<td align="left">s2</td>
+<td align="left">saved register 2</td>
+<td>yes</td>
+</tr>
+<tr>
+<td align="center">x19</td>
+<td align="left">s3</td>
+<td align="left">saved register 3</td>
+<td>yes</td>
+</tr>
+<tr>
+<td align="center">x20</td>
+<td align="left">s4</td>
+<td align="left">saved register 4</td>
+<td>yes</td>
+</tr>
+<tr>
+<td align="center">x21</td>
+<td align="left">s5</td>
+<td align="left">saved register 5</td>
+<td>yes</td>
+</tr>
+<tr>
+<td align="center">x22</td>
+<td align="left">s6</td>
+<td align="left">saved register 6</td>
+<td>yes</td>
+</tr>
+<tr>
+<td align="center">x23</td>
+<td align="left">s7</td>
+<td align="left">saved register 6</td>
+<td>yes</td>
+</tr>
+<tr>
+<td align="center">x24</td>
+<td align="left">s8</td>
+<td align="left">saved register 8</td>
+<td>yes</td>
+</tr>
+<tr>
+<td align="center">x25</td>
+<td align="left">s9</td>
+<td align="left">saved register 9</td>
+<td>yes</td>
+</tr>
+<tr>
+<td align="center">x26</td>
+<td align="left">s10</td>
+<td align="left">saved register 10</td>
+<td>yes</td>
+</tr>
+<tr>
+<td align="center">x27</td>
+<td align="left">s11</td>
+<td align="left">saved register 11</td>
+<td>yes</td>
+</tr>
+<tr>
+<td align="center">x28</td>
+<td align="left">t3</td>
+<td align="left">temporary register 3</td>
+<td>no</td>
+</tr>
+<tr>
+<td align="center">x29</td>
+<td align="left">t4</td>
+<td align="left">temporary register 4</td>
+<td>no</td>
+</tr>
+<tr>
+<td align="center">x30</td>
+<td align="left">t5</td>
+<td align="left">temporary register 5</td>
+<td>no</td>
+</tr>
+<tr>
+<td align="center">x31</td>
+<td align="left">t6</td>
+<td align="left">temporary register 6</td>
+<td>no</td>
+</tr>
+<tr>
+<td align="center">pc</td>
+<td align="left"><em>(none)</em></td>
+<td align="left">program counter</td>
+<td><em>n/a</em></td>
+</tr>
+</tbody></table>
+<p>上图中的no（function argument，temporary register）由调用者负责保存，被调用者直接使用</p>
+<p>yes（saved register）由被调用者保存，也就是每次调用后要将原来的值存储在栈中，放置别的调用函数调用出错。也就是调用者可以直接使用</p>
+<p>在函数中调用函数时，要注意在栈上保存：输入参数、返回地址、saved register、局部变量</p>
+<p>调用过程的步骤：</p>
+<ol>
+<li>将传入参数放置在a0-a7中</li>
+<li>将控制交给被调用的过程，将返回地址保存在ra中</li>
+<li>执行</li>
+<li>将返回值放置在a0和a1中</li>
+<li>将控制交回调用者，复原s1-s11</li>
+</ol>
+<h2 id="伪指令："><a href="#伪指令：" class="headerlink" title="伪指令："></a>伪指令：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">j &lt;label&gt;   #无条件跳转，这个语句没有保存返回地址</span><br><span class="line">jr ra       #使用寄存器+偏移返回调用者地址，即ret</span><br><span class="line"></span><br><span class="line">jal sum    #jump and line</span><br><span class="line">		#等同于</span><br><span class="line">addi ra, zero, (addr)</span><br><span class="line">j sum</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">li rd, 13 # 存入立即数 相当于addi rd, x0, 13</span><br><span class="line">la a0, msg # 将标记的地址存入</span><br><span class="line">mv rd, rs # addi rd, rs, 0</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<p>在riscv中：</p>
+<p>栈位于内存的高地址，向下生长（bfff_fff0hex），由sp指定</p>
+<p>Stack must be aligned on 16-byte boundary</p>
+<p>代码段之下的地址为预留区</p>
+<p>text segment代码段：位于低地址（0001_0000hex），由pc指定</p>
+<p>static data segment静态数据段（常数、静态变量）：位于代码段之上（1000_0000hex），由gp指定</p>
+<p>堆位于静态区之上向高地址生长</p>
+<p>The following table lists assembler directives:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Directive</th>
+<th align="left">Arguments</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">.align</td>
+<td align="left">integer</td>
+<td align="left">align to power of 2 (alias for .p2align)</td>
+</tr>
+<tr>
+<td align="left">.file</td>
+<td align="left">“filename”</td>
+<td align="left">emit filename FILE LOCAL symbol table</td>
+</tr>
+<tr>
+<td align="left">.globl</td>
+<td align="left">symbol_name</td>
+<td align="left">emit symbol_name to symbol table (scope GLOBAL)</td>
+</tr>
+<tr>
+<td align="left">.local</td>
+<td align="left">symbol_name</td>
+<td align="left">emit symbol_name to symbol table (scope LOCAL)</td>
+</tr>
+<tr>
+<td align="left">.comm</td>
+<td align="left">symbol_name,size,align</td>
+<td align="left">emit common object to .bss section</td>
+</tr>
+<tr>
+<td align="left">.common</td>
+<td align="left">symbol_name,size,align</td>
+<td align="left">emit common object to .bss section</td>
+</tr>
+<tr>
+<td align="left">.ident</td>
+<td align="left">“string”</td>
+<td align="left">accepted for source compatibility</td>
+</tr>
+<tr>
+<td align="left">.section</td>
+<td align="left">[{.text,.data,.rodata,.bss}]</td>
+<td align="left">emit section (if not present, default .text) and make current</td>
+</tr>
+<tr>
+<td align="left">.size</td>
+<td align="left">symbol, symbol</td>
+<td align="left">accepted for source compatibility</td>
+</tr>
+<tr>
+<td align="left">.text</td>
+<td align="left"></td>
+<td align="left">emit .text section (if not present) and make current</td>
+</tr>
+<tr>
+<td align="left">.data</td>
+<td align="left"></td>
+<td align="left">emit .data section (if not present) and make current</td>
+</tr>
+<tr>
+<td align="left">.rodata</td>
+<td align="left"></td>
+<td align="left">emit .rodata section (if not present) and make current</td>
+</tr>
+<tr>
+<td align="left">.bss</td>
+<td align="left"></td>
+<td align="left">emit .bss section (if not present) and make current</td>
+</tr>
+<tr>
+<td align="left">.string</td>
+<td align="left">“string”</td>
+<td align="left">emit string</td>
+</tr>
+<tr>
+<td align="left">.asciz</td>
+<td align="left">“string”</td>
+<td align="left">emit string (alias for .string)</td>
+</tr>
+<tr>
+<td align="left">.equ</td>
+<td align="left">name, value</td>
+<td align="left">constant definition</td>
+</tr>
+<tr>
+<td align="left">.macro</td>
+<td align="left">name arg1 [, argn]</td>
+<td align="left">begin macro definition \argname to substitute</td>
+</tr>
+<tr>
+<td align="left">.endm</td>
+<td align="left"></td>
+<td align="left">end macro definition</td>
+</tr>
+<tr>
+<td align="left">.type</td>
+<td align="left">symbol, @function</td>
+<td align="left">accepted for source compatibility</td>
+</tr>
+<tr>
+<td align="left">.option</td>
+<td align="left">{rvc,norvc,pic,nopic,push,pop}</td>
+<td align="left">RISC-V options</td>
+</tr>
+<tr>
+<td align="left">.byte</td>
+<td align="left"></td>
+<td align="left">8-bit comma separated words</td>
+</tr>
+<tr>
+<td align="left">.2byte</td>
+<td align="left">expression [, expression]*</td>
+<td align="left">16-bit comma separated words (unaligned)</td>
+</tr>
+<tr>
+<td align="left">.4byte</td>
+<td align="left">expression [, expression]*</td>
+<td align="left">32-bit comma separated words (unaligned)</td>
+</tr>
+<tr>
+<td align="left">.8byte</td>
+<td align="left">expression [, expression]*</td>
+<td align="left">64-bit comma separated words (unaligned)</td>
+</tr>
+<tr>
+<td align="left">.half</td>
+<td align="left">expression [, expression]*</td>
+<td align="left">16-bit comma separated words (naturally aligned)</td>
+</tr>
+<tr>
+<td align="left">.word</td>
+<td align="left">expression [, expression]*</td>
+<td align="left">32-bit comma separated words (naturally aligned)</td>
+</tr>
+<tr>
+<td align="left">.dword</td>
+<td align="left">expression [, expression]*</td>
+<td align="left">64-bit comma separated words (naturally aligned)</td>
+</tr>
+<tr>
+<td align="left">.dtprelword</td>
+<td align="left">expression [, expression]*</td>
+<td align="left">32-bit thread local word</td>
+</tr>
+<tr>
+<td align="left">.dtpreldword</td>
+<td align="left">expression [, expression]*</td>
+<td align="left">64-bit thread local word</td>
+</tr>
+<tr>
+<td align="left">.sleb128</td>
+<td align="left">expression</td>
+<td align="left">signed little endian base 128, DWARF</td>
+</tr>
+<tr>
+<td align="left">.uleb128</td>
+<td align="left">expression</td>
+<td align="left">unsigned little endian base 128, DWARF</td>
+</tr>
+<tr>
+<td align="left">.p2align</td>
+<td align="left">p2,[pad_val=0],max</td>
+<td align="left">align to power of 2</td>
+</tr>
+<tr>
+<td align="left">.balign</td>
+<td align="left">b,[pad_val=0]</td>
+<td align="left">byte align</td>
+</tr>
+<tr>
+<td align="left">.zero</td>
+<td align="left">integer</td>
+<td align="left">zero bytes</td>
+</tr>
+</tbody></table>
+<p>The following table lists assembler relocation expansions:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Assembler Notation</th>
+<th align="left">Description</th>
+<th align="left">Instruction / Macro</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">%hi(symbol)</td>
+<td align="left">Absolute (HI20)</td>
+<td align="left">lui</td>
+</tr>
+<tr>
+<td align="left">%lo(symbol)</td>
+<td align="left">Absolute (LO12)</td>
+<td align="left">load, store, add</td>
+</tr>
+<tr>
+<td align="left">%pcrel_hi(symbol)</td>
+<td align="left">PC-relative (HI20)</td>
+<td align="left">auipc</td>
+</tr>
+<tr>
+<td align="left">%pcrel_lo(label)</td>
+<td align="left">PC-relative (LO12)</td>
+<td align="left">load, store, add</td>
+</tr>
+<tr>
+<td align="left">%tprel_hi(symbol)</td>
+<td align="left">TLS LE “Local Exec”</td>
+<td align="left">auipc</td>
+</tr>
+<tr>
+<td align="left">%tprel_lo(label)</td>
+<td align="left">TLS LE “Local Exec”</td>
+<td align="left">load, store, add</td>
+</tr>
+<tr>
+<td align="left">%tprel_add(offset)</td>
+<td align="left">TLS LE “Local Exec”</td>
+<td align="left">add</td>
+</tr>
+</tbody></table>
+<h1 id="标记"><a href="#标记" class="headerlink" title="标记"></a>标记</h1><h2 id="文字标记"><a href="#文字标记" class="headerlink" title="文字标记"></a>文字标记</h2><p>用于分支、跳转、符号偏移量</p>
+<p>会加到编译器的symbol table模块中</p>
+<h2 id="数字标记"><a href="#数字标记" class="headerlink" title="数字标记"></a>数字标记</h2><p>用于本地引用，带有f后缀或者b后缀，表示向前引用还是向后引用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1:</span><br><span class="line">        j 1b</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="绝对地址"><a href="#绝对地址" class="headerlink" title="绝对地址"></a>绝对地址</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">.section .text</span><br><span class="line">.globl _start</span><br><span class="line">_start:</span><br><span class="line">	    lui a1,       %hi(msg)       # load msg(hi)</span><br><span class="line">	    addi a1, a1,  %lo(msg)       # load msg(lo)</span><br><span class="line">	    jalr ra, puts</span><br><span class="line">2:	    j 2b</span><br><span class="line"></span><br><span class="line">.section .rodata</span><br><span class="line">msg:</span><br><span class="line">	    .string &quot;Hello World\n&quot;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0000000000000000 &lt;_start&gt;:</span><br><span class="line">   0:	000005b7          	lui	a1,0x0</span><br><span class="line">			0: R_RISCV_HI20	msg</span><br><span class="line">   4:	00858593          	addi	a1,a1,8 # 8 &lt;.L21&gt;</span><br><span class="line">			4: R_RISCV_LO12_I	msg</span><br></pre></td></tr></table></figure>
+
+<h2 id="相对地址"><a href="#相对地址" class="headerlink" title="相对地址"></a>相对地址</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">.section .text</span><br><span class="line">.globl _start</span><br><span class="line">_start:</span><br><span class="line">1:	    auipc a1,     %pcrel_hi(msg) # load msg(hi)</span><br><span class="line">	    addi  a1, a1, %pcrel_lo(1b)  # load msg(lo)</span><br><span class="line">	    jalr ra, puts</span><br><span class="line">2:	    j 2b</span><br><span class="line"></span><br><span class="line">.section .rodata</span><br><span class="line">msg:</span><br><span class="line">	    .string &quot;Hello World\n&quot;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0000000000000000 &lt;_start&gt;:</span><br><span class="line">   0:	00000597          	auipc	a1,0x0</span><br><span class="line">			0: R_RISCV_PCREL_HI20	msg</span><br><span class="line">   4:	00858593          	addi	a1,a1,8 # 8 &lt;.L21&gt;</span><br><span class="line">			4: R_RISCV_PCREL_LO12_I	.L11</span><br></pre></td></tr></table></figure>
+
+
+
+<p>指令相关：</p>
+<p>字长word与数据总线有关，32位为4字节，64位为8字节</p>
+<p>存储器地址：对齐的数据调用更快</p>
+<p>要求对齐：ARM,MIPS</p>
+<p>不要求对齐：80x86</p>
+<p>riscv - compare and branch， 分支是比较的一部分</p>
+<p>80x86 - 使用标记位分支</p>
+<h2 id="RISC指令集的基本知识"><a href="#RISC指令集的基本知识" class="headerlink" title="RISC指令集的基本知识"></a>RISC指令集的基本知识</h2><p>关键属性：</p>
+<ul>
+<li>所有数据操作都是作用于寄存器，通常会改变整个寄存器（32或64位）</li>
+<li>只有load和store会影响存储器</li>
+<li>指令格式的数目很少，通常所有的指令都是一个长度（四个字节）</li>
+</ul>
+<p>寄存器0的值总是0</p>
+<p>通常有三类指令：</p>
+<ul>
+<li>ALU指令：输入为两个寄存器，或者一个寄存器一个立即数，输出为一个寄存器</li>
+<li>载入存储指令：基址寄存器和偏移量（立即数）作为地址，寄存器作为输出的值或输入的值</li>
+<li>分支与跳转：<ul>
+<li>分支条件有两种：标志位（条件位），寄存器之间、寄存器与0比较（MIPS使用这种）</li>
+<li>分支的目的地：当前PC加偏移量</li>
+</ul>
+</li>
+</ul>
+<h2 id="RISCV"><a href="#RISCV" class="headerlink" title="RISCV"></a>RISCV</h2><h3 id="指令集格式"><a href="#指令集格式" class="headerlink" title="指令集格式"></a>指令集格式</h3><h4 id="R-type-用于寄存器-shift-bitwise-arithmetic"><a href="#R-type-用于寄存器-shift-bitwise-arithmetic" class="headerlink" title="R-type 用于寄存器  shift,bitwise,arithmetic"></a>R-type 用于寄存器  shift,bitwise,arithmetic</h4><blockquote>
+<p>7bits     5bits     5bits     3bits     5bits     7bits</p>
+<p>funct7     rs2         rs1         funct3     rd         opcode</p>
+</blockquote>
+<ol>
+<li>opcode：操作码，这条指令的基本操作（包含了操作和指令格式的信息）</li>
+<li>rd：操作数，目的寄存器</li>
+<li>funct3：操作码的额外区域</li>
+<li>rs1：第一个源操作数寄存器</li>
+<li>rs2：第二个源操作数寄存器</li>
+<li>funct7：操作码的额外区域</li>
+</ol>
+<h4 id="I-type-用于立即数-以及ld-shifti…"><a href="#I-type-用于立即数-以及ld-shifti…" class="headerlink" title="I-type 用于立即数 以及ld,shifti…"></a>I-type 用于立即数 以及ld,shifti…</h4><p>addi这种包含常数/立即数的操作</p>
+<blockquote>
+<p>12bits         5bits     3bits     5bits     7bits</p>
+<p>immidiate     rs1         funct3     rd         opcode</p>
+</blockquote>
+<p>在这种格式下，如果寄存器超过32个，32位的指令将不够用，所以寄存器不是越多越好的</p>
+<p>对于ld，需要一个保存内存基址的寄存器（rs1），以及要保存读取的值的寄存器（rd）</p>
+<h4 id="S-type-用于存储"><a href="#S-type-用于存储" class="headerlink" title="S-type 用于存储"></a>S-type 用于存储</h4><blockquote>
+<p>7bits         5bits     5bits     3bits     5bits             7bits</p>
+<p>imm[11:5]    rs2         rs1         funct3     imm[4:0]         opcode</p>
+</blockquote>
+<p>保留了rs1 和 rs2，为了是格式相近更容易处理</p>
+<p>对于sd（store doubleworld）， 需要一个保存内存地址的基址的寄存器，和保存值要存的的寄存器，立即数为偏移量</p>
+<h2 id="U-type"><a href="#U-type" class="headerlink" title="U-type"></a>U-type</h2><h2 id="stored-program-concept"><a href="#stored-program-concept" class="headerlink" title="stored-program concept"></a>stored-program concept</h2><ol>
+<li>Instructions are represented as numbers. </li>
+<li>Programs are stored in memory to be read or written, just like data.</li>
+</ol>
+<h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><p>x10-x17：8个寄存器用来存放传给过程的参数，或者参数执行后的结果</p>
+<p>(通常为)x1：返回地址寄存器，用来存放调用过程的地址</p>
+<blockquote>
+<p>jal （jump and link）</p>
+<p>jal x1, ProcedureAddress</p>
+<p>jal还可以实现无条件跳转：</p>
+<p>jal x0, Label   （x0中永远为0）</p>
+<p>过程如果返回，调用：jalr x0, 0(x1)    （jump and link register）</p>
+</blockquote>
+<p>栈指针 stack pointer sp，存放在x2中</p>
+<p>压栈是从高地址向低地址生长的</p>
+<p>使用ld和sd来实现</p>
+<p>对于有些值用过了就不用了，使用栈保存旧值是没必要的，riscv的寄存器划分为两个区域</p>
+<p>x5-x7，x28-x31：临时寄存器，调用过程后原值不会保留</p>
+<p>x8-x9，x18-x27：必须保存到栈上在重新存回，在被调用的过程中处理</p>
+<p>x3 global pointer gp</p>
+<p>x4 thread pointer tp</p>
+<p>x8 frame pointer fp</p>
+<ul>
+<li>RV32I RV64I: 最基本的整数指令集，提供32位和64位用户级地址空间</li>
+<li>RV32E：RV32I的子ISA组，用来支持嵌入式的微控制器，32位，只用了16个寄存器</li>
+<li>RV128I：为未来可能的出现提供位空间，128位</li>
+<li>The base integer instruction sets use a two’s-complement representation for signed integer values.</li>
+</ul>
+<ul>
+<li><p>字母I：整数计算指令，load store，控制指令，在所有的riscv中必须实现（不同位中可以实现不同位的其中一个）</p>
+</li>
+<li><p>字母M：整数乘和除扩展</p>
+</li>
+<li><p>字母A：原子指令扩展，read modify write memory</p>
+</li>
+<li><p>字母F：单精度浮点数扩展，计算指令，load store</p>
+</li>
+<li><p>字母D：双精度浮点数扩展，</p>
+</li>
+<li><p>字母G：IMAFD的集合，作为通用弹性指令集，RV32G和RV64G是工具链中默认的指令集</p>
+</li>
+<li><p>字母Q：四精度浮点数扩展，添加128位操作</p>
+</li>
+<li><p>字母L：64位和128位IEEE小数浮点数标准</p>
+</li>
+<li><p>字母C：压缩版的指令集，适用于小内存的嵌入式应用，定义RV32I的16位版本</p>
+</li>
+<li><p>字母V：向量指令的扩展</p>
+</li>
+<li><p>字母B：位操作的扩展</p>
+</li>
+<li><p>字母T：支持transaction memory的扩展</p>
+</li>
+<li><p>字母P：支持packed SIMD指令的扩展</p>
+</li>
+<li><p>基本ISA中，32位的指令的最低两位都是11</p>
+<p>可选的压缩16位指令集扩展的最低两位为00，01，10</p>
+<p>超出32位长度的末端为1的数目要超过两个</p>
+<p>指令长度在80到176位，在[14:12]中指定了值</p>
+<p>[14:12]全为1的指令预留</p>
+</li>
+</ul>
+<ul>
+<li><p>寄存器：</p>
+<ul>
+<li>x0: 连线硬连接到0</li>
+<li>没有硬连接的地址连接寄存器，但是软件上会使用x1作为调用的存储返回地址的寄存器</li>
+<li>pc保存当前程序的地址值</li>
+<li>通用寄存器general purpose registers：x0-x31</li>
+<li>浮点寄存器fpr：f0-f32，存放单精度（只用了32位）和双精度（用了64位）</li>
+</ul>
+</li>
+</ul>
+<p>RV64G</p>
+<p>GPR - 64位 x0 - x31</p>
+<p>FPR - 32单精度值（32位未使用）或32双精度值（使用64位）f1 - f31</p>
+<p>​    rv提供双精度和单精度的操作</p>
+<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p><strong>不管32位还是64位指令集</strong></p>
+<p>8 bits: byte</p>
+<p>16 bits: half word</p>
+<p>32 bits: word</p>
+<p>64 bits: double word（用于整数、32-bit单精度、64-bit双精度）</p>
+<p>对于字节、半字、字，存放在gpr中，未使用的位会进行0扩展或者符号扩展</p>
+<h2 id="寻址模式"><a href="#寻址模式" class="headerlink" title="寻址模式"></a>寻址模式</h2><ul>
+<li>立即数寻址</li>
+<li>偏移寻址</li>
+</ul>
+<p>这两种的立即数都使用12-bit的域</p>
+<ul>
+<li><p>基本指令格式：</p>
+<p><img src="fmt.png" alt=""></p>
+</li>
+<li><p>除了CSR外，立即数都是有符号扩展的</p>
+</li>
+<li><p>R：寄存器间的ALU</p>
+</li>
+<li><p>I：ALU立即数-寄存器操作，load</p>
+</li>
+<li><p>S：store，比较分支</p>
+</li>
+<li><p>U：jal，jalr</p>
+</li>
+</ul>
+<ul>
+<li>B格式：用于encode branch oﬀsets in multiples</li>
+</ul>
+<ul>
+<li>I格式</li>
+</ul>
+<ul>
+<li><p>addi：rd = rs1 + imm  </p>
+</li>
+<li><p>addw，subw：忽视高32位</p>
+</li>
+<li><p>slti（set less than immediate）：+有符号比较，imm都为有符号扩展</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> rs1 &lt; imm:</span><br><span class="line">    rd = <span class="number">1</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	rd = <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<p>sltiu：无符号比较</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sltiu rd, rs1, 1</span><br><span class="line">如果rs1为0，rd为1。不然rd为0</span><br><span class="line">对应汇编器的伪指令： SEQZ rd, rs</span><br></pre></td></tr></table></figure>
+
+<p>​</p>
+</li>
+</ul>
+<p>Example instruction </p>
+<p>ld x1,80(x2)          Load doubleword</p>
+<p>lw x1,60(x2)         Load word</p>
+<p>lwu x1,60(x2)     Load word unsigned </p>
+<p>lb x1,40(x3)        Load byte</p>
+<p>lbu x1,40(x3)     Load byte unsigned</p>
+<p>lh x1,40(x3)        Load half word</p>
+<p>flw f0,50(x3)         Load FP single </p>
+<p>fld f0,50(x2)         Load FP double</p>
+<p>sd x2,400(x3)     Store double  </p>
+<p>sw x3,500(x4)     Store word</p>
+<p>fsw f0,40(x3)         Store FP single </p>
+<p>fsd f0,40(x3)         Store FP double</p>
+<p>sh x3,502(x2)     Store half </p>
+<p>sb x2,41(x3)        Store byte</p>
+<p>add x1, x2, x3</p>
+<p>addi x1, x2, 3</p>
+<p>lui x1, 42  load upper immediate  42填充到 x1的低12 - 低31 这20个bit，高32bit为符号扩展，低12位为0</p>
+<p>sll x1, x2, 5  逻辑左移</p>
+<p>slt x1, x2, x3 set less than 如果x2的值小于x3，x1值为1</p>
+<p>逻辑运算指令的立即数版本，为12bit有符号扩展</p>
+<h2 id="控制跳转指令"><a href="#控制跳转指令" class="headerlink" title="控制跳转指令"></a>控制跳转指令</h2><h2 id="跳转指令"><a href="#跳转指令" class="headerlink" title="跳转指令"></a>跳转指令</h2><ul>
+<li>jump and link   jal</li>
+<li>jump and link register    jalr</li>
+</ul>
+<p>无条件传送，rd对应的寄存器会一直保存link（跳转指令的下一条指令地址/返回地址）</p>
+<p>假如link不需要，可以把rd设置为x0，对应x86中的jmp</p>
+<p>偏移量为半字16位，为了兼容字母C格式</p>
+<p>这两种跳转指令的区别方式，地址的计算方式为：</p>
+<p>​    PC加立即数：jal x1, offset    x1为PC+4     PC=PC+（offset&lt;&lt;1）</p>
+<p>​    寄存器内容加立即数：jalr x1，x2，offset     x1为PC+4     PC=Regs[x2] +（offset&lt;&lt;1）</p>
+<h2 id="分支指令"><a href="#分支指令" class="headerlink" title="分支指令"></a>分支指令</h2><p>分支指令是有条件的</p>
+<p>跳转指令是无条件的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">beq x3, x4, offset  #假如两个寄存器值相等，则跳转 PC &#x3D; PC + (offset&lt;&lt;1)</span><br><span class="line">bgt x3, x4, name    #假如寄存器x3值大于x4，则跳转 PC &#x3D; PC + (offset&lt;&lt;1)</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<p>混合编写程序示例：</p>
+<p>将汇编的函数与原来的程序分离</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line">  <span class="number">2</span> <span class="function"><span class="keyword">int</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b)</span></span>;</span><br><span class="line">  <span class="number">3</span> <span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="number">4</span>     <span class="keyword">int</span> c;</span><br><span class="line">  <span class="number">5</span>     c=add(<span class="number">1</span>,<span class="number">2</span>);</span><br><span class="line">  <span class="number">6</span></span><br><span class="line">  <span class="number">7</span>     <span class="built_in">printf</span>(<span class="string">"%d\n"</span>,c);</span><br><span class="line">  <span class="number">8</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">        .globl  add</span><br><span class="line">        .text</span><br><span class="line">add:</span><br><span class="line">        addi    sp,sp,-32</span><br><span class="line">        sd      s0,24(sp)    #保存s0原来的值</span><br><span class="line">        addi    s0,sp,32     #s0指向原来的sp</span><br><span class="line">        mv      a5,a0		#第一个参数a0</span><br><span class="line">        mv      a4,a1		#第二个参数a1</span><br><span class="line">        sw      a5,-20(s0)    #保存a0到栈上</span><br><span class="line">        mv      a5,a4		</span><br><span class="line">        sw      a5,-24(s0)	#保存a1到栈上</span><br><span class="line">        lw      a4,-20(s0)	#从栈上读取a0</span><br><span class="line">        lw      a5,-24(s0)	#从栈上读取a1</span><br><span class="line">        addw    a5,a4,a5	#相加</span><br><span class="line">        sext.w  a5,a5		#压缩成16位</span><br><span class="line">        mv      a0,a5		#返回值放在a0中</span><br><span class="line">        ld      s0,24(sp)    #还原s0</span><br><span class="line">        addi    sp,sp,32     #还原sp</span><br><span class="line">        jr      ra</span><br><span class="line"></span><br><span class="line"># 简单方式：</span><br><span class="line">	.globl add</span><br><span class="line">	.text</span><br><span class="line">add:</span><br><span class="line">	add a0, a1, a0</span><br><span class="line">	sext.w a0, a0</span><br><span class="line">	jr ra</span><br></pre></td></tr></table></figure>
+
+<p>看到，传入的参数顺序位a0，a1…共8个寄存器，返回值存储在a0和a1这两个中</p>
+<p>打印数据：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">        .file   &quot;print.c&quot;</span><br><span class="line">        .option nopic</span><br><span class="line">        .section        .rodata</span><br><span class="line">        .align  3</span><br><span class="line">.LC0:</span><br><span class="line">        .string &quot;hello world!&quot;</span><br><span class="line">        .text</span><br><span class="line">        .align  1</span><br><span class="line">        .globl  main</span><br><span class="line">        .type   main, @function</span><br><span class="line">main:</span><br><span class="line">        addi    sp,sp,-16</span><br><span class="line">        sd      ra,8(sp)</span><br><span class="line">        sd      s0,0(sp)</span><br><span class="line">        addi    s0,sp,16</span><br><span class="line">        lui     a5,%hi(.LC0)</span><br><span class="line">        addi    a0,a5,%lo(.LC0)</span><br><span class="line">        call    puts</span><br><span class="line">        li      a5,0</span><br><span class="line">        mv      a0,a5</span><br><span class="line">        ld      ra,8(sp)</span><br><span class="line">        ld      s0,0(sp)</span><br><span class="line">        addi    sp,sp,16</span><br><span class="line">        jr      ra</span><br><span class="line">        .size   main, .-main</span><br><span class="line">        .ident  &quot;GCC: (GNU) 7.2.0&quot;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<p>例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">int Leaf (int g, int h, int i, int j) &#123;</span><br><span class="line">	int f; </span><br><span class="line">	f &#x3D; (g + h) – (i + j); </span><br><span class="line">	return f;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Leaf: addi sp,sp,-8 	# adjust stack for 2 items </span><br><span class="line">sw s1, 4(sp) 			# save s1 for use afterwards </span><br><span class="line">sw s0, 0(sp) 			# save s0 for use afterwards</span><br><span class="line">add s0,a0,a1 			# f &#x3D; g + h add s1,a2,a3 # s1 &#x3D; i + j </span><br><span class="line">sub a0,s0,s1 			# return value (g + h) – (i + j)</span><br><span class="line">lw s0, 0(sp) 			# restore register s0 for caller </span><br><span class="line">lw s1, 4(sp) 			# restore register s1 for caller addi sp,sp,8 # adjust stack to delete 2 items</span><br><span class="line">jr ra 					# jump back to calling routine</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">int sumSquare(int x, int y) &#123; </span><br><span class="line">	return mult(x,x)+ y; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sumSquare: </span><br><span class="line">	addi sp,sp,-8 # space on stack </span><br><span class="line">	sw ra, 4(sp)</span><br><span class="line">	sw a1, 0(sp) # save y </span><br><span class="line">	mv a1,a0 </span><br><span class="line">	jal mult</span><br><span class="line">	lw a1, 0(sp)</span><br><span class="line">	add a0,a0,a1 # mult()+y </span><br><span class="line">	lw ra, 4(sp) </span><br><span class="line">	addi sp,sp,8 </span><br><span class="line">	jr ra</span><br><span class="line">mult: ...</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/02/16/git/">git使用指南</a>
+            
+            
+            <a class="next" rel="next" href="/2018/01/22/memory-basic/">内存相关知识整理</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

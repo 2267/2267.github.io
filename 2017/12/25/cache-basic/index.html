@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>阅读笔记-cache基础知识 | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">阅读笔记-cache基础知识</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十二月 25, 2017&nbsp;&nbsp;10:48:49</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">体系结构</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>阅读《计算机组成与设计：硬件/软件接口》笔记<br>补充内容来自edx公开课</p>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p><strong>局部性原理principle of locality：</strong> 由于程序和其数据结构的性质，处理器所需的数据往往在存储器中聚集在一起</p>
+<ul>
+<li><p><strong>时间局部性Timporal Locality</strong>：某个数据项被访问之后可能很快会被再访问</p>
+</li>
+<li><p><strong>空间局部性Spatial Locality</strong>：某个数据项被访问后，相近的数据项很快被访问</p>
+</li>
+</ul>
+<p>通常两个层次存储器间的数据传递是以块为单元</p>
+<ul>
+<li>cache中的最小单元：块clock/行line</li>
+<li>主存/虚拟存储器/磁盘：页page</li>
+</ul>
+<p>cache：命中cache hit，不命中cache miss</p>
+<p>主存等：缺失page fault</p>
+<p>hit time：获取和判断一级的存储器是否命中的时间</p>
+<p>miss penalty：未命中时操作所需时间，包括从下一级去取数据，将数据传出等等</p>
+<p>cache miss 的处理步骤：</p>
+<ol>
+<li>将PC原始值（PC-4）送到存储器</li>
+<li>使用地址向主存做一次读操作，等待主存访问完成</li>
+<li>写cache，将主存取出的数据写入cache中，并将地址的高位写入Tag，置有效位</li>
+<li>重启指令，重新取指</li>
+</ol>
+<p>对于in-order CPU来说，这个过程会导致流水线暂停</p>
+<h2 id="cache性能评估"><a href="#cache性能评估" class="headerlink" title="cache性能评估"></a>cache性能评估</h2><p>存储器层次的设计者考虑的问题：</p>
+<p>优化平均访存时间</p>
+<p>细化：cache访问时间，cache缺失率，cache缺失代价</p>
+<p>功耗：静态功耗（未操作时），动态功耗（读写操作时）</p>
+<p>cache的性能公式的差异取决于针对系统的假设：</p>
+<p>存储器暂停周期=访存指令百分比*失效率*失效开销对应的周期数</p>
+<p>tcpu=（CPU执行周期+存储器暂停周期）*tcyc</p>
+<p><strong>平均访存时间=命中时间+失效率*失效开销</strong></p>
+<p>提升cache性能的两种方式：</p>
+<ul>
+<li>通过减少外部的两个内存对同一块cache竞争来减少不命中率：使用组相联和全相联代替直接映射</li>
+<li>通过添加额外结构来减少惩罚时间miss penalty：使用多级cache</li>
+</ul>
+<p>二级cache设计与单级cache设计思路不同</p>
+<ul>
+<li>上级cache目标在于减少hit time，cache容量较小，block大小较小</li>
+<li>下级cache目标在于减少penalty time，cache，block较大，因为access time在本级不是很重要，与上级相比使用 更高的相联度来提高命中率</li>
+</ul>
+<p>使用多级cache减小miss penalty：</p>
+<ul>
+<li>当上级缓存所需的数据可以在下级找到时，miss penalty就变成从下级读取数据的时间</li>
+<li>当上级缓存所需的数据在下级也找不到时，miss penalty变的更大</li>
+</ul>
+<p>block的大小对命中率的影响：开始block越大命中率越高，随着block容量变大命中率会变低，因为block数量变少了</p>
+<p>CPU时间 =（CPU执行周期数 + 存储器阻塞周期数）* 时钟周期</p>
+<p>假定阻塞都为cache缺失：</p>
+<p>存储器阻塞周期数 = 读阻塞 + 写阻塞</p>
+<p>读阻塞 = 每个程序读的次数 * 读缺失率  * 读缺失惩罚 </p>
+<p>写阻塞 = 每个程序写的次数 * 读缺失率  * 读缺失惩罚 + 写缓冲区阻塞（对于 write through）</p>
+<h2 id="主存到cache（下级cache到上级cache）的映射方式："><a href="#主存到cache（下级cache到上级cache）的映射方式：" class="headerlink" title="主存到cache（下级cache到上级cache）的映射方式："></a>主存到cache（下级cache到上级cache）的映射方式：</h2><ol>
+<li><p><strong>直接映射</strong></p>
+<p>cache索引  =  主存地址 %  cache中的块的数量</p>
+<p>cache：</p>
+<p>索引：    |    有效位    |    标记字段    |    值    |</p>
+<p>​</p>
+<p>有效位：标识一个块是否含有一个有效地址，由cache控制器通过这个来判断cache是否命中</p>
+<p><strong>标记Tag</strong>：用来存放地址的高位：  主存地址 / 块的数量</p>
+<p>​</p>
+<p>一个地址的数据只能放在固定的位置</p>
+<p>优点：不需要复杂的块替换算法，固有并行性</p>
+<p>缺点：对被缓存数据的位置敏感，会产生冲突失效（即使cache没有存满也会发生块替换）</p>
+</li>
+</ol>
+<ol start="2">
+<li><p><strong>全相联</strong></p>
+<p>每一个地址的数据都可以存在任意位置</p>
+<p>通过使用比较器检索cache中每一项来获得数据</p>
+<p>开销很大，只适合块数少的cache</p>
+</li>
+</ol>
+<ol start="3">
+<li><p><strong>组相联</strong>（n-way set associative）</p>
+<p>cache组号  =  主存地址 %  cache中的组的数量</p>
+<p>每组中包含多个块</p>
+<p>也就是，分组外采用直接映射，分组内采用全相联</p>
+<p>每一个地址的数据都可以存在某一个组内的任意位置</p>
+</li>
+</ol>
+<p><strong>归纳：cache的放置机制</strong>:</p>
+<p>直接映射        组数：块数            每组块数：1<br>组相联        组数：块数/相联度    每组块数：相联度（2~16）               //cache TLB<br>全相联        组数：1                每组块数：块数                                    //虚拟内存</p>
+<p>提高相联度会导致，访问周期延长（与cache的大小也有关），所以对于高层次的cache，一般相联度低或者甚至为直接映射。</p>
+<p>对于底层内存层次，由于不命中的惩罚很大，要采用全相联</p>
+<p>其他方式：</p>
+<p>伪相联，Victim Cache，AnnexCache，Trace Cache，Annex</p>
+<p><strong>失效：3C</strong></p>
+<p>Compulsory强制失效：第一次访问数据块，它一定不在数据块。通过预测来避免，也称为冷启动缺失</p>
+<p>Capacity容量失效：当前程序所需数据比cache容量大，存满后新数据替换旧数据</p>
+<p>Conflict冲突失效：在cache还未存满时发生。直接相联冲突失效最大，全相联冲突失效最小</p>
+<p><strong>替换方式：</strong></p>
+<p>随机法：例如TLB</p>
+<p>FIFO：替换最早的块，性能比上一个好</p>
+<p>LRU（对于高相联的层次代价太高，近似实现）如cache，性能最好</p>
+<h2 id="写操作如何处理"><a href="#写操作如何处理" class="headerlink" title="写操作如何处理"></a><strong>写操作如何处理</strong></h2><p><strong>write through：</strong> 信息被同时写到cache的块和存储器层次结构较低层的块（主存）中（向cache中写数据时同时也向下一级写数据，保证数据在这两级是一致的），不命中时，先从主存取回数据，在从cache和主存中更新数据。</p>
+<p>优点：</p>
+<ul>
+<li>缺失比较简单，缺失代价也较小，因为不需要把整个块写回</li>
+<li>尽管write through需要一个写缓冲区，但仍比write back更容易实现</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>耗时太长</li>
+</ul>
+<p><strong>write buffer：</strong> write through的一种解决方案，将数据写入cache和write buffer中后，处理器继续运行。当buffer满了后又执行写操作，处理器必须等待buffer里面有空位。当主存处理数据的比例低于处理器写数据的比例时，buffer没有作用。当高于时也会发生等待的情况，即写数据突然密集的发生。</p>
+<p><strong>write back：</strong> cpu更新cache时，只是把更新的cache区标记一下，并不同步更新主存。只是在cache区要被新进入的数据取代时，才更新主存。这样做的原因是考虑到很多时候cache存入的是中间结果，没有必要同步更新主存。低层次cache通常使用write back，因为直接写入时间太长。</p>
+<p>优点：</p>
+<ul>
+<li>写回的速度为写入cache的速度而不是写入主存的速度，CPU执行的效率高</li>
+<li>多次写回同一个块的字，只需要整体进行一次操作，充分利用高带宽传输</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>缺点是实现起来技术比较复杂，写数据不命中时要注意已经修改而没有写回的数据不应该被覆盖。</li>
+</ul>
+<ul>
+<li>write-allocate：将块从主存中取出放在cache里面更新再写回，这样做可以简化设计</li>
+<li>no-write-allocate：直接在主存里更新，一般用于大块数据的更新，cache中没有变化</li>
+</ul>
+<p>这两种都可以搭配直写和写回，但是一般来说</p>
+<p>写回一般采用写入分派</p>
+<p>直写一般采用无写入分派</p>
+<h2 id="一致性"><a href="#一致性" class="headerlink" title="一致性"></a>一致性</h2><p><strong>consistency一致性：</strong> 对于多核，其中一个核更新了内存的数据，其他核的对应该内存的cache的值也要更新</p>
+<p><strong>write serialization写串行化：</strong> 对于所有的核来说，对一个内存的两个写入命令顺序是相同的，保证读到的数据不会出现不一致的情况</p>
+<p>在支持cache一致性的多处理器中，cache提供共享数据的迁移和复制</p>
+<p><strong>迁移：</strong> 数据项可以移入本地cache并以透明的方式使用</p>
+<p><strong>复制：</strong> 当共享数据被同时读取时，cache在本地对数据向做了备份</p>
+<p>最常用的cache一致性协议是<strong>监听协议snooping</strong></p>
+<p><strong>写无效协议</strong>：两个处理器同时对一个内存进行访问，其中一个对这个内存写数据，将其所有副本置为无效。同时在写的过程中是独占的</p>
+<h2 id="DMA"><a href="#DMA" class="headerlink" title="DMA"></a>DMA</h2><p>直接内存访问 direct memory access</p>
+<p>设备可以自己读或者写总线事物而不需要CPU干涉的过程</p>
+<h2 id="icache-和-dcache"><a href="#icache-和-dcache" class="headerlink" title="icache 和 dcache"></a>icache 和 dcache</h2><p>流水线取值策略：按需获取，预取，选择性获取</p>
+<p>对于流水线系统来说，为了实现指令和数据的同时访问，必须采用分离的指令和数据cache，使用混合和分离的cache特点：</p>
+<ul>
+<li>混合cache更加灵活，分离cache可能出现一个满一个不满的情况</li>
+<li>指令cache不支持修改，可以为产生指令流而优化；数据cache可以为读写操作进行单独优化。数据cache可以通过同时操作增加带宽。</li>
+<li>采用分离cache：单周期数据通路必须将指令和数据内存独立分开，是因为处理器的操作在一个时钟周期内完成，不可能在一个周期内使用单端口内存进行两次不同的访问</li>
+</ul>
+<p>early start：当取回的block一取回就开始执行而不是等到全部取回再开始执行。一些处理器用这个方法来取指令，对于dcache效果不好</p>
+<h2 id="优化cache"><a href="#优化cache" class="headerlink" title="优化cache"></a>优化cache</h2><p>目标：</p>
+<ul>
+<li>miss rate</li>
+<li>miss penalty</li>
+<li>hit time</li>
+<li>bandwidth</li>
+</ul>
+<p>基本优化方法：</p>
+<ol>
+<li>使用小的或简单的cache，减小hit time</li>
+<li>使用更大的block，减小miss rate<ol>
+<li>tag开销更小</li>
+<li>利用DRAM的burst mode快速传输数据</li>
+<li>fast burst transfer to CPU</li>
+<li>！浪费带宽（访问无关数据）</li>
+<li>！block数目更少带来更多的冲突失效</li>
+</ol>
+</li>
+<li>使用更大的cache减小miss rate</li>
+<li>使用更高的相联度减小miss rate</li>
+</ol>
+<p>高级优化方法</p>
+<ol>
+<li>写需要使用一个cycle去check tag，如果命中用另一个cycle去写，共要2个cycle？<ol>
+<li>第一个周期同时check和write，如果miss就把原来的数据写回来（很少用）</li>
+<li>对于全相联的cache，无法在check tag后获取位置，所以check和write是同时进行的，write的wordline只有在hit时才enable，适用于小容量的cache</li>
+<li>pipelined writes：使用buffer将要写的data暂存，在下一次write的check（或空闲）时写入cache（普遍采用）<br>pipelined writes<br>- hit time<br>+ bandwidth</li>
+</ol>
+</li>
+<li>使用write buffer降低read miss penalty<br>write buffer:<ul>
+<li>在writeback中，保存evicted dirty lines</li>
+<li>在writethrough中，保存所有的writes<br>问题：read miss所需要的数据可能在write buffer中<br>simple scheme：read miss时，等待write buffer清空<br>faster scheme：比较write buffer和read miss的地址<br>+miss penalty<br>+bandwidth</li>
+</ul>
+</li>
+<li>多级cache<ol>
+<li>如果存在l2，选用更小的l1<ol>
+<li>提高了l1miss rate，但也减小了hit time和miss penalty</li>
+<li>减小了每次访问的能耗</li>
+</ol>
+</li>
+<li>如果存在l2，使用更简单的（write through）l1<ol>
+<li>write back l2可以避免访问内存</li>
+<li>每次访问l1对多产生一次miss，简化pipeline控制</li>
+<li>简化一致性问题</li>
+<li>简化错误恢复<br>Inclusion Policy？<br>Inclusive</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<ul>
+<li>内部cache是外部cache的部分复制</li>
+<li>外部一致性协议只需要check外部cache<br>Exclusive</li>
+<li>内部cache有外部cache没有的数据</li>
+<li>miss产生式交换内部和外部cache的lines</li>
+</ul>
+<p>+miss rate<br>+miss penalty</p>
+<ol start="4">
+<li><p>victim cache</p>
+<ol>
+<li>小 全相联 保存evicted line</li>
+<li>在直接映射中，刚刚被evicted的数据是最常被访问<br>+miss rate<br>+miss penalty</li>
+</ol>
+</li>
+<li><p>prefetch</p>
+<ol>
+<li>hardware prefetching</li>
+<li>software prefetching</li>
+<li>mixed schemes<br>-capacity<br>-conflict<br>+compulsory<br>Usefulness<br>Timeliness - not too late or early<br>Cache and bandwidth pollution</li>
+</ol>
+</li>
+</ol>
+<p>HW</p>
+<ul>
+<li>prefetch on miss<ul>
+<li>访问b miss时预取b+1</li>
+</ul>
+</li>
+<li>one block lookahead (OBL) scheme<ul>
+<li>访问b时预取b+1</li>
+<li>N-block lookahead</li>
+</ul>
+</li>
+<li>strided prefetch<ul>
+<li>如果观测到访问b，b+N，b+2N就预取b+3N</li>
+</ul>
+</li>
+</ul>
+<p>SW<br>最大的问题是时间问题，而不是预测问题<br>如果设置的接近，可能过晚<br>如果取早了会引起pollution<br>也需要考虑prefetch带来的额外指令<br>+miss rate<br>+miss penalty<br>-bandwidth</p>
+<ol>
+<li>multiporting &amp; banking</li>
+</ol>
+<p>+bandwidth<br>true multiport caches<br>增加了很大的额外面积<br>hit time增加了</p>
+<p>banked caches<br>将地址空间分成多个bank<br>用部分地址（low or high order interleaved），low bit更好</p>
+<p>好处<br>更高的throughput<br>问题<br>bank conflicts<br>extra wiring<br>uneven utilization</p>
+<p>+bandwidth</p>
+<ol start="2">
+<li><p>compiler optimization<br>+ miss panelty</p>
+</li>
+<li><p>non-blocking caches<br>aka out-of-order memory system<br>aka lockup free caches</p>
+</li>
+</ol>
+<ul>
+<li>enable subsequent cache accesses after a cache miss has occured<ul>
+<li>hit-under-miss</li>
+<li>miss-under-miss(concurrent misses)</li>
+</ul>
+</li>
+<li>suitable for in-order cpu or ooo</li>
+<li>challenges<ul>
+<li>maintaining order when multiple misses that might return out of order</li>
+<li>load or store to an already pending miss address(need merge)</li>
+</ul>
+</li>
+</ul>
+<p>cache miss时cpu不阻塞，只有在要用的数据miss时阻塞</p>
+<p>MSHR miss status handling register<br>MAF miss address file</p>
+<p>on cache miss:</p>
+<ul>
+<li>check mshr for matched address<ul>
+<li>if found: allocate new load/store entry poiting to mshr</li>
+<li>if not found: allocate new mshr entry and load/store entry</li>
+<li>if all entries full in mshr or load/store entry table, stall or prevent new loads/stores</li>
+</ul>
+</li>
+</ul>
+<p>on data return from memory</p>
+<ul>
+<li>find load or store waiting for it<ul>
+<li>forward load data to processor / clear store buffer</li>
+<li>could be multiple loads and stores</li>
+</ul>
+</li>
+<li>write data to cache</li>
+</ul>
+<p>when cache lines is completely returned</p>
+<ul>
+<li>de-allocate mshr entry</li>
+<li>need scoreboard for individual registers</li>
+</ul>
+<p>on load miss</p>
+<ul>
+<li>mark destination register as busy</li>
+</ul>
+<p>on load data return </p>
+<ul>
+<li>mark destination register as available</li>
+</ul>
+<p>on use of busy register</p>
+<ul>
+<li>stall processor</li>
+</ul>
+<p>+miss penalty<br>+bandwidth</p>
+<ol start="4">
+<li>critical word first<ol>
+<li>request the missed word from memory first</li>
+<li>rest of cache line comes afer critical word</li>
+</ol>
+</li>
+<li>early restart<ol>
+<li>data returns from memory in order</li>
+<li>processor restarts when needed word is returned</li>
+</ol>
+</li>
+</ol>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2017/12/30/virtual-memory/">阅读笔记-虚拟地址空间</a>
+            
+            
+            <a class="next" rel="next" href="/2017/12/21/arch-basic/">阅读笔记-体系结构基础知识</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

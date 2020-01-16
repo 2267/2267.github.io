@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>cache写入策略 | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">cache写入策略</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">四月 16, 2019&nbsp;&nbsp;9:38:16</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">体系结构</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>虽然学习体系结构已经很长时间了，还是有一些容易记混的地方，这里总结一下cache的写入策略</p>
+<p>首先是写入方式，有两种:</p>
+<ul>
+<li>write-through: 写入数据时，同时更新下级cache以及其下级存储<ul>
+<li>简化一致性问题，实现简单，但写入时间长，经常用于L1-cache</li>
+</ul>
+</li>
+<li>write-back: 写入数据时，只写入下级cache。此时block有clean或dirty两种状态。对于dirty，当被替换时，数据要更新到下级存储/内存中<ul>
+<li>写入时间短，功耗低</li>
+</ul>
+</li>
+</ul>
+<p>网上的文章会将这两种归类于write hit的情况，对于write miss，有两种分派方式：</p>
+<ul>
+<li>write-allocate: 缺失时，从内存中读入cache（下级存储器到上级存储器），再进行操作</li>
+<li>write-no-allocate: 缺失时，直接写入内存（下级存储器）</li>
+</ul>
+<p>所以共有四种情况，前两种是常见的，为简化论述，假定只有一级cache</p>
+<ul>
+<li>back + allocate: <ul>
+<li>write miss时，先将数据从内存取到cache中(fetch on write)，再写入cache</li>
+<li>write hit时，数据只更新cache，block变成dirty</li>
+</ul>
+</li>
+<li>through + no-allocate: <ul>
+<li>write miss时，数据直接写入内存中</li>
+<li>write hit时，数据更新cache和内存</li>
+</ul>
+</li>
+<li>back + no-allocate: <ul>
+<li>write miss时，只更新内存（下次写该块还是会出现miss，一直miss下去）</li>
+<li>write hit时，数据只更新cache，block变成dirty</li>
+</ul>
+</li>
+<li>through + allocate: <ul>
+<li>write miss时，先更新内存，再将该block缓存到cache中（意义不大，因为下次写还是会直写到内存中）</li>
+<li>write hit时，数据更新cache和内存</li>
+</ul>
+</li>
+</ul>
+<p>另外，对于read miss发生时，采用的是类似于allocate的方式，即从内存读到cache，这个过程也被称作cacheline <strong>fill</strong></p>
+<p>参考文献：</p>
+<ul>
+<li><a href="http://web.cs.iastate.edu/~prabhu/Tutorial/CACHE/interac.html" target="_blank" rel="noopener">Interaction Policies with Main Memory</a></li>
+<li><a href="https://people.cs.pitt.edu/~xianeizhang/notes/cache.html" target="_blank" rel="noopener">Cache</a></li>
+</ul>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/04/18/mshr/">cache miss与MSHR</a>
+            
+            
+            <a class="next" rel="next" href="/2019/04/12/ubuntu-setup/">ubuntu安装后美化配置记录</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

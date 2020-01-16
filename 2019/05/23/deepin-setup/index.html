@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>deepin配置 | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">deepin配置</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">五月 23, 2019&nbsp;&nbsp;16:51:47</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>原来笔记本里面有windows+ubuntu双系统，现在弄掉了windows，换上了deepin做主力系统。<br>deepin不但很好看，而且有很多好用的功能，比如终端直接可以一键ssh、sftp，应用商店里面可以安装tim微信百度网盘迅雷。<br>在这里记录一下配置过程，ubuntu依然保留着，用来做恢复时的live系统以及其他用途。</p>
+<ol>
+<li><p>关于换源<br>官方源实在是太慢了，官方居然没有给出其他源的写法，我只能参照网上已有的旧资料照葫芦画瓢写了一下<br>当前使用的版本是deepin 15.10.1，代号看起来是“lion”</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#deb [by-hash=force] http://packages.deepin.com/deepin lion main contrib non-free</span></span><br><span class="line">deb [by-hash=force] http://mirrors.tuna.tsinghua.edu.cn/deepin lion main contrib non-free <span class="comment">#清华</span></span><br><span class="line">deb [by-hash=force] http://mirrors.ustc.edu.cn/deepin lion main contrib non-free <span class="comment">#中科大</span></span><br><span class="line">deb [by-hash=force] http://mirrors.aliyun.com/deepin lion main contrib non-free <span class="comment">#阿里</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>更换启动界面<br>deepin可以自定义grub的界面，这个自定义的界面实在是太太太丑了，以前用deepin的时候感觉之前的还挺好看的。<br>上网搜了一下，之前的设置里面直接拖动，修改<code>/boot/grub/themes/deepin</code>下面的都没有用，这个版本的配置在<code>/etc/grub/themes/deepin-fallback</code>，<br>定义的文件为<code>/etc/default/grub</code>，在这个文件里面也可以修改分辨率<code>GRUB_GFXMODE=1366x768,auto</code>。在<code>/etc/grub/themes/deepin-fallback</code>中，<br>用你喜欢的图片替换background.jpg，同时在<code>/etc/grub/themes/deepin-fallback/themes</code>可以进行其他修改如字体颜色。建议暗背景搭配明亮的字，或者反过来。</p>
+</li>
+<li><p>安装consolas字体，deepin提供了小工具，拖动即可安装</p>
+</li>
+<li><p>去掉恼人的提示音（比如终端里面的’滴‘）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#.bashrc</span></span><br><span class="line">xset b off</span><br></pre></td></tr></table></figure></li>
+<li><p>v2ray配置<br>给出一个简单的systemctl脚本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># $cat /etc/systemd/system/v2ray.service </span></span><br><span class="line">[Unit]</span><br><span class="line">Description=v2ray</span><br><span class="line">After=network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">ExecStart=/opt/v2ray/v2ray -config /opt/v2ray/config.json</span><br><span class="line">Restart=on-failure</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>其他常用软件</p>
+<ul>
+<li>vscode</li>
+<li>360浏览器（对，你没有看错）</li>
+<li>坚果云</li>
+<li>论文相关（texmaker mendeley inkscape）</li>
+<li>wps</li>
+</ul>
+</li>
+</ol>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/05/25/simulator/">体系结构模拟器的比较</a>
+            
+            
+            <a class="next" rel="next" href="/2019/05/22/x2go/">x2go排查记录</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

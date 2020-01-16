@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>Category: 体系结构 | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            
+
+
+    
+<div class="container">
+    <div class="post-wrap categories">
+        <h2 class="post-title">-&nbsp;Categories&nbsp;·&nbsp;体系结构-</h2>
+    </div>
+    <div class="post-wrap archive">
+    
+    
+        
+
+        
+            <h3>2019</h3>
+        
+
+        <article class="archive-item">
+            <a class="archive-item-link" href="/2019/10/10/pim/">内存计算架构</a>
+            <span class="archive-item-date">十月 10, 2019</span>
+        </article>
+    
+        
+
+        
+
+        <article class="archive-item">
+            <a class="archive-item-link" href="/2019/09/10/thread/">对线程的理解</a>
+            <span class="archive-item-date">九月 10, 2019</span>
+        </article>
+    
+        
+
+        
+
+        <article class="archive-item">
+            <a class="archive-item-link" href="/2019/04/18/mshr/">cache miss与MSHR</a>
+            <span class="archive-item-date">四月 18, 2019</span>
+        </article>
+    
+        
+
+        
+
+        <article class="archive-item">
+            <a class="archive-item-link" href="/2019/04/16/write-policy/">cache写入策略</a>
+            <span class="archive-item-date">四月 16, 2019</span>
+        </article>
+    
+        
+
+        
+
+        <article class="archive-item">
+            <a class="archive-item-link" href="/2019/01/15/dir-cache/">目录式Cache一致性</a>
+            <span class="archive-item-date">一月 15, 2019</span>
+        </article>
+    
+        
+
+        
+            <h3>2018</h3>
+        
+
+        <article class="archive-item">
+            <a class="archive-item-link" href="/2018/03/19/memory-or-disk/">缓存？内存？外存？主存？辅存？硬盘？</a>
+            <span class="archive-item-date">三月 19, 2018</span>
+        </article>
+    
+        
+
+        
+
+        <article class="archive-item">
+            <a class="archive-item-link" href="/2018/03/18/more-memory-timings/">内存时序</a>
+            <span class="archive-item-date">三月 18, 2018</span>
+        </article>
+    
+        
+
+        
+
+        <article class="archive-item">
+            <a class="archive-item-link" href="/2018/03/17/llsc/">Load-link / Store-Conditional （LL/SC）</a>
+            <span class="archive-item-date">三月 17, 2018</span>
+        </article>
+    
+        
+
+        
+
+        <article class="archive-item">
+            <a class="archive-item-link" href="/2018/01/27/riscv/">risc-v整理</a>
+            <span class="archive-item-date">一月 27, 2018</span>
+        </article>
+    
+        
+
+        
+
+        <article class="archive-item">
+            <a class="archive-item-link" href="/2018/01/22/memory-basic/">内存相关知识整理</a>
+            <span class="archive-item-date">一月 22, 2018</span>
+        </article>
+    
+    
+    <nav class="pagination">
+        <span class="page-number current">1</span><a class="page-number" href="/categories/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/page/2/">2</a>
+    </nav>
+
+</div>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

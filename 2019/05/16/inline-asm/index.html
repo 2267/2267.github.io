@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>汇编格式与内联汇编 | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">汇编格式与内联汇编</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">五月 16, 2019&nbsp;&nbsp;9:05:16</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E7%BC%96%E7%A8%8B%E7%9B%B8%E5%85%B3/">编程相关</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>汇编格式分为Intel格式与AT&amp;T格式两种，我在linux环境下进行编译生成的结果是AT&amp;T格式的。</p>
+<p>对于AT&amp;T格式：</p>
+<ol>
+<li><p>寄存器前加%</p>
+</li>
+<li><p>立即数前面加$</p>
+</li>
+<li><p>源（左），目的（右），与 intel 相反</p>
+</li>
+<li><p>操作数的长度</p>
+<ol>
+<li>movw movb (byte word long)</li>
+</ol>
+</li>
+<li><p>jmp/call 操作数上前加*</p>
+</li>
+<li><p>ljmp lcall (对应 intel jmp far, call far)</p>
+<ol>
+<li>ljmp $section, $offset （intel jmp far section:offset)</li>
+<li>lcall $section, $offset</li>
+<li>lret $stack_adjust</li>
+</ol>
+</li>
+<li><p>寻址<br> AT&amp;T格式为 section:disp(base, index, scale)<br> 地址为 base + index*scale +disp</p>
+<p>而intel格式为 section:[base + index*scale +disp]</p>
+</li>
+<li><p>内联汇编</p>
+</li>
+</ol>
+<h2 id="基本内联"><a href="#基本内联" class="headerlink" title="基本内联"></a>基本内联</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">asm</span>(<span class="string">"movl %ecx %eax"</span>);  </span><br><span class="line">__asm__(<span class="string">"movb %bh (%eax)"</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">__asm__ (<span class="string">"movl %eax, %ebx/n/t"</span></span><br><span class="line">         <span class="string">"movl $56, %esi/n/t"</span></span><br><span class="line">         <span class="string">"movl %ecx, $label(%edx,%ebx,$4)/n/t"</span></span><br><span class="line">         <span class="string">"movb %ah, (%ebx)"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>在基本内联中，如果对寄存器内容进行了修改，可能会出现意想不到的事情，这是因为gcc并不知道寄存器改变了，会出现一些问题（尤其是当编译器进行了某些优化）。要使用有副作用的指令时，要使用扩展汇编</p>
+<h2 id="扩展内联"><a href="#扩展内联" class="headerlink" title="扩展内联"></a>扩展内联</h2><p>   _asm_(“汇编语句”: 输出 : 输入 : 执行中会被修改的寄存器);<br>      后三个可以省略，即留空<br>      例如：</p>
+   <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">//在嵌入汇编中需要两个%</span></span><br><span class="line"></span><br><span class="line">&#123; <span class="keyword">register</span> <span class="keyword">char</span> _res;\</span><br><span class="line"> <span class="comment">//定义寄存器变量</span></span><br><span class="line"><span class="keyword">asm</span>(<span class="string">"push %%fs\n\t"</span></span><br><span class="line"><span class="string">"movw %%ax. %%fs\n\t"</span></span><br><span class="line"><span class="string">"movb %%fs:%2,%%al\n\t"</span></span><br><span class="line"><span class="string">"pop %%fs"</span></span><br><span class="line">:<span class="string">"=a"</span>(_res):<span class="string">"0"</span>(seg),<span class="string">"m"</span>(*(addr))</span><br><span class="line">);     _res;&#125;</span><br><span class="line"><span class="comment">// a b c d 分别表示寄存器eax ebx ecx edx</span></span><br><span class="line"><span class="comment">// S D  esi edi</span></span><br><span class="line"><span class="comment">// r 任何寄存器</span></span><br><span class="line"><span class="comment">// 0 与上面相同的同一个寄存器</span></span><br><span class="line"><span class="comment">// %2 表示输入输出寄存器从前向后数 </span></span><br><span class="line"><span class="comment">// %0 - a</span></span><br><span class="line"><span class="comment">// %1 - 0</span></span><br><span class="line"><span class="comment">// %2 - m</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> x,y;</span><br><span class="line"><span class="keyword">asm</span>(<span class="string">"movl %1, %%eax; \n"</span></span><br><span class="line"><span class="string">"movl %%eax, %%ecx; \n"</span></span><br><span class="line">:<span class="string">"=a"</span>(y):<span class="string">"b"</span>(x):<span class="string">"%eax"</span>);</span><br><span class="line"><span class="comment">//会修改eax</span></span><br></pre></td></tr></table></figure>
+
+
+<p>另外还有一些特殊操作，比如直接使用asm定义函数，在asm文件中将函数名与头文件中的函数进行对应，这样在c、cpp中也可以直接调用这些汇编函数。甚至可以讲汇编函数打包成链接库便于使用。<br>cpp函数编译后的汇编名称十分奇葩，这时可以使用extern ‘C’使其成为c格式函数。</p>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/05/16/inkscape/">inkscape操作方法</a>
+            
+            
+            <a class="next" rel="next" href="/2019/04/22/gem5-fs/">gem5全系统模式</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>阅读笔记-体系结构基础知识 | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">阅读笔记-体系结构基础知识</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十二月 21, 2017&nbsp;&nbsp;10:44:39</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">体系结构</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>阅读《计算机组成与设计：硬件/软件接口》笔记</p>
+<h2 id="体系结构的细分"><a href="#体系结构的细分" class="headerlink" title="体系结构的细分"></a>体系结构的细分</h2><ul>
+<li>指令级体系结构ISA<ol>
+<li>几乎所有现存的ISA都被划分到了<strong>通用寄存器体系结构</strong>（操作数是：寄存器或存储器地址）中（包括两种：寄存器-存储器ISA 和 载入-存储ISA）</li>
+<li>寻址模式</li>
+<li>操作数的类型和大小</li>
+<li>操作指令</li>
+<li>控制流指令</li>
+<li>ISA的编码</li>
+</ol>
+</li>
+<li>组成：包括存储系统、存储器互联、设计内部处理器或CPU，有时用microarchitecture来代替organization</li>
+<li>硬件：计算机的具体实现，包括逻辑设计和封装技术</li>
+</ul>
+<h2 id="计算机系统结构中的8个伟大的思想"><a href="#计算机系统结构中的8个伟大的思想" class="headerlink" title="计算机系统结构中的8个伟大的思想"></a>计算机系统结构中的8个伟大的思想</h2><ol>
+<li>面向摩尔定律的设计</li>
+<li>使用抽象简化设计</li>
+<li>加速大概率时间</li>
+<li>通过并行提高性能</li>
+<li>通过流水线提高性能</li>
+<li>通过预测提高性能</li>
+<li>存储器层次</li>
+<li>通过冗余提高可靠性</li>
+</ol>
+<h2 id="硬件设计准则"><a href="#硬件设计准则" class="headerlink" title="硬件设计准则"></a>硬件设计准则</h2><p><strong>1.简单源于规整</strong> </p>
+<p><strong>2.越小越快</strong> </p>
+<p><strong>3.优秀的设计需要适宜的折中方案</strong> </p>
+<h2 id="计算机的分类："><a href="#计算机的分类：" class="headerlink" title="计算机的分类："></a>计算机的分类：</h2><ul>
+<li><p>个人移动设备PMD：成本，强调能耗，响应性能和可预测性能，需要将存储器（成本占很大比例）占用减至最小，高效利用能量</p>
+</li>
+<li><p>桌面计算机：性价比，计算机性能（计算性能、图形性能）</p>
+</li>
+<li><p>服务器：可用性，可扩展性，很高的吞吐能力</p>
+</li>
+<li><p>集群式/仓库级服务器WSC：性价比，功耗，可用性</p>
+<p>超级计算机：浮点运算性能，运行大型的通讯密集的批程序。要使用非常快速的内部网络</p>
+<p>WSC：互动应用程序，大规模存储，可靠性，高的互联网带宽</p>
+</li>
+<li><p>嵌入式计算机：包括PMD，价格最重要</p>
+<p>以能否运行第三方软件来区别嵌入和非嵌入</p>
+</li>
+</ul>
+<p>多种级别并行度以及成为推动计算机设计的力量。能耗和成本是主要的约束条件。</p>
+<h2 id="性能"><a href="#性能" class="headerlink" title="性能"></a>性能</h2><p><strong>微架构的性能衡量：</strong></p>
+<ul>
+<li>响应时间response time/执行时间execution time/延迟/访问时间：计算机完成某任务的总时间</li>
+<li>吞吐率through output/带宽bandwidth：单位时间内完成的任务数量</li>
+</ul>
+<p>一般来说减小响应时间几乎都可以增加吞吐率</p>
+<p>使用多核分别处理独立的任务可以增加吞吐率</p>
+<p>吞吐率和响应时间往往相互影响</p>
+<p>响应时间为总时间，包括访问存储器、IO、操作系统开销和CPU执行时间</p>
+<p>CPU执行时间，简称CPU时间，表示在CPU上花费的时间，包括：</p>
+<ul>
+<li>用户CPU时间：用于用户程序的时间</li>
+<li>系统CPU时间：操作系统为用户服务画去的CPU时间</li>
+</ul>
+<p>用系统性能表示空载系统的响应时间，用CPU性能表示用户CPU时间</p>
+<p>时钟周期：clock cycle，倒数为时钟频率 clock rate</p>
+<p>指令的性能：CPI每条指令所需的时钟周期数的平均值</p>
+<p>CPU时间=指令数*CPI*时钟周期时间</p>
+<p>秒数/程序 = 指令数/程序 *时钟周期数/指令数 * 秒数/时钟周期数</p>
+<p>唯一可以被完全可靠测量的计算机性能指标是执行时间</p>
+<p>通过运行程序测量CPU执行时间，已知时钟周期，通过仿真器测量执行的指令数，平均CPI和性能损失源</p>
+<p>评价时三个因素都要考虑到：指令数，CPI，时钟频率</p>
+<h3 id="性能测试和改进："><a href="#性能测试和改进：" class="headerlink" title="性能测试和改进："></a>性能测试和改进：</h3><p>基准测试程序benchmark： SPEC：为现代计算机系统建立基准测试程序集</p>
+<p>MIPS：每秒百万条指令</p>
+<p><strong>减少功耗的方法：</strong></p>
+<ul>
+<li>不工作部分的时钟暂时关闭</li>
+<li>降低工作频率DVFS</li>
+<li>为特定应用专门设计</li>
+<li>超频</li>
+</ul>
+<p>race-to-halt：使用性能好功耗高的处理器，使其他单元不工作，节省能耗</p>
+<h3 id="Amadahl定律"><a href="#Amadahl定律" class="headerlink" title="Amadahl定律"></a>Amadahl定律</h3><p>启示：</p>
+<ul>
+<li>优化系统中加速最少的部分可以对系统整体加速比有最大的提升（要想显著加速某个系统，必须提升全系统中相当大的部分的速度）</li>
+<li>优化常见的情况</li>
+<li>收益递减的规律</li>
+</ul>
+<p>缺点：</p>
+<p>​    假定处理问题的规模和复杂程度是固定的</p>
+<p>​    实际上是随着处理性能的增长而增长的</p>
+<h3 id="Gustafson定律"><a href="#Gustafson定律" class="headerlink" title="Gustafson定律"></a>Gustafson定律</h3><p>对Amadahl进行改进，执行被分为串行和并行两部分</p>
+<h3 id="Tomasulo算法"><a href="#Tomasulo算法" class="headerlink" title="Tomasulo算法"></a>Tomasulo算法</h3><p>解决了：寄存器和访存操作数因为乱序执行产生的数据相关</p>
+<p>没有解决：由于条件分支或异常殷切的控制相关</p>
+<p>指令从cache中顺序读取，然后放在IFQ中，之后会分发（dispatch）给三个队列中的其中一个：</p>
+<ul>
+<li>针对整数和分支指令的发射队列</li>
+<li>访存指令的发射队列</li>
+<li>浮点指令发射队列</li>
+</ul>
+<p>指令在各对应的发射队列中等待，直到其源操作数（寄存器地址，存储器地址，值）可用</p>
+<p>指令的执行结果通过公用数据总线传输给分散队列中的指令</p>
+<h2 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h2><ul>
+<li>I/O设备中断</li>
+<li>操作系统调用</li>
+<li>指令追踪和断点</li>
+<li>整数或浮点异常</li>
+<li>缺页</li>
+<li>非对齐访存</li>
+<li>违反内存保护</li>
+<li>未定义指令</li>
+<li>硬件故障/警报</li>
+<li>掉电</li>
+</ul>
+<h2 id="操作系统的两个基本功能"><a href="#操作系统的两个基本功能" class="headerlink" title="操作系统的两个基本功能"></a>操作系统的两个基本功能</h2><ul>
+<li>防止硬件被失控的应用程序滥用</li>
+<li>向应用程序提供简单一致的机制来控制复杂而又通常大不相同的低级硬件设备</li>
+</ul>
+<p><strong>三个抽象：</strong></p>
+<ul>
+<li><p>文件是对I/O设备的抽象</p>
+</li>
+<li><p>虚拟内存是对程序存储器的抽象：</p>
+<p>虚拟内存是一个抽象，对于每个进程来说看到的内存都是一致的</p>
+</li>
+<li><p>进程是对正在运行的程序的抽象（处理器主存和I/O）：</p>
+<p><strong>进程</strong>是对一个正在运行的程序的一个抽象，对于一个CPU，可以同时运行多个进程，即并发运行，看起来每个进程都在独占CPU，实际上程序的指令是交错运行的。操作系统实现这种交错执行的机制称为<strong>上下文切换</strong></p>
+<p>从一个进程到另一个进程的转换是由操作系统内核管理的</p>
+<p>内核不是一个独立的进程，它是系统管理全部进程所用代码和数据结构的集合</p>
+<p><strong>先加载程序A的上下文，然后开始执行A，保存程序A的上下文，调用下一个程序B的上下文，执行B，保存B的上下文…</strong></p>
+<p>进程 = 加载上下文+执行+保存上下文​</p>
+</li>
+</ul>
+<p>虚拟机是对整个计算机的抽象</p>
+<h2 id="溢出"><a href="#溢出" class="headerlink" title="溢出"></a>溢出</h2><ol>
+<li>无符号数加法，相加后最高位有进位，进位被丢掉</li>
+<li>补码加法：<ol>
+<li>正溢出：两个正数相加大于2^(n-1)，符号位变成了1，变成了负数</li>
+<li>正常</li>
+<li>负溢出：两个符数相加小于-2^(n-1)，符号为变成了0，变成了正数</li>
+</ol>
+</li>
+</ol>
+<h2 id="Memory-Wall"><a href="#Memory-Wall" class="headerlink" title="Memory Wall"></a>Memory Wall</h2><p>内存墙：主存访问时间通处理器时钟周期时间的比值</p>
+<p>内存墙问题：主存访问速度的提上远远慢于处理器速度的提升</p>
+<h2 id="互连"><a href="#互连" class="headerlink" title="互连"></a>互连</h2><p>互连网络用来连接各级组件：</p>
+<ul>
+<li>片上互连：<ul>
+<li>传送不同流水级和执行单元之间的数值</li>
+<li>用来连接各个处理器核到共享的cache bank</li>
+</ul>
+</li>
+<li>系统互联：<ul>
+<li>连接各个处理器（CMP）核存储器以及I/O</li>
+</ul>
+</li>
+<li>I/O互连：<ul>
+<li>将各种I/O设备连接到系统总线上</li>
+</ul>
+</li>
+<li>系统间互连：<ul>
+<li>连接多个独立的系统，包括：<ul>
+<li>SAN（系统区域网，连接短距离的系统）</li>
+<li>LAN（局域网，连接一个组织或建筑内的系统）</li>
+<li>WAN（广域网，连接远程的局域网）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>互联网：全球范围内的互连</li>
+</ul>
+<h2 id="并发和并行"><a href="#并发和并行" class="headerlink" title="并发和并行"></a>并发和并行</h2><p><strong>并发concurrency：</strong>多个时刻在同一段时间内发生，例如一个cpu可以“同时“处理多线程</p>
+<p><strong>并行parallellism：</strong>多个事件在同一时刻发生，多核cpu可以同时处理多个任务</p>
+<h2 id="进程和线程"><a href="#进程和线程" class="headerlink" title="进程和线程"></a>进程和线程</h2><ul>
+<li>进程是资源的分配和调度的一个独立单元，线程是CPU调度的基本单元</li>
+<li>同一个进程中可以包含多个线程，至少包含一个线程。并且线程共享整个进程的资源</li>
+<li>线程的创建和销毁所需要的时间比进程小很多</li>
+<li>线程中执行时一般都要进行同步和互斥</li>
+<li>单核CPU在同一时间内只能够运行一个进程，也只能够运行一个线程，只不过由于时间片轮转的制度才会让我们感觉是在同时运行</li>
+</ul>
+<h2 id="超线程-同时多线程SMT"><a href="#超线程-同时多线程SMT" class="headerlink" title="超线程/同时多线程SMT"></a>超线程/同时多线程SMT</h2><p>硬件多线程：</p>
+<ol>
+<li>时间多线程 Temporal MultiThreading （没有在消费级CPU上实现）<ol>
+<li>细粒度多线程 Fine-Grained MultiThreading CMT：每条指令执行之后都进行线程切换</li>
+<li>粗粒度多线程 Coarse-Grained MultiThreading FMT：仅在一些重要事件/高开销阻塞之后进行线程切换（在GPU上实现了）</li>
+</ol>
+</li>
+<li><strong>同步多线程 Simultaneous MultiThreading SMT</strong>：是硬件多线程的一个变种，利用多发射、动态调度微体系结构中的资源实现多线程，从而降低多线程的开销</li>
+</ol>
+<h2 id="多核"><a href="#多核" class="headerlink" title="多核"></a>多核</h2><ul>
+<li>任务级并行或进程级并行：通过同时运行独立程序的方法来利用多处理器</li>
+<li>并行处理程序：同时运行在多个处理器上的单一程序</li>
+</ul>
+<p>片上多处理器 Chip MultiProcessor（多核微处理器，<strong>CMP</strong>）：单一集成电路包括多个处理器/核</p>
+<p>多核和多处理器系统的指令或时钟是不同步的，线程在各自处理器核上独立运行，通常称为MIMD。各线程有时必须同步以协调活动或进行数据交换</p>
+<p>通常都是<strong>共享内存处理器（SMP shared memory processor）</strong>：共享一个物理内存空间的并行处理器</p>
+<p>SMP有两种：</p>
+<ul>
+<li>统一存储访问<strong>UMA</strong>：所有的CPU访问所有的内存位置，访存时间大致相同</li>
+<li>非同一存储访问<strong>NUMA</strong>：一些访存的请求会比其他快，取决于是哪个处理器访问哪个字</li>
+</ul>
+<h2 id="并行的分类"><a href="#并行的分类" class="headerlink" title="并行的分类"></a>并行的分类</h2><p><strong>数据级并行DLP</strong></p>
+<p><strong>任务级并行/进程级并行TLP</strong></p>
+<p><strong>指令级并行ILP</strong></p>
+<p><strong>线程级并行TLP</strong></p>
+<p><strong>需求级并行RLP</strong></p>
+<p>最初在设计RISC时，精力主要体现在两种关键技术上:</p>
+<ul>
+<li>指令级并行的开发（最初通过流水线，后来通过多指令发射）</li>
+<li>缓存的使用</li>
+</ul>
+<p>ILP的局限性导致了重心转移到了多核</p>
+<p>为了保持生产效率并尝试缩小性能差距，采用：</p>
+<ul>
+<li>即时（Just-In-Time）编译器</li>
+<li>跟踪编译（Trace-Based Compiling）的解释器</li>
+</ul>
+<p>为了获得更高性能的处理器，应当提高一个芯片上集成的核心数目，而不是加快单核处理器的速度，因此处理器性能的提高从单纯依赖ILP，转向DLP和TLP（线）</p>
+<p>ILP由编译器和硬件隐式处理，而DLP、TLP（线）和RLP需要开发人员显式处理</p>
+<p>应用程序中主要有两种并行：</p>
+<ul>
+<li>数据级并行DLP：可以同时操作许多数据项</li>
+<li>任务级并行TLP：在于创建了一些可以单独处理但是大量采用并行方式执行的工作任务</li>
+</ul>
+<p>通过四种方法实现上述两种并行：</p>
+<ul>
+<li><p>单处理器设计技术（如超标量，乱序执行）充分利用了ILP并行，通常不需要程序员介入</p>
+</li>
+<li><p>子字并行：在一个宽字节内部进行的并行操作(实现了ILP？)</p>
+</li>
+<li><p>ILP在编译器的帮助下，利用pipeline适度开发DLP，利用推理执行（speculative execution）中度开发TLP</p>
+</li>
+<li><p>向量体系结构（Vector Architect）和GPU将单条指令并行应用于多个数据的集合，实现DLP</p>
+</li>
+<li><p>TLP（线）在一种紧耦合硬件模型中开发DLP或TLP（任），这种模型允许在并行线程之间实现交互</p>
+</li>
+<li><p>RLP通过由操作系统或程序员指定的耦合的任务实现并行</p>
+</li>
+</ul>
+<p>指令流数据流并行的粗略分类：</p>
+<ul>
+<li><p>单指令流、单数据流SISD：单处理器，标准的顺序计算机，可以利用ILP（超标量和推理执行 superscalar and speculative execution）</p>
+</li>
+<li><p>SIMD：同一个指令被使用不同数据流的处理器执行，利用DLP对多个不同的数据进行相同的操作，每个处理器都有自己的数据处理器。但整体只有一个指令存储器和控制存储器（用来提取和分派指令）</p>
+<p>串行指令运行在并行硬件上，即SIMD和向量指令（vector）。实现了DLP、向量体系结构</p>
+<p>开发DLP的方式：向量体系结构、标准指令集、多媒体扩展、GPU</p>
+<ul>
+<li><p>向量处理器：利用流水线执行向量指令</p>
+</li>
+<li><p>阵列处理器：利用并行来执行向量指令</p>
+<p>阵列处理器中有多个处理单元PE，每个处理单元都由一个执行单元和一个本地存储器组成</p>
+</li>
+</ul>
+</li>
+<li><p>MISD：目前没有被商用采用</p>
+</li>
+<li><p>MIMD：针对TLP（任），比SIMD更灵活，适用性更强，用于DLP开销可能会大一些</p>
+<p>利用了TLP（线）、RLP</p>
+</li>
+</ul>
+<h2 id="指令集并行ILP的开发"><a href="#指令集并行ILP的开发" class="headerlink" title="指令集并行ILP的开发"></a>指令集并行ILP的开发</h2><p>流水线处理器CPI=理想流水线CPI+结构化停顿+数据冒险停顿+控制停顿</p>
+<ul>
+<li>转发和旁路：（降低了）潜在的数据冒险停顿</li>
+<li>延迟分支和简单分支调度：控制冒险停顿</li>
+<li>基本编译器流水线调度：数据冒险停顿</li>
+<li>基本动态调度（记分板）：由真相关引起的数据冒险停顿</li>
+<li>循环展开：控制冒险停顿</li>
+<li>分支预测：控制停顿</li>
+<li>采用重命名的动态调度：由数据冒险、输出相关和反相关引起的停顿</li>
+<li>硬件推测：数据冒险和控制冒险停顿</li>
+<li>动态存储器消除二义：涉及存储器的动态冒险停顿</li>
+<li>每个周期发出多条指令：理想CPI</li>
+<li>编译器相关性分析、软件流水线、踪迹调试：理想CPI、数据冒险停顿</li>
+<li>硬件支持编译器推测：理想CPI、数据冒险停顿、分支冒险停顿</li>
+</ul>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2017/12/25/cache-basic/">阅读笔记-cache基础知识</a>
+            
+            
+            <a class="next" rel="next" href="/2017/11/14/pipeline-basic/">阅读笔记-流水线基础知识</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>gem5全系统模式 | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">gem5全系统模式</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">四月 22, 2019&nbsp;&nbsp;20:13:16</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E6%A8%A1%E6%8B%9F%E5%99%A8/">体系结构模拟器</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>研究需要模拟parsec，但是这个东西需要多线程库pthread，gem5的m5threads貌似不能用。<br>网上大多数人给出的方案都是全系统，好吧那我就只能搞一搞全系统了</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">mkdir [path] &amp;&amp; cd [path]</span><br><span class="line">wget http://www.m5sim.org/dist/current/x86/x86-system.tar.bz2</span><br><span class="line">tar -zxf x86-system.tar.bz2</span><br><span class="line"></span><br><span class="line">vi configs/common/SysPaths.py</span><br><span class="line"><span class="meta">#</span><span class="bash"> line 60        path = [ <span class="string">'/dist/m5/system'</span>, <span class="string">'[path]'</span> ]</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 或直接在环境变量中声明</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">export</span> M5_PATH=<span class="string">'[path]:[path]'</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">vi configs/common/Benchmarks.py</span><br><span class="line"><span class="meta">#</span><span class="bash"> line 60        <span class="built_in">return</span> env.get(<span class="string">'LINUX_IMAGE'</span>, disk(<span class="string">'linux-x86.img'</span>))</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 或直接在命令行中  --disk-image=linux-x86.img</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sudo build/X86/gem5.fast configs/example/fs.py </span><br><span class="line"><span class="meta">#</span><span class="bash"> 启动全系统</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 若报错提示缺少bigswap2.img，从gem5网站上下载一个alpha镜像</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> </span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 解压就可以获得</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 打开另一终端</span></span><br><span class="line">cd util/term</span><br><span class="line">make</span><br><span class="line">./m5term 3456</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 运行程序</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 或使用--script=</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+
+<p><strong>模拟parsec2.1</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">wget http://www.cs.utexas.edu/~parsec_m5/x86_64-vmlinux-2.6.28.4-smp</span><br><span class="line">wget http://www.cs.utexas.edu/~parsec_m5/x86root-parsec.img.bz2</span><br><span class="line"></span><br><span class="line">bzip2 -d x86root-parsec.img.bz2</span><br><span class="line">mv x86root-parsec.img disks/</span><br><span class="line">mv x86_64-vmlinux-2.6.28.4-smp binaries/</span><br><span class="line"></span><br><span class="line">vi configs/common/FSConfig.py</span><br><span class="line"><span class="meta">#</span><span class="bash"> line 624   self.kernel = binary(<span class="string">'x86_64-vmlinux-2.6.28.4-smp'</span>)</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 或直接在命令行中--kernel=x86_64-vmlinux-2.6.28.4-smp</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 文件位于/parsec/install/bin</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>连接进系统</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd util/term</span><br><span class="line">make</span><br><span class="line">./m5term 3456</span><br></pre></td></tr></table></figure>
+
+<p><strong>向镜像中添加程序</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mount -o loop,offset&#x3D;$((63*512)) linux-x86.img [dir]</span><br></pre></td></tr></table></figure>
+
+<p><strong>其他问题</strong></p>
+<ul>
+<li>不断输出 warn: could not read byte from debugger<br>解决方法：怀疑为其他应用占用了gdb端口（7000），<br>可以通过在fs.py中起始位置添加m5.debug.setRemoteGDBPort(0)禁用gdb，<br>或指定其他端口如m5.debug.setRemoteGDBPort(55555)。<br>如果不需要m5term连接，也可以使用m5.disableAllListeners()</li>
+<li>parsec按照上述步骤卡死<br>解决方法：x86_64-vmlinux-2.6.28.4-smp这个kernel的问题，可以使用官网x86的镜像中的x86_64-vmlinux-2.6.22.9.smp，也可以自己编译其他版本的kernel，据mailing list中的回答，3.4.112版本比较稳定</li>
+</ul>
+<p><em>reference</em></p>
+<ul>
+<li><a href="https://www.mail-archive.com/gem5-users@m5sim.org/msg02928.html" target="_blank" rel="noopener">https://www.mail-archive.com/gem5-users@m5sim.org/msg02928.html</a></li>
+<li><a href="https://www.mail-archive.com/gem5-users@m5sim.org/msg02014.html" target="_blank" rel="noopener">https://www.mail-archive.com/gem5-users@m5sim.org/msg02014.html</a></li>
+<li><a href="https://www.mail-archive.com/gem5-users@gem5.org/msg14070.html" target="_blank" rel="noopener">https://www.mail-archive.com/gem5-users@gem5.org/msg14070.html</a></li>
+<li><a href="https://yulistic.gitlab.io/2016/05/gem5-make-a-new-boot-image/" target="_blank" rel="noopener">https://yulistic.gitlab.io/2016/05/gem5-make-a-new-boot-image/</a></li>
+</ul>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/05/16/inline-asm/">汇编格式与内联汇编</a>
+            
+            
+            <a class="next" rel="next" href="/2019/04/18/mshr/">cache miss与MSHR</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

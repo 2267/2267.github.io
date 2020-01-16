@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>缓存？内存？外存？主存？辅存？硬盘？ | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">缓存？内存？外存？主存？辅存？硬盘？</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">三月 19, 2018&nbsp;&nbsp;21:32:34</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84/">体系结构</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>发现其实很多人对这些词混淆了概念，总结一下：</p>
+<ul>
+<li><p>缓存：这个没什么可说的，cache，位于cpu片上，目前的cpu一般是三级缓存</p>
+</li>
+<li><p>主存/内存/一级存储：英文为main/primary/internal memory，指电脑中的内存条，或者手机上的运行内存，也就是一般在1g-16g之间的这个数值，在嵌入式系统中可能是几m到几百m</p>
+</li>
+<li><p>辅存/外存/二级存储：英文auxiliary/second/external memory，指电脑中的硬盘/磁盘/固态硬盘，手机中的闪存等等，一般大小在几百g到几t。以及U盘，移动硬盘，网盘等等</p>
+</li>
+<li><p>内存：由于硬盘和主存都有memory，在翻译的时候很多人将memory都翻译为内存，所以大家说的内存既包括主存又包括硬盘</p>
+<p>​</p>
+</li>
+</ul>
+<p>此外</p>
+<ul>
+<li>ROM：Read Only Memory。其实现在的硬盘并不是只读的，是可写可读的。实际上正确的描述是非易的存储器（NVM）即断电之后仍保留数据</li>
+<li>RAM：Random-Access Memory。实际上硬盘也是随机存储的。RAM其实最开始的正确描述是RWM（read and write memory），但是当时的人觉得RWM没办法发音，所以就用RAM这个词，结果这个词后来又用来描述随机访存，结果就混乱了。</li>
+</ul>
+<ul>
+<li>目前的cache使用SRAM（貌似第三集缓存是一种特殊的DRAM）</li>
+<li>目前的主存是建立在DRAM之上的，例如DDR3</li>
+</ul>
+<ul>
+<li>硬盘/磁盘/机械硬盘：使用磁头和盘片来存取数据</li>
+<li>Flash：是建立在EEPROM上的，用于USB</li>
+<li>SSD：是建立在Flash上的，用于固态硬盘</li>
+</ul>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/03/21/linux-mem-area/">linux内存中的各区域</a>
+            
+            
+            <a class="next" rel="next" href="/2018/03/19/endian/">大端与小端</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

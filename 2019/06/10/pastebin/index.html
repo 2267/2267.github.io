@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>使用pastebin作为后台进行服务器监控通知 | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">使用pastebin作为后台进行服务器监控通知</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">六月 10, 2019&nbsp;&nbsp;15:19:44</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E5%85%B6%E4%BB%96/">其他</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>在服务器上运行程序时，经常会遇到程序会跑数小时甚至几天的情况，而且在当前程序运行后还需要继续运行，所以需要知道什么时间运行结束，就要经常登入服务器查看，这样稍微有点麻烦。我想能使程序在运行后，给我发通知，不用登录服务器即可知道。</p>
+<p>当然，最开始想到的就是用email，然而我配置了一下并未成功，而且我并不常查看邮件，邮件的自动同步也会因为省电模式而关闭。另外想到的就是使用微信通知，但是这就需要注册微信的相关服务，虽然配置好很方便，但是感觉配置过程麻烦，等以后有时间在实现吧，毕竟我的这个功能也并不经常使用，只有在论文实验时才需要。</p>
+<p>之前听说过pastebin，是一个所有人都可以向上面上传文档的网站，最近看了一下，发现他们还提供了post api，这样就可以使用脚本向上面发送数据了。比如程序运行结束后，就向网站上发送一个新的<code>paste</code>，我直接登录网站查看或者用api获取，即可知道程序是否结束。</p>
+<p>pastebin的api介绍在<a href="https://pastebin.com/api" target="_blank" rel="noopener">这里</a>，使用配置如下：</p>
+<ol>
+<li><p>注册一个账号，这样你就有了账户名，密码，以及<code>api_dev_key</code>（在上面的api页面上能看到）</p>
+</li>
+<li><p>获取<code>api_user_key</code>，可以使用网上的接口调试工具，也可以自己写脚本，例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># import requests  </span></span><br><span class="line"> <span class="function"><span class="keyword">def</span> <span class="title">keygen</span><span class="params">()</span>:</span></span><br><span class="line">     postdata=&#123;<span class="string">'api_dev_key'</span>:<span class="string">'xxxxxx'</span>, <span class="string">'api_user_name'</span>:<span class="string">'xxx'</span>, <span class="string">'api_user_password'</span>:<span class="string">'xxx'</span> &#125;</span><br><span class="line"> r=requests.post(<span class="string">'https://pastebin.com/api/api_login.php'</span>,data=postdata)</span><br><span class="line"> print(r.text)</span><br></pre></td></tr></table></figure>
+<p>返回值为api_user_key</p>
+</li>
+<li><p>创建paste，这样就可以<code>your_prog &amp;&amp; create_paste</code>。创建public paste所有人都能看到，创建private的别人看不到（需要使用api_user_key）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">new_private</span><span class="params">(key , content , name=<span class="string">'test'</span>)</span>:</span></span><br><span class="line">    postdata=&#123;<span class="string">'api_dev_key'</span>:<span class="string">'xxxxxxx'</span>, <span class="string">'api_option'</span>:<span class="string">'paste'</span>, <span class="string">'api_paste_name'</span>:name, <span class="string">'api_paste_code'</span>:str(content), <span class="string">'api_paste_private'</span>:<span class="number">2</span>, <span class="string">'api_user_key'</span>:key&#125;</span><br><span class="line">    r=requests.post(<span class="string">'https://pastebin.com/api/api_post.php'</span>,data=postdata)</span><br><span class="line">    print(r.text)</span><br></pre></td></tr></table></figure>
+<p>返回值为api_paste_key，即通过这个值可以访问网站<code>https://pastebin.com/&lt;api_paste_key&gt;</code>获得内容，这个key也可以用来在api中删除paste或查看paste内容</p>
+</li>
+<li><p>获取列表，查看内容，删除paste如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_list</span><span class="params">(key)</span>:</span>    </span><br><span class="line">    postdata=&#123;<span class="string">'api_dev_key'</span>:<span class="string">'xxxxxx'</span>, <span class="string">'api_option'</span>:<span class="string">'list'</span>, <span class="string">'api_results_limit'</span>:<span class="number">10</span>, <span class="string">'api_user_key'</span>:key&#125;</span><br><span class="line">    r=requests.post(<span class="string">'https://pastebin.com/api/api_post.php'</span>,data=postdata)</span><br><span class="line">    print(r.text)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_content</span><span class="params">(key,paste_key)</span>:</span>    </span><br><span class="line">    postdata=&#123;<span class="string">'api_dev_key'</span>:<span class="string">'xxxxxx'</span>, <span class="string">'api_option'</span>:<span class="string">'show_paste'</span>,  <span class="string">'api_user_key'</span>:key, <span class="string">'api_paste_key'</span>:paste_key&#125;</span><br><span class="line">    r=requests.post(<span class="string">'https://pastebin.com/api/api_raw.php'</span>,data=postdata)</span><br><span class="line">    print(r.text)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span><span class="params">(key, paste_key)</span>:</span></span><br><span class="line">    postdata=&#123;<span class="string">'api_dev_key'</span>:<span class="string">'xxxxxx'</span>, <span class="string">'api_option'</span>:<span class="string">'delete'</span>, <span class="string">'api_user_key'</span>:key,  <span class="string">'api_paste_key'</span>:paste_key&#125;</span><br><span class="line">    r=requests.post(<span class="string">'https://pastebin.com/api/api_post.php'</span>,data=postdata)</span><br><span class="line">    print(r.text)</span><br></pre></td></tr></table></figure>
+<p> 这里简单介绍一下获取列表这个参数，api_results_limit表示返回api_paste_key数量的上限，返回是根据时间由近到远的顺序。返回的数据中除了这个，还包含了paste的标题，返回格式为xml格式，如下：</p>
+ <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">paste</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">paste_key</span>&gt;</span>7U6FMWuY<span class="tag">&lt;/<span class="name">paste_key</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">paste_date</span>&gt;</span>1559888714<span class="tag">&lt;/<span class="name">paste_date</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">paste_title</span>&gt;</span>test<span class="tag">&lt;/<span class="name">paste_title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">paste_size</span>&gt;</span>3<span class="tag">&lt;/<span class="name">paste_size</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">paste_expire_date</span>&gt;</span>0<span class="tag">&lt;/<span class="name">paste_expire_date</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">paste_private</span>&gt;</span>0<span class="tag">&lt;/<span class="name">paste_private</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">paste_format_long</span>&gt;</span>None<span class="tag">&lt;/<span class="name">paste_format_long</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">paste_format_short</span>&gt;</span>text<span class="tag">&lt;/<span class="name">paste_format_short</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">paste_url</span>&gt;</span>https://pastebin.com/7U6FMWuY<span class="tag">&lt;/<span class="name">paste_url</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">paste_hits</span>&gt;</span>7<span class="tag">&lt;/<span class="name">paste_hits</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">paste</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/09/10/thread/">对线程的理解</a>
+            
+            
+            <a class="next" rel="next" href="/2019/06/06/vnc/">使用跳板访问实验室内资源</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

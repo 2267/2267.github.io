@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>修改m2s时遇到段错误的解决方法 | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">修改m2s时遇到段错误的解决方法</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十二月 3, 2019&nbsp;&nbsp;16:09:28</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E6%A8%A1%E6%8B%9F%E5%99%A8/">体系结构模拟器</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>我正在研究的内容用到了multi2sim，在几个月之前修改代码时就出现过这个问题，<br>当时通过微调某个参数避免了，现在又遇到了这个问题，而且之前的方法失效，所以只能跟着网上<br>调<code>segmentation fault</code>的教程解决一下了。</p>
+<p>之前虽然学过一点gdb，但是仅仅调过简单的程序，所以调这种大工程我的内心是很抵触的，于是<br>以前一直采用<code>printf</code>大法。但是m2s的运行很慢，而且打印输出会打印出大量内容。经过数十次的<br>修改代码-添加打印-编译-运行-查看输出，每次都要用几分钟到十几分钟，除了消耗精力，精神也很<br>受到打击，所以这次就迫不得已用了gdb。我的多次亲身经历证明，有些事情，躲是躲不掉的，早晚会面对。</p>
+<p>正式开始介绍内容：</p>
+<h3 id="第一步："><a href="#第一步：" class="headerlink" title="第一步："></a>第一步：</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ulimit -c 1024</span><br><span class="line">m2s --x86-sim detail ... # run program</span><br><span class="line">&lt;seg fault&gt; # generate 'core' file  </span><br><span class="line">gdb m2s core</span><br></pre></td></tr></table></figure>
+<p>输出如下，可以知道还是内存访问的问题，但是由于编译时没有添加调试信息，所以最后显示的是问号</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[New LWP 14551]</span><br><span class="line">Cannot access memory at address 0x6b2000006b3</span><br><span class="line">Cannot access memory at address 0x6b2000006ab</span><br><span class="line">Failed to read a valid object file image from memory.</span><br><span class="line">Core was generated by &#96;..&#x2F;..&#x2F;bin&#x2F;m2s --x86-sim detailed --x86-config cfg&#x2F;x86.ini --mem-config cfg&#x2F;mem.&#39;.</span><br><span class="line">Program terminated with signal SIGSEGV, Segmentation fault.</span><br><span class="line">#0  0x0000000000654b96 in ?? ()</span><br></pre></td></tr></table></figure>
+
+<h3 id="第二步："><a href="#第二步：" class="headerlink" title="第二步："></a>第二步：</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;seg fault&gt;</span><br><span class="line">dmesg</span><br></pre></td></tr></table></figure>
+<p>输出如下，看不懂</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[7016874.497318] m2s[5879]: segfault at 230 ip 000000000055900c sp 00007fff49529120 error 4 in m2s[400000+249000]</span><br><span class="line">[7105664.087300] m2s[10117]: segfault at 40 ip 000000000045df10 sp 00007ffc35379ad8 error 4 in m2s[400000+3a7000]</span><br><span class="line">[7106815.877504] m2s[899]: segfault at 40 ip 000000000045df10 sp 00007ffce7dd0938 error 4 in m2s[400000+3a7000]</span><br><span class="line">[7107514.425928] m2s[898]: segfault at 40 ip 000000000045df10 sp 00007fff315e90d8 error 4 in m2s[400000+3a7000]</span><br><span class="line">[7107589.190367] m2s[10176]: segfault at 40 ip 000000000045df10 sp 00007ffc8aa62d28 error 4 in m2s[400000+3a7000]</span><br><span class="line">[7108156.527295] m2s[26848]: segfault at 60 ip 0000000000654b96 sp 00007ffe9cf11cf0 error 4 in m2s[400000+3a7000]</span><br><span class="line">[7109646.048258] m2s[7437]: segfault at 48 ip 0000000000678b60 sp 00007ffe1905ceb0 error 4 in m2s[400000+3f7000]</span><br><span class="line">[7110049.312247] m2s[19303]: segfault at 48 ip 0000000000678b60 sp 00007ffe5a63d040 error 4 in m2s[400000+3f7000]</span><br><span class="line">[7110322.442248] m2s[22922]: segfault at 48 ip 0000000000678b60 sp 00007ffff48d9c20 error 4 in m2s[400000+3f7000]</span><br><span class="line">[7110636.877282] m2s[26476]: segfault at 48 ip 0000000000678b60 sp 00007ffc422850d0 error 4 in m2s[400000+3f7000]</span><br><span class="line">[7110820.823900] m2s[28644]: segfault at 48 ip 0000000000678b50 sp 00007ffe14a8f460 error 4 in m2s[400000+3f7000]</span><br><span class="line">[7111036.403194] m2s[31378]: segfault at 48 ip 0000000000678bd0 sp 00007ffe1a1123e0 error 4 in m2s[400000+3f7000]</span><br><span class="line">[7112297.246758] m2s[14551]: segfault at 60 ip 0000000000654b96 sp 00007ffe96562120 error 4 in m2s[400000+3a7000]</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="第三步："><a href="#第三步：" class="headerlink" title="第三步："></a>第三步：</h3><p>gdb运行一波吧，首先要加入-g参数，由于m2s用的是<code>automake</code>，直接修改makefile是会疯掉的，之前用于<code>scons</code>的<code>export CFLAGS=&#39;-g&#39;</code>也没有效果，上网搜了一下，automake可以通过<code>./configure --enable debug</code>添加调试信息，然后开始调试</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">gdb m2s</span><br><span class="line">set env ...</span><br><span class="line">set args ...</span><br><span class="line">run</span><br><span class="line">...</span><br><span class="line">Program received signal SIGSEGV, Segmentation fault.</span><br><span class="line">0x0000000000774b08 in x86::Context::getMmu (this&#x3D;0x0) at ..&#x2F;..&#x2F;..&#x2F;..&#x2F;src&#x2F;arch&#x2F;x86&#x2F;emulator&#x2F;Context.h:757</span><br><span class="line">757             mem::Mmu *getMmu() const &#123; return mmu; &#125;</span><br></pre></td></tr></table></figure>
+<p>bt一下看看函数调用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#0  0x0000000000774b08 in x86::Context::getMmu (this&#x3D;0x0) at ..&#x2F;..&#x2F;..&#x2F;..&#x2F;src&#x2F;arch&#x2F;x86&#x2F;emulator&#x2F;Context.h:757</span><br><span class="line">#1  0x00000000009f18dd in stage_1 (id&#x3D;2, c&#x3D;0x0) at nival.cc:91</span><br><span class="line">#2  0x00000000009f16dd in hook_xloop (id&#x3D;2, c&#x3D;0x0) at nival.cc:58</span><br><span class="line">#3  0x000000000076e924 in x86::Core::Run (this&#x3D;0xe843a0) at Core.cc:457</span><br><span class="line">#4  0x000000000075fd1a in x86::Cpu::Run (this&#x3D;0xe78980) at Cpu.cc:186</span><br><span class="line">#5  0x000000000074802e in x86::Timing::Run (this&#x3D;0xe78470) at Timing.cc:313</span><br><span class="line">#6  0x00000000009cb641 in comm::ArchPool::Run (this&#x3D;0xe744a0, num_active_emulators&#x3D;@0x7fffffffe528: 0, num_active_timing_simulators&#x3D;@0x7fffffffe52c: 0) at Arch.cc:158</span><br><span class="line">#7  0x00000000007429e2 in MainLoop () at m2s.cc:476</span><br><span class="line">#8  0x0000000000743218 in MainProgram (argc&#x3D;12, argv&#x3D;0x7fffffffe748) at m2s.cc:706</span><br><span class="line">#9  0x00000000007432d2 in main (argc&#x3D;12, argv&#x3D;0x7fffffffe748) at m2s.cc:725</span><br></pre></td></tr></table></figure>
+<p>这里面<code>hook_xloop</code>是我写的函数，可以看到是访问了空指针，空指针是<code>Context</code>，谁能想到这个指针跑着跑着就没了，添加个判断解决问题</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(!c)</span><br><span class="line">    <span class="keyword">return</span></span><br></pre></td></tr></table></figure>
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/12/03/dc-usage/">synopsys design compiler上手</a>
+            
+            
+            <a class="next" rel="next" href="/2019/11/15/m2s-env/">m2s版本及运行环境</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

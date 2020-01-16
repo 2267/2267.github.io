@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>图的遍历：BFS、DFS | 六鹢退飞</title>
+
+
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">图的遍历：BFS、DFS</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十二月 16, 2019&nbsp;&nbsp;16:02:05</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E5%9B%BE%E8%AE%A1%E7%AE%97/">图计算</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>图的遍历一般认为有两种，深度优先搜索DFS和广度优先搜索BFS。这两种算法不但自身的应用广泛，很多其他算法也是基于这两种遍历模式的。当然也可以强行加一种根据ID从小到大遍历的模式，一些和路径无关的算法当然就不会采用BFS和DFS给自己增加麻烦。当然也有一些研究认为一些不使用BFS、DFS遍历的算法采用这两种遍历在某些情形下可以得到更好的效果。</p>
+<p>从最开始的算法实现出发，介绍一下BFS：</p>
+<ul>
+<li>首先对于每个顶点，需要有一个代表是否访问过的flag bit</li>
+<li>需要一个queue保存即将访问的顶点</li>
+<li>一个起点</li>
+</ul>
+<p>步骤是这样婶儿的：</p>
+<ol>
+<li>把顶点bit置1，加入queue</li>
+<li>一个主循环，判断queue是不是空的<ol>
+<li>pop queue一个顶点</li>
+<li>判断顶点每个的邻居bit是否为1，是的话就不管，不是的话就push到queue，同时相应的bit置1</li>
+</ol>
+</li>
+</ol>
+<p>要实现多线程，可以用两个原子push和pop的queue实现，当然同步开销很大，有很多更好的实现如图分块等。</p>
+<p>对于DFS，直接把上面步骤中的queue换成stack就完事了。DFS是否支持多线程尚存争议，我是同意<code>DFS从本质上来说就不能用于多线程</code>这种说法的。DFS的多线程实现也曾经折磨我很久。</p>
+<p>在运行过程中，除了记录是否访问过外，也可以同时记录这个顶点的上一顶点是哪个，或者这个顶点是第几层等等</p>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span></span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/12/31/pinyin/">关于linux下输入法</a>
+            
+            
+            <a class="next" rel="next" href="/2019/12/16/graph-framework/">图的一些框架和benchmark</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
