@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>m2s中自定义添加指令 | 六鹢退飞</title>
+
+
+
+    <link rel="icon" href="/image/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                    <a class="menu-item" href="/piece">拾穗</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                    <a class="menu-item" href="/piece">拾穗</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">m2s中自定义添加指令</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">February 21, 2020&nbsp;&nbsp;11:14:27</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E6%A8%A1%E6%8B%9F%E5%99%A8/">体系结构模拟器</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <ul>
+<li>不同的x86指令长度不同</li>
+<li>inc为2Byte 4个十六进制数</li>
+<li>以inc格式的指令为例。创建一个名称为fake的指令</li>
+</ul>
+<p>相关的代码文件为：x86/emulator/ContextXXX.cc x86/dissambler/instruction.def</p>
+<ol>
+<li><p>观察def文件，确定一个没有被应用的opcode，如0xf5</p>
+</li>
+<li><p>找到inc_rm32，仿照该行添加<code>DEFINST(fake_rm32, 0xf5, SKIP, SKIP, 0, SKIP, 0)</code></p>
+</li>
+<li><p>进入ContextIsaMisc.cc，仿照<code>ExecuteInst_inc_rm32</code>函数编写</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">void Context::ExecuteInst_fake_rm32()&#123;</span><br><span class="line">	std::cout &lt;&lt; &quot;fake inst\n&quot; ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>make</code></p>
+</li>
+<li><p>编写程序，<code>gcc -m32 a.c</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">int main()&#123;</span><br><span class="line">    asm(&quot;.byte 0xf5,0x00&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>运行<code>m2s a.out</code></p>
+</li>
+</ol>
+<p>注意：</p>
+<ol>
+<li>wsl不支持32位程序</li>
+<li><code>--x86-sim detailed</code>的情况下指令会被多次执行，观测为3次，对于内置指令，添加打印语句同样会打印3次，这是由于<code>BranchPredict</code>引起</li>
+<li>m2s参数要放在程序之前，否则不起作用</li>
+</ol>
+<p>观察函数：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> Context::ExecuteInst_inc_rm32()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> rm32 = LoadRm32();</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">long</span> flags = regs.getEflags();</span><br><span class="line"></span><br><span class="line">	__X86_CONTEXT_SAVE_FLAGS__</span><br><span class="line">	<span class="function"><span class="keyword">asm</span> <span class="title">volatile</span> <span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">		<span class="string">"push %3\n\t"</span></span></span></span><br><span class="line"><span class="function"><span class="params">		<span class="string">"popf\n\t"</span></span></span></span><br><span class="line"><span class="function"><span class="params">		<span class="string">"mov %2, %%eax\n\t"</span></span></span></span><br><span class="line"><span class="function"><span class="params">		<span class="string">"inc %%eax\n\t"</span></span></span></span><br><span class="line"><span class="function"><span class="params">		<span class="string">"mov %%eax, %1\n\t"</span></span></span></span><br><span class="line"><span class="function"><span class="params">		<span class="string">"pushf\n\t"</span></span></span></span><br><span class="line"><span class="function"><span class="params">		<span class="string">"pop %0\n\t"</span></span></span></span><br><span class="line"><span class="function"><span class="params">		: <span class="string">"=g"</span> (flags), <span class="string">"=g"</span> (rm32)</span></span></span><br><span class="line"><span class="function"><span class="params">		: <span class="string">"g"</span> (rm32), <span class="string">"g"</span> (flags)</span></span></span><br><span class="line"><span class="function"><span class="params">		: <span class="string">"eax"</span></span></span></span><br><span class="line"><span class="function"><span class="params">	)</span></span>;</span><br><span class="line">	__X86_CONTEXT_RESTORE_FLAGS__</span><br><span class="line"></span><br><span class="line">	StoreRm32(rm32);</span><br><span class="line">	regs.setEflags(flags);</span><br><span class="line"></span><br><span class="line">	newUinst(Uinst::OpcodeAdd,</span><br><span class="line">			Uinst::DepRm32,</span><br><span class="line">			<span class="number">0</span>,</span><br><span class="line">			<span class="number">0</span>,</span><br><span class="line">			Uinst::DepRm32,</span><br><span class="line">			<span class="number">0</span>,</span><br><span class="line">			Uinst::DepZps,</span><br><span class="line">			Uinst::DepOf);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>前半部分用于功能仿真，后半部分用于时间仿真</p>
+<p>LoadRm32从内存中读出一个4x8bit的数据返回，如果Mod为0x03为相对寻址 </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//位于ContextIsa.cc</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> Context::LoadRm32()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> value;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (inst.getModRmMod() == <span class="number">0x03</span>)</span><br><span class="line">		<span class="keyword">return</span> regs.Read(inst.getModRmRm() + Instruction::RegEax);</span><br><span class="line"></span><br><span class="line">	MemoryRead(getEffectiveAddress(), <span class="number">4</span>, &amp;value);</span><br><span class="line">	emulator-&gt;isa_debug &lt;&lt; misc::fmt(<span class="string">"  [0x%x]=0x%x"</span>, last_effective_address, value);</span><br><span class="line">	<span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2019/12/31/pinyin/">关于linux下输入法</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
