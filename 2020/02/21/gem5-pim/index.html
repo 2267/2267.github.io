@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>gem5中pim的一种实现 | 六鹢退飞</title>
+
+
+
+    <link rel="icon" href="/image/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                    <a class="menu-item" href="/piece">拾穗</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                    <a class="menu-item" href="/piece">拾穗</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">gem5中pim的一种实现</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">February 21, 2020&nbsp;&nbsp;11:59:32</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E6%A8%A1%E6%8B%9F%E5%99%A8/">体系结构模拟器</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>写在前面：本文内容是我两年前的尝试，针对特定用途。可以作为一种参考</p>
+<h1 id="function-unit"><a href="#function-unit" class="headerlink" title="function unit"></a>function unit</h1><ol>
+<li><pre><code class="python">组织结构：FUDest 包含 OpList，count（这种FU的数目）， OpList是OpDesc的向量组，OpDesc中包括OpLat和OpClass
+
+cpu/FuncUnit.py
+<span class="class"><span class="keyword">class</span> <span class="title">OpClass</span><span class="params">(Enum)</span>:</span>
+    vals = [<span class="string">'No_OpClass'</span>, <span class="string">'IntAlu'</span>, <span class="string">'IntMult'</span>, <span class="string">'IntDiv'</span>, <span class="string">'FloatAdd'</span>,
+            <span class="string">'FloatCmp'</span>, <span class="string">'FloatCvt'</span>, <span class="string">'FloatMult'</span>, <span class="string">'FloatMultAcc'</span>, <span class="string">'FloatDiv'</span>,
+            <span class="string">'FloatMisc'</span>, <span class="string">'FloatSqrt'</span>,
+            <span class="string">'SimdAdd'</span>, <span class="string">'SimdAddAcc'</span>, <span class="string">'SimdAlu'</span>, <span class="string">'SimdCmp'</span>, <span class="string">'SimdCvt'</span>,
+            <span class="string">'SimdMisc'</span>, <span class="string">'SimdMult'</span>, <span class="string">'SimdMultAcc'</span>, <span class="string">'SimdShift'</span>, <span class="string">'SimdShiftAcc'</span>,
+            <span class="string">'SimdSqrt'</span>, <span class="string">'SimdFloatAdd'</span>, <span class="string">'SimdFloatAlu'</span>, <span class="string">'SimdFloatCmp'</span>,
+            <span class="string">'SimdFloatCvt'</span>, <span class="string">'SimdFloatDiv'</span>, <span class="string">'SimdFloatMisc'</span>, <span class="string">'SimdFloatMult'</span>,
+            <span class="string">'SimdFloatMultAcc'</span>, <span class="string">'SimdFloatSqrt'</span>,
+            <span class="string">'MemRead'</span>, <span class="string">'MemWrite'</span>, <span class="string">'FloatMemRead'</span>, <span class="string">'FloatMemWrite'</span>,
+            <span class="string">'IprAccess'</span>, <span class="string">'InstPrefetch'</span>]
+添加
+[...<span class="string">'IprAccess'</span>, <span class="string">'InstPrefetch'</span>, <span class="string">'PIM'</span>]
+
+cpu/op_class.hh
+
+static const OpClass PIM = Enums::PIM;
+
+cpu/o3/FuncUnitConfig.py
+
+<span class="class"><span class="keyword">class</span> <span class="title">PIM_Unit</span><span class="params">(FUDest)</span>:</span>
+    opList = [ OpDesc(opClass = <span class="string">'PIM'</span>, opLat = <span class="number">2</span>) ]
+    count = <span class="number">1</span>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">2. &#96;&#96;&#96;python</span><br><span class="line">   cpu&#x2F;StaticInstFlags.py</span><br><span class="line"></span><br><span class="line">   val &#x3D; [</span><br><span class="line">       ...</span><br><span class="line">       &#39;IsPIM&#39;</span><br><span class="line">   ]</span><br></pre></td></tr></table></figure></code></pre>
+</li>
+<li><pre><code class="python">arch/isa_parser.py
+
+line <span class="number">1361</span>:
+       <span class="keyword">if</span> <span class="keyword">not</span> self.op_class:
+            <span class="keyword">if</span> <span class="string">'IsStore'</span> <span class="keyword">in</span> self.flags:
+                <span class="comment"># The order matters here: 'IsFloating' and 'IsInteger' are</span>
+                <span class="comment"># usually set in FP instructions because of the base</span>
+                <span class="comment"># register</span>
+                <span class="keyword">if</span> <span class="string">'IsFloating'</span> <span class="keyword">in</span> self.flags:
+                    self.op_class = <span class="string">'FloatMemWriteOp'</span>
+                <span class="keyword">else</span>:
+                    self.op_class = <span class="string">'MemWriteOp'</span>
+            <span class="keyword">elif</span> <span class="string">'IsLoad'</span> <span class="keyword">in</span> self.flags <span class="keyword">or</span> <span class="string">'IsPrefetch'</span> <span class="keyword">in</span> self.flags:
+                <span class="comment"># The order matters here: 'IsFloating' and 'IsInteger' are</span>
+                <span class="comment"># usually set in FP instructions because of the base</span>
+                <span class="comment"># register</span>
+                <span class="keyword">if</span> <span class="string">'IsFloating'</span> <span class="keyword">in</span> self.flags:
+                    self.op_class = <span class="string">'FloatMemReadOp'</span>
+                <span class="keyword">else</span>:
+                    self.op_class = <span class="string">'MemReadOp'</span>
+            <span class="keyword">elif</span> <span class="string">'IsFloating'</span> <span class="keyword">in</span> self.flags:
+                self.op_class = <span class="string">'FloatAddOp'</span>
+            <span class="keyword">elif</span> <span class="string">'IsVector'</span> <span class="keyword">in</span> self.flags:
+                self.op_class = <span class="string">'SimdAddOp'</span>
+----------&gt; elif 'IsPIM' in self.flags:
+                self.op_class = <span class="string">'PIM'</span>
+            <span class="keyword">else</span>:
+                self.op_class = <span class="string">'IntAluOp'</span>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">4. &#96;&#96;&#96;python</span><br><span class="line">   arch&#x2F;riscv&#x2F;isa&#x2F;operands.isa</span><br><span class="line">   def operands &#123;&#123;</span><br><span class="line">       &#39;Rd&#39;: (&#39;IntReg&#39;, &#39;ud&#39;, &#39;RD&#39;, &#39;IsInteger&#39;, 1),</span><br><span class="line">       &#39;Rs1&#39;: (&#39;IntReg&#39;, &#39;ud&#39;, &#39;RS1&#39;, &#39;IsInteger&#39;, 2),</span><br><span class="line">       &#39;Rs2&#39;: (&#39;IntReg&#39;, &#39;ud&#39;, &#39;RS2&#39;, &#39;IsInteger&#39;, 3),</span><br><span class="line">       ...</span><br><span class="line">       &#39;Pd&#39;: (&#39;IntReg&#39;, &#39;ud&#39; , &#39;RD&#39;, &#39;IsPIM&#39;, 5),</span><br><span class="line">       &#39;Ps1&#39;: (&#39;IntReg&#39;, &#39;ud&#39;, &#39;RS1&#39;, &#39;IsPIM&#39;, 6),</span><br><span class="line">       &#39;Ps2&#39;: (&#39;IntReg&#39;, &#39;ud&#39;, &#39;RS2&#39;, &#39;IsPIM&#39;, 7),</span><br><span class="line">   &#125;&#125;</span><br></pre></td></tr></table></figure></code></pre>
+</li>
+<li><pre><code class="python">    <span class="number">0x1a</span>: decode FUNCT3 {    <span class="comment"># mod 为 xxxxeb  opcode 即为6b  去掉后两位为1a</span>
+        format ROp {
+                0x0: pimmod({{
+                       Pd = Ps1_sd % Ps2_sd;
+                   }});
+        }
+    }
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># stats and debug</span><br><span class="line">**统计信息，debug flag**</span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;bash</span><br><span class="line">build&#x2F;RISVC&#x2F;gem5.opt --debug-flags&#x3D;PIM config&#x2F;example&#x2F;se.py -c [path] --cpu-type&#x3D;DerivO3CPU --caches</span><br><span class="line">cat m5out&#x2F;stats.txt | grep PIM</span><br></pre></td></tr></table></figure>
+
+
+</code></pre>
+</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//-------------cpu/static_inst.hh</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isPIM</span><span class="params">()</span> <span class="keyword">const</span></span>&#123; <span class="keyword">return</span> flags[IsPIM]; &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//-----------cpu/base_dyn_inst.hh</span></span><br><span class="line">line <span class="number">510</span>:</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isPIM</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> staticInst-&gt;isPIM(); &#125;</span><br><span class="line"></span><br><span class="line">cpu/o3/iew.hh</span><br><span class="line"><span class="comment">//-------------------------------------line 417:-------------------------</span></span><br><span class="line">	Stats::Scalar PIMnums;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//-------------cpu/o3/Sconscript</span></span><br><span class="line">DebugFlag('PIM')</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//-------------cpu/o3/iew_impl.hh</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"debug/PIM.hh"</span></span></span><br><span class="line"><span class="comment">//--------------------------------------line 150----------------------</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> <span class="title">Impl</span>&gt; <span class="title">void</span></span></span><br><span class="line"><span class="class"><span class="title">DefaultIEW</span>&lt;Impl&gt;:</span>:regStats()</span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    PIMnums</span><br><span class="line">        .name(name()+<span class="string">".PIMnums"</span>)</span><br><span class="line">        .desc(<span class="string">"Number of PIM"</span>);</span><br><span class="line">        </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//--------------------------------line 1227:---------------------------</span></span><br><span class="line">DefaultIEW&lt;Impl&gt;::executeInsts()&#123;</span><br><span class="line">	...</span><br><span class="line">    <span class="keyword">if</span>(inst-&gt;isPIM())&#123;</span><br><span class="line">    	DPRINTF(PIM, <span class="string">"Execute PIM, PC: %s, [tid:%i] [sn:%i]\n"</span>, inst-&gt;pcState(), inst-&gt;threadNumber, inst-&gt;seqNum)；</span><br><span class="line">        ++PIMnums;</span><br><span class="line">        instToCommit(inst);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="iew-port"><a href="#iew-port" class="headerlink" title="iew port"></a>iew port</h1><h2 id="cpu-hh"><a href="#cpu-hh" class="headerlink" title="cpu.hh"></a>cpu.hh</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//----------------------------line 162:---------------------------</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PimPort</span> :</span> <span class="keyword">public</span> MasterPort&#123;</span><br><span class="line">        <span class="keyword">protected</span>:</span><br><span class="line">            DefaultIEW&lt;Impl&gt; *iew;</span><br><span class="line">            FullO3CPU&lt;Impl&gt; *cpu;</span><br><span class="line">        <span class="keyword">public</span>:</span><br><span class="line">            PimPort(DefaultIEW&lt;Impl&gt; *_iew, FullO3CPU&lt;Impl&gt;* _cpu)</span><br><span class="line">                : MasterPort(_cpu-&gt;name() + <span class="string">".pim_port"</span>,_cpu),iew(_iew),cpu(_cpu)&#123;&#125;</span><br><span class="line">        <span class="keyword">protected</span>:</span><br><span class="line">            <span class="function"><span class="keyword">virtual</span> <span class="keyword">bool</span> <span class="title">recvTimingResp</span><span class="params">(PacketPtr pkt)</span></span>;</span><br><span class="line">            <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">recvReqRetry</span><span class="params">()</span></span>;</span><br><span class="line">    &#125;;</span><br><span class="line"><span class="comment">//---------------------------line 652:---------------------------</span></span><br><span class="line">PimPort pimPort;</span><br><span class="line"></span><br><span class="line"><span class="comment">//---------------------------line 777:---------------------------</span></span><br><span class="line"><span class="function">MasterPort &amp;<span class="title">getPimPort</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> pimPort; &#125;</span><br><span class="line"><span class="function">BaseMasterPort &amp;<span class="title">getMasterPort</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;if_name, PortID idx = InvalidPortID)</span> <span class="keyword">override</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="cpu-cc"><a href="#cpu-cc" class="headerlink" title="cpu.cc"></a>cpu.cc</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//------------------------------line 94:---------------------------------</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="class"><span class="keyword">class</span> <span class="title">Impl</span>&gt;</span></span><br><span class="line"><span class="class"><span class="title">bool</span></span></span><br><span class="line"><span class="class"><span class="title">FullO3CPU</span>&lt;Impl&gt;:</span>:PimPort::recvTimingResp(PacketPtr pkt)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="class"><span class="keyword">class</span> <span class="title">Impl</span>&gt;</span></span><br><span class="line"><span class="class"><span class="title">void</span></span></span><br><span class="line"><span class="class"><span class="title">FullO3CPU</span>&lt;Impl&gt;:</span>:PimPort::recvReqRetry()&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> <span class="title">Impl</span>&gt;</span></span><br><span class="line"><span class="class"><span class="title">BaseMasterPort</span> &amp;</span></span><br><span class="line"><span class="class"><span class="title">FullO3CPU</span>&lt;Impl&gt;:</span>:getMasterPort(<span class="keyword">const</span> <span class="built_in">string</span> &amp;if_name, PortID idx)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (if_name == <span class="string">"dcache_port"</span>)</span><br><span class="line">        <span class="keyword">return</span> getDataPort();</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (if_name == <span class="string">"icache_port"</span>)</span><br><span class="line">        <span class="keyword">return</span> getInstPort();</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (if_name == <span class="string">"pport"</span>)</span><br><span class="line">        <span class="keyword">return</span> getPimPort();</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">         <span class="keyword">return</span> MemObject::getMasterPort(if_name, idx);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//-------------------------------------line 186:-------------------------------------</span></span><br><span class="line">pimPort(&amp;iew,<span class="keyword">this</span>),</span><br></pre></td></tr></table></figure>
+
+<h2 id="iew-hh"><a href="#iew-hh" class="headerlink" title="iew.hh"></a>iew.hh</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//------------------------------------last second line:----------------------------------</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	MasterPort *pPort;</span><br></pre></td></tr></table></figure>
+
+<h2 id="iew-impl-hh"><a href="#iew-impl-hh" class="headerlink" title="iew_impl.hh"></a>iew_impl.hh</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//------------------------------------line 83:--------------------------------------</span></span><br><span class="line">pPort(&amp;_cpu-&gt;getPimPort())</span><br></pre></td></tr></table></figure>
+
+<h2 id="O3CPU-py"><a href="#O3CPU-py" class="headerlink" title="O3CPU.py"></a>O3CPU.py</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pim_port = MasterPort(<span class="string">" xxx "</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="confing-py"><a href="#confing-py" class="headerlink" title="confing.py"></a>confing.py</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">system.cpu.pim_port = system.memory.recv_inst_port</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="packet-and-request"><a href="#packet-and-request" class="headerlink" title="packet and request"></a>packet and request</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">测试是否跑通</span><br><span class="line"><span class="comment">//------------------iew.imple_hh</span></span><br><span class="line">Request request;</span><br><span class="line">Request *req = &amp;request;</span><br><span class="line">PacketPtr pkt = Packet::createWrite(req);</span><br><span class="line">pim_port-&gt;sendFunctional(pkt);</span><br><span class="line"></span><br><span class="line"><span class="comment">//------------------simple_memobj.hh</span></span><br><span class="line"></span><br><span class="line">recvFunctional(Packet ptr)&#123;</span><br><span class="line">    DPRINTF(<span class="string">"SimpleMemobj"</span>,<span class="string">"++++++++++++++++++++++++++\n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">mem/request.hh</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">enum</span> flag_type&#123;</span><br><span class="line">	... </span><br><span class="line">    PIM                         = <span class="number">0x0000010000000000</span>,</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> isPIM() <span class="keyword">const</span> &#123; <span class="keyword">return</span> _flags.isSet(PIM); &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">riscv/isa/decoder.isa</span><br><span class="line"></span><br><span class="line"><span class="number">0x0</span>: plb(&#123;&#123;</span><br><span class="line">   Pd_sd = Mem_sb;</span><br><span class="line">&#125;&#125;, mem_flags=PIM);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">mem/simple_mem.cc</span><br><span class="line"></span><br><span class="line">recvAtomic()&#123;</span><br><span class="line">	<span class="keyword">if</span>(pkt-&gt;req-&gt;isPIM())&#123;</span><br><span class="line">   		...</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2020/02/21/gem5-riscv-ins/">gem5 riscv添加指令</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

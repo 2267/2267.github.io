@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Nival">
+
+
+
+
+
+<title>gem5 riscv添加指令 | 六鹢退飞</title>
+
+
+
+    <link rel="icon" href="/image/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                    <a class="menu-item" href="/piece">拾穗</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                    <a class="menu-item" href="/piece">拾穗</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">gem5 riscv添加指令</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">February 21, 2020&nbsp;&nbsp;11:58:46</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E6%A8%A1%E6%8B%9F%E5%99%A8/">体系结构模拟器</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p><em>本文章翻译自 - 原文：<a href="https://nitish2112.github.io/post/adding-instruction-riscv/" target="_blank" rel="noopener">Adding custom instruction to RISCV ISA and running it on gem5</a></em></p>
+<ol>
+<li><p>构建RISCV工具链</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/riscv/riscv-tools.git</span><br><span class="line">export TOP=$(pwd)</span><br><span class="line">cd riscv-tools</span><br><span class="line">git submodule update --init --recursive</span><br><span class="line">sudo apt-get install autoconf automake autotools-dev curl device-tree-compiler libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev    </span><br><span class="line">export RISCV=$TOP/riscv     #add to .bashrc</span><br><span class="line">export PATH=$PATH:$RISCV/bin       #add to .bashrc</span><br><span class="line">./build.sh                    # CC=gcc-4.8 CXX=g++-4.8</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试是否能编译运行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd $TOP</span><br><span class="line">echo -e '#include &lt;stdio.h&gt;\n int main(void) &#123; printf("Hello world!\\n"); return 0; &#125;' &gt; hello.c</span><br><span class="line">riscv64-unknown-elf-gcc -o hello hello.c</span><br><span class="line">spike pk hello</span><br><span class="line">输出&gt; "Hello world!"</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>添加指令</p>
+<p>修改riscv-opcodes/opcodes，添加 mod 一行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">and     rd rs1 rs2 31..25=0  14..12=7 6..2=0x0C 1..0=3</span><br><span class="line">....</span><br><span class="line">mod     rd rs1 rs2 31..25=1  14..12=0 6..2=0x1A 1..0=3</span><br><span class="line">....</span><br><span class="line">....</span><br></pre></td></tr></table></figure>
+
+<p>对应的mod语法为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mod r1, r2, r3</span><br><span class="line"></span><br><span class="line">Semantics:</span><br><span class="line">R[r1] &#x3D; R[r2] % R[r3]</span><br></pre></td></tr></table></figure>
+
+<p>运行：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat opcodes-pseudo opcodes opcodes-rvc opcodes-rvc-pseudo opcodes-custom | ./parse-opcodes -c &gt; ~/temp.h</span><br></pre></td></tr></table></figure>
+
+<p>打开temp.h，得到</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MATCH_MOD 0x200006b                                                    </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MASK_MOD 0xfe00707f</span></span><br></pre></td></tr></table></figure>
+
+<p>把这两行添加到：riscv-gnu-toolchain/riscv-binutils-gdb/include/opcode/riscv-opc.h文件中</p>
+<p>编辑riscv-gnu-toolchain/riscv-binutils-gdb/opcodes/riscv-opc.c：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">riscv_opcode</span> <span class="title">riscv_opcodes</span>[] =                                     </span></span><br><span class="line"><span class="class">&#123;</span>                                                                               </span><br><span class="line"><span class="comment">/* name,      isa,   operands, match, mask, match_func, pinfo.  */</span>              </span><br><span class="line">&#123;<span class="string">"unimp"</span>,     <span class="string">"C"</span>,   <span class="string">""</span>,  <span class="number">0</span>, <span class="number">0xffff</span>U,  match_opcode, <span class="number">0</span> &#125;,                       </span><br><span class="line">&#123;<span class="string">"unimp"</span>,     <span class="string">"I"</span>,   <span class="string">""</span>,  MATCH_CSRRW | (CSR_CYCLE &lt;&lt; OP_SH_CSR), <span class="number">0xffffffff</span>U,  match_opcode, <span class="number">0</span> &#125;, <span class="comment">/* csrw cycle, x0 */</span></span><br><span class="line">....</span><br><span class="line">....</span><br><span class="line">&#123;<span class="string">"mod"</span>,       <span class="string">"I"</span>,   <span class="string">"d,s,t"</span>,  MATCH_MOD, MASK_MOD, match_opcode, <span class="number">0</span> &#125;</span><br><span class="line">....</span><br></pre></td></tr></table></figure>
+
+<p>重新编译工具链</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd $TOP/riscv-tools</span><br><span class="line">./build.sh</span><br></pre></td></tr></table></figure>
+
+<p>编写c与汇编混编的代码mod.c，以供测试：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> a,b,c;</span><br><span class="line">  a = <span class="number">5</span>;</span><br><span class="line">  b = <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">asm</span> <span class="keyword">volatile</span></span><br><span class="line">  (</span><br><span class="line">    <span class="string">"mod   %[z], %[x], %[y]\n\t"</span></span><br><span class="line">    : [z] <span class="string">"=r"</span> (c)</span><br><span class="line">    : [x] <span class="string">"r"</span> (a), [y] <span class="string">"r"</span> (b)</span><br><span class="line">  );	</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">if</span> ( c != <span class="number">1</span> )&#123;</span><br><span class="line">     <span class="built_in">printf</span>(<span class="string">"\n[[FAILED]]\n"</span>);</span><br><span class="line">     <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"\n[[PASSED]]\n"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">riscv64-unknown-elf-gcc mod.c -o mod</span><br><span class="line">riscv64-unknown-elf-objdump -dC mod &gt; mod.dump //反编译，查看mod是否在里面</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>向Gem5中添加指令：</p>
+<p>修改src/arch/riscv/isa/decoder.isa</p>
+<p>在0x3大括号下添加：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0x1a</span>: decode FUNCT3 &#123;    <span class="comment"># mod 为 xxxxeb  opcode 即为6b  去掉后两位为1a</span></span><br><span class="line">    format ROp &#123;</span><br><span class="line">            <span class="number">0x0</span>: mod(&#123;&#123;</span><br><span class="line">                Rd = Rs1_sd % Rs2_sd;</span><br><span class="line">            &#125;&#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>重新构建gem5</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~/gem5</span><br><span class="line">scons build/RISCV/gem5.opt</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>运行代码，可以得到正确结果</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">build/RISCV/gem5.opt configs/example/se.py -c mod</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/02/21/gem5-pim/">gem5中pim的一种实现</a>
+            
+            
+            <a class="next" rel="next" href="/2020/02/21/vtune/">intel vtune分析工具</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
