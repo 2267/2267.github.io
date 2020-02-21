@@ -6,7 +6,7 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <meta name="author" content="Nival">
+    <meta name="author" content="2267">
 
 
 
@@ -135,7 +135,7 @@
         </header>
 
         <div class="post-content">
-            <p>这篇文章承接<a href="https://0xni.github.io/2019/06/03/190603-ssh-forward/">上文</a>，虽然上文的连接可以使用，但是会自动断开，找不到原因。实验室有另一台服务器，可以安装软件，老师建议先登录那个服务器A，在接着访问这个笔记本B。首先，服务器A同样没有公网ip，但是可以使用frp做内网穿透，通过使用实验室拥有的一台具有公网ip的服务器C（在远程）进行端口映射，最后使用x2go访问，而A和B是在实验室内部，是属于内网连接的，效果会比使用服务器C作为跳板效果好。整理一下思路：</p>
+            <p>这篇文章承接<a href="https://0xni.github.io/2019/06/03/190603-ssh-forward/" target="_blank" rel="noopener">上文</a>，虽然上文的连接可以使用，但是会自动断开，找不到原因。实验室有另一台服务器，可以安装软件，老师建议先登录那个服务器A，在接着访问这个笔记本B。首先，服务器A同样没有公网ip，但是可以使用frp做内网穿透，通过使用实验室拥有的一台具有公网ip的服务器C（在远程）进行端口映射，最后使用x2go访问，而A和B是在实验室内部，是属于内网连接的，效果会比使用服务器C作为跳板效果好。整理一下思路：</p>
 <ul>
 <li>客户机X：位于远程，通过x2go使用C的ip和端口，访问A</li>
 <li>服务器A：位于内网，使用frp将ssh端口映射到C上，当x2go连接上ssh端口后，会在A上开启新的端口用于图形界面传输，再通过vnc连接到B</li>
@@ -168,14 +168,9 @@
                 
                     <p class="copyright-item">
                         <span>License:</span>
-                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC-BY-NC-4.0</a> LICENSE</span>
+                        <span>Copyright (c) <a href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC-BY-NC-4.0</a> LICENSE， 转载请注明出处</span>
                     </p>
                 
-                
-                     <p class="copyright-item">
-                         <span>Slogan:</span>
-                         <span>转载请注明出处</span>
-                     </p>
                 
 
             </section>
@@ -209,7 +204,7 @@
         </div>
         <footer id="footer" class="footer">
     <div class="copyright">
-        <span>© Nival | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+        <span>© 2267 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
     </div>
 </footer>
 
