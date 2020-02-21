@@ -12,7 +12,7 @@
 
 
 
-<title>Archives: 2020 | 六鹢退飞</title>
+<title>intel vtune分析工具 | 六鹢退飞</title>
 
 
 
@@ -105,31 +105,72 @@
     }
 </script>
         <div class="main">
-            <div class="post-wrap archive">
+            <div class="container">
     
     
-        
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">intel vtune分析工具</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">February 21, 2020&nbsp;&nbsp;11:18:33</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/">工具使用</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>intel vtune可以用来分析程序在当前硬件环境下运行的问题，该软件可以<br>发现程序中的hotspot（运行时间长，不能很好利用多核性能的某些函数），<br>该程序在微体系结构上的不同地方是否运行低效，内存分配和访问状态，以及<br>多线程优化等等功能。</p>
+<p>hotspot功能十分有用，可以直接告诉程序中哪部分存在优化的空间。在编译程序时<br>添加编译flag，vtune可以直接精确到程序的某一行。hostpot中cpu time分成多个<br>部分：idle，poor，ok，ideal，over（从坏到好），并给出其百分比。</p>
+<p>微体系结构分析中，vtune将硬件体系结构以抽象的方式表示，将其划分为front end和<br>back end。front end为取指令到指令转化到微指令的过程，back end为微指令生成后到<br>retirement的过程。除了这两部分，还有retiring和bad specualtion两部分可能会产生低效。<br>back end bound可以进一步分为memory bound和core bound。</p>
+<p>intel vtune是在intel pin的基础上打造而来，可以免费获取使用。</p>
+<p>ref</p>
+<ul>
+<li><a href="https://software.intel.com/en-us/vtune-cookbook-top-down-microarchitecture-analysis-method" target="_blank" rel="noopener">Top-down Microarchitecture Analysis Method</a></li>
+</ul>
+
+        </div>
 
         
-            <h3>2020</h3>
-        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2020/02/21/m2s-ins/">m2s中自定义添加指令</a>
+            
+        </section>
 
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2020/02/21/vtune/">intel vtune分析工具</a>
-            <span class="archive-item-date">February 21, 2020</span>
-        </article>
-    
-        
 
-        
-
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2020/02/21/m2s-ins/">m2s中自定义添加指令</a>
-            <span class="archive-item-date">February 21, 2020</span>
-        </article>
-    
-    
+    </article>
 </div>
+
         </div>
         <footer id="footer" class="footer">
     <div class="copyright">
