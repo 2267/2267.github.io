@@ -12,7 +12,7 @@
 
 
 
-<title>Category: 工具使用 | 六鹢退飞</title>
+<title>diff, patch 文件差异比较及打补丁 | 六鹢退飞</title>
 
 
 
@@ -101,52 +101,77 @@
     }
 </script>
         <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">diff, patch 文件差异比较及打补丁</h1>
             
+                <div class="post-meta">
+                    
 
+                    
+                        <span class="post-time">
+                        Date: <a href="#">March 3, 2020&nbsp;&nbsp;10:04:46</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/">工具使用</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
 
-    
-<div class="container">
-    <div class="post-wrap categories">
-        <h2 class="post-title">-&nbsp;Categories&nbsp;·&nbsp;工具使用-</h2>
-    </div>
-    <div class="post-wrap archive">
-    
-    
+        <div class="post-content">
+            <p>假设存在两个文件夹，old和new，new是在old的代码上进行了一系列的修改的新文件夹</p>
+<p>diff -ruN old new &gt; 1.patch， 这里的 patch文件包含了不同的内容的信息</p>
+<p>假设有人同样有old文件夹，将patch分享给他，它可以将old文件夹和patch文件放在同一文件夹后<br>patch -s -p0 &lt; 1.patch</p>
+<p>或者进入old文件夹，把patch文件放在old中之后<br>patch -s -p1 &lt; 1.patch</p>
+<p>解释：<br>diff</p>
+<ul>
+<li>r：递归的比较，用于文件夹</li>
+<li>u：貌似不加这个参数也行，据说的增加可读性</li>
+<li>N：不带这个参数的话，new中有新文件，新文件的内容不会被记录在patch中（diff的输出里）</li>
+</ul>
+<p>patch</p>
+<ul>
+<li>s：只显示错误的信息</li>
+<li>p：去除diff输出中文件夹路径的层级数目</li>
+</ul>
+
+        </div>
+
         
+            <section class="post-copyright">
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) <a href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC-BY-NC-4.0</a> LICENSE， 转载请注明出处</span>
+                    </p>
+                
+                
 
+            </section>
         
-            <h3>2018</h3>
-        
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2020/02/21/gem5-pim/">gem5中pim的一种实现</a>
+            
+        </section>
 
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2018/04/05/gcc-static-lib/">gcc静态链接库的生成和使用</a>
-            <span class="archive-item-date">April 5, 2018</span>
-        </article>
-    
-        
 
-        
-
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2018/03/03/vscode/">vscode配置记录</a>
-            <span class="archive-item-date">March 3, 2018</span>
-        </article>
-    
-        
-
-        
-
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2018/02/16/git/">git使用指南</a>
-            <span class="archive-item-date">February 16, 2018</span>
-        </article>
-    
-    
-    <nav class="pagination">
-        <a class="page-number" href="/categories/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/">1</a><span class="page-number current">2</span>
-    </nav>
-
-</div>
+    </article>
 </div>
 
         </div>
