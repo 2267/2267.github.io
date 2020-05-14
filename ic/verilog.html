@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="2267">
+
+
+
+
+
+<title>六鹢退飞</title>
+
+
+
+    <link rel="icon" href="/image/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                    <a class="menu-item" href="/ic">数字IC</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                    <a class="menu-item" href="/ic">数字IC</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    <article class="post-wrap page">
+        
+        <h2 class="post-title"></h2>
+        
+        <section class="post-content">
+            <ol>
+<li><p>HDL语言可以从：算法、系统级、功能模块级、行为级、寄存器传输级、门级、开关级描述。RTL 和行为级区别：行为级不会考虑电路细节。RTL关心电路的实现方式和性能，行为级关心的是代码的行为，一般用于验证。</p>
+</li>
+<li><p>综合：将高层次的电路描述解析到门级等低层级的电路描述，将HDL、原理图转换成门级连接（网表），根据约束生成网表文件。目前最成熟的是RTL级综合工具</p>
+</li>
+<li><p>verilog包括数据流描述（连续赋值语句assign），行为描述（过程赋值语句always initial），结构化描述（模块实例化，UDP实例化，门实例化）</p>
+</li>
+<li><p>数据流描述：信号经过组合逻辑时会类似于数据流动，即信号从输入流向输出，并不会存储输入发生变化，经过一段时间会在输出端体现，连续驱动。只能对线网类型使用assign，且多个赋值可以驱动一个线网</p>
+</li>
+<li><p>延迟不能综合，描述方式为：</p>
+  <figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">assign</span> #<span class="number">1</span>        o = a ^ b;    <span class="comment">//输入到输出1ns</span></span><br><span class="line"><span class="keyword">assign</span> <span class="variable">#(1,2)</span>    o = a ^ b;    <span class="comment">//上升延迟为1ns，下降延迟为2ns，关闭延迟（输出变为Z）和传递到X的延迟取其中最小的</span></span><br><span class="line"><span class="keyword">assign</span> <span class="variable">#(1,2,3)</span>  o = a ^ b;    <span class="comment">//上升延迟为1ns，下降延迟为2ns，关闭延迟（输出变为Z）为3ns，传递到X的延迟取其中最小的</span></span><br><span class="line"><span class="keyword">assign</span> <span class="variable">#(4:5:6, 3:4:5)</span>         <span class="comment">//最小:典型:最大</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>begin-end中的过程赋值语句只能用于寄存器。包括阻塞赋值和非阻塞赋值</p>
+</li>
+<li><p>阻塞赋值 =：右侧向左侧的赋值过程是原子操作，有多个阻塞赋值语句时，前面的执行完后下面才能执行，一般用于组合逻辑</p>
+</li>
+<li><p>非阻塞赋值 &lt;=:计算右边的表达式，并不立刻赋值给左边，将赋值根据优先值执行，一般用于时序逻辑</p>
+</li>
+<li><p>行为描述initial和always遇到事件语句@和延迟语句#会挂起，直到实现了该语句</p>
+  <figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">initial</span> clock = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">always</span> #<span class="number">5</span> clock = ~clock;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>always和initial语句块中，begin-end是顺序语句组，fork-join是并行语句组</p>
+</li>
+<li><p>过程连续赋值：assign 与 deassign: 在过程语句块中强制为寄存器变量赋值并释放; force与release: 在过程语句块中对寄存器和线网进行强制赋值和释放。</p>
+</li>
+<li><p>使用if-else或case，尤其在组合逻辑中，要注意不要引入latch电路。未指定的比较会被认为是保持不变，进而引入锁存器。在数字同步逻辑中要避免引入锁存器，会造成竞争冒险，同时静态时序分析工具也很难分析锁存器经过的路径。</p>
+</li>
+<li><p>避免锁存器：</p>
+<ul>
+<li>使用完备的 if…else 语句，为 case 语句设置 default 操作</li>
+<li>检查设计中是否含有组合逻辑反馈环路</li>
+</ul>
+</li>
+<li><p>case与if不同，每个判断都具有一样的优先级。casez 将分支条件中的<code>z</code>看做不关心的值，在条件中可以写为<code>？</code>、casex 将分支条件中的<code>x</code>和<code>z</code>都看做不关心的值。</p>
+</li>
+<li><p>forever 循环和repeat循环</p>
+<ul>
+<li><p>forever永远执行  <code>forever #25 clk=~clk;</code></p>
+</li>
+<li><p>repeat 循环 执行固定的次数</p>
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">repeat</span> (<span class="number">8</span>)</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">	tmp = data[<span class="number">15</span>];</span><br><span class="line">	data = &#123;data &lt;&lt; <span class="number">1</span>, tmp&#125;</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>结构化描述：</p>
+<p>  <code>xor u_xor(sum, x, y);</code> 不连接可以留空</p>
+<p>  <code>HalfAdd u_halfadd_a ( .X(X), .Y(Y), .SUM(SUM))</code></p>
+</li>
+<li><p>input是线网，可以连接线网或寄存器</p>
+<p>  output是线网或寄存器，相连 一定是线网</p>
+<p>  inout是线网，相连一定是线网类型</p>
+</li>
+<li></li>
+</ol>
+
+        </section>
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 2267 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
