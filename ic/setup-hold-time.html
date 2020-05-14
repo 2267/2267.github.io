@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="2267">
+
+
+
+
+
+<title>六鹢退飞</title>
+
+
+
+    <link rel="icon" href="/image/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                    <a class="menu-item" href="/ic">数字IC</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                    <a class="menu-item" href="/ic">数字IC</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    <article class="post-wrap page">
+        
+        <h2 class="post-title"></h2>
+        
+        <section class="post-content">
+            <p>建立时间t<sub>su</sub>：触发器在时钟边沿到来前，输入数据需要保持的时间</p>
+<p>保持时间t<sub>hold</sub>：触发器在时钟边沿到来后，输入数据需要保持的时间</p>
+<p>建立时间、保持时间是时序分析的两个重要的参数。需要满足这两个时间的原因是，由于寄存器内部使用时钟和反时钟（比如传输门），这两个时钟会产生时钟重叠，在重叠时逻辑会发生错误</p>
+<p>建立保持时间会限制组合逻辑的延迟，一个经典的示例如下：</p>
+<p>数据in -&gt; 触发器D1 -&gt; 组合逻辑logic -&gt; 触发器D2 -&gt; 输出out，其中额D1和D2使用同一时钟clk，周期为T，且clk到达D1和D2具有一定的延时t<sub>1</sub>和t<sub>2</sub>。触发器D1和D2的建立时间t<sub>su</sub>和保持时间t<sub>hold</sub>是工艺相关的值，电路设计时不变，组合逻辑中的最长路径延迟为t<sub>plogic</sub>，最短路径延迟为t<sub>cdlogic</sub>，触发器的最长传输延迟（从D到Q）为t<sub>c-q</sub>，最短为t<sub>cdreg</sub>。</p>
+<p><strong>不考虑t<sub>1</sub>和t<sub>2</sub>时</strong></p>
+<ul>
+<li>D1在时钟边沿开始采集数据，为了在下一个周期满足D2的建立时间t<sub>su</sub>，数据从D1输入端in到D2输入端的延时不能超过T-t<sub>su</sub>，数据从D1的输入端到D2的输入端的最坏时间为t<sub>c-q</sub>+t<sub>plogic</sub>，所以有T-t<sub>su</sub>&gt;=t<sub>c-q</sub>+t<sub>plogic</sub>，即t<sub>c-q</sub>+t<sub>plogic</sub>+t<sub>su</sub>&lt;=T</li>
+<li>为了满足D2的保持时间t<sub>hold</sub>，D2输入端需要在第二个时钟之后t<sub>hold</sub>时间段内保持不变，这时如果D1进行采样，会在t<sub>cdlogic</sub>+t<sub>cdreg</sub>到达D2输入端改变该数值，所以需要t<sub>cdlogic</sub>+t<sub>cdreg</sub>&gt;=t<sub>hold</sub></li>
+</ul>
+<p>在这里面，为了满足建立保持时间，常常需要对组合逻辑进行修改，控制其延迟。可以看到组合逻辑延时越长越不利于建立时间，而越利于保持时间。设计中保持时间比较容易满足，一般关注建立时间。组合逻辑的延迟由逻辑延迟和线延迟相加构成。逻辑延迟的优化一般通过拆分逻辑，使用流水线技术。</p>
+<p><strong>歪斜：考虑t<sub>1</sub>和t<sub>2</sub>时，一般t<sub>1</sub>小于t<sub>2</sub></strong></p>
+<ul>
+<li>t<sub>c-q</sub>+t<sub>plogic</sub>+t<sub>su</sub>&lt;=T+t<sub>2</sub>-t<sub>1</sub></li>
+<li>t<sub>cdlogic</sub>+t<sub>cdreg</sub>&gt;=t<sub>hold</sub>+t<sub>2</sub>-t<sub>1</sub></li>
+</ul>
+<p>这种情况，由于空间原因，时钟到达不同的单元的延迟不同，称为时钟<strong>歪斜skew</strong>。（而在时间上出现时钟的不同叫做<strong>抖动jitter</strong>），可以看到正时钟歪斜有利于建立时间而不利于保持时间。</p>
+<p><strong>抖动t<sub>jitter</sub>产生的影响</strong></p>
+<p>由于抖动使时钟既会提前又会延后，所以对建立时间和保持时间都不利</p>
+<ul>
+<li>t<sub>c-q</sub>+t<sub>plogic</sub>+t<sub>su</sub>&lt;=T-2t<sub>jitter</sub></li>
+<li>t<sub>cdlogic</sub>+t<sub>cdreg</sub>&gt;=t<sub>hold</sub>+2t<sub>jitter</sub></li>
+</ul>
+<p>歪斜和抖动都应该避免，时钟歪斜的来源有：</p>
+<p>歪斜和抖动都需要避免。时钟歪斜的来源有：</p>
+<ul>
+<li>制造偏差(驱动器)，静态偏差</li>
+<li>互联线(电容，电阻)层间电介质厚度不同-dummy层</li>
+<li>温度-(阈值，电迁移率，门控，hotspot )  </li>
+</ul>
+<p>时钟抖动的来源有：</p>
+<ul>
+<li>时钟产生(模电，本征噪声，电源噪声，衬底耦合)</li>
+<li>电容耦合-时钟和信号耦合，时钟负载-每周期不同</li>
+<li>电源变化(开关， IR降，电感，门控切换)电压瞬间变化，网络中时钟抖动-去耦电容？  </li>
+</ul>
+
+        </section>
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 2267 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
