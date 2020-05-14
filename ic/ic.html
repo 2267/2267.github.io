@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="2267">
+
+
+
+
+
+<title>六鹢退飞</title>
+
+
+
+    <link rel="icon" href="/image/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                    <a class="menu-item" href="/ic">数字IC</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                    <a class="menu-item" href="/ic">数字IC</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    <article class="post-wrap page">
+        
+        <h2 class="post-title"></h2>
+        
+        <section class="post-content">
+            <p>本文为转载，经过简单的文字整理。</p>
+<p>版权声明：本文为CSDN博主「king阿金」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。<br>原文链接：<a href="https://blog.csdn.net/qq_34070723/article/details/84572373" target="_blank" rel="noopener">https://blog.csdn.net/qq_34070723/article/details/84572373</a></p>
+<p>数字前端以设计架构为起点，以生成可以布局布线的网表为终点；是用设计的电路实现想法；主要包括：基本的RTL编程和仿真，前端设计还可以包括IC系统设计、验证(verification)、综合、STA、逻辑等值验证 (equivalence check)。其中IC系统设计最难掌握，它需要多年的IC设计经验和熟悉那个应用领域，就像软件行业的系统架构设计一样，而RTL编程和软件编程相当。</p>
+<p>数字后端以布局布线为起点，以生成可以可以送交foundry进行流片的GDS2文件为终点；是将设计的电路制造出来，在工艺上实现想法。主要包括：后端设计简单说是P&amp;R，像芯片封装和管脚设计，floorplan，电源布线和功率验证，线间干扰的预防和修 正，时序收敛，自动布局布线、STA，DRC，LVS等，要求掌握和熟悉多种EDA工具以及IC生产厂家的具体要求</p>
+<p>从设计程度上来讲，前端设计的结果就是得到了芯片的门级网表电路。</p>
+<ol>
+<li><p>需求分析与规格制定</p>
+<p> 对市场调研，弄清需要什么样功能的芯片。芯片规格，也就像功能列表一样，是客户向芯片设计公司提出的设计要求，包括芯片需要达到的具体功能和性能方面的要求。</p>
+</li>
+<li><p>架构设计与算法设计</p>
+<p> 根据客户提出的规格要求，对一些功能进行算法设计，拿出设计解决方案和具体实现架构，划分模块功能。一般使用C或Matlab</p>
+</li>
+<li><p>HDL编码</p>
+<p> 使用硬件描述语言（VHDL，Verilog HDL）分模块以代码来描述实现，RTL coding。</p>
+</li>
+<li><p>功能仿真</p>
+<p> 仿真验证就是检验编码设计的正确性。不符合规格要重新设计和编码。设计和仿真验证是反复迭代的过程，直到验证结果显示完全符合规格标准。该部分称为前仿真。先进行模块级仿真（IP Level）,然后在放到一起片级仿真（chip level）。</p>
+<p> 工具：Synopsys的VCS，Mentor ModelSim（Linux版本为Questasim），Cadence Verilog－XL，Cadence NC-Verilog。该部分个人一般使用Modelsim，公司里应用最广泛的还是VCS。<br> IP级验证要用到基于SystemVerilog的UVM方法学，这个是属于验证工程师的范畴。</p>
+</li>
+<li><p>逻辑综合</p>
+<p> 仿真验证通过，进行逻辑综合。逻辑综合就是把HDL代码翻译成门级网表netlist。</p>
+<p> 综合需要设定约束条件，就是你希望综合出来的电路在面积，时序等目标参数上达到的标准。逻辑综合需要基于特定的综合库，不同的库中，门电路基本标准单元（standard cell）的面积，时序参数是不一样的。所以，综合库不一样，综合出来的电路在时序，面积上是有差异的。一般来说，综合完成后需要再次做仿真验证（这个也称为后仿真）</p>
+<p> 工具：Design Compiler，RTL Compiler</p>
+</li>
+<li><p>静态时序分析STA</p>
+<p> Static Timing Analysis（STA），静态时序分析，验证范畴，它主要是在时序上对电路进行验证，检查电路是否存在建立时间（setup time）和保持时间（hold time）的违例（violation）。这个是数字电路基础知识，一个寄存器出现这两个时序违例时，是没有办法正确采样数据和输出数据的，所以以寄存器为基础的数字芯片功能肯定会出现问题。</p>
+<p> 工具：Synopsys的Prime Time</p>
+</li>
+<li><p>形式验证</p>
+<p> 验证范畴，它是从功能上（STA是时序上）对综合后的网表进行验证。</p>
+<p> 常用的就是等价性检查方法，以功能验证后的HDL设计为参考，对比综合后的网表功能，他们是否在功能上存在等价性。这样做是为了保证在逻辑综合过程中没有改变原先HDL描述的电路功能。</p>
+<p> 工具：Synopsys的Formality</p>
+</li>
+</ol>
+<p>后端设计流程：
+　　</p>
+<ol>
+<li><p>可测性设计——DFT<br> Design ForTest</p>
+<p> 可测性设计。芯片内部往往都自带测试电路，DFT的目的就是在设计的时候就考虑将来的测试。DFT的常见方法就是，在设计中插入扫描链，将非扫描单元（如寄存器）变为扫描单元。关于DFT，有些书上有详细介绍，对照图片就好理解一点。</p>
+<p> 工具：Synopsys的DFT Compiler</p>
+</li>
+<li><p>布局规划(FloorPlan)</p>
+<p> 布局规划就是放置芯片的宏单元模块，在总体上确定各种功能电路的摆放位置，如IP模块，RAM，I/O引脚等等。布局规划能直接影响芯片最终的面积。工具为Synopsys的Astro。</p>
+</li>
+<li><p>时钟树综合——CTS<br> Clock Tree Synthesis，时钟树综合，简单点说就是时钟的布线。</p>
+<p> 由于时钟信号在数字芯片的全局指挥作用，它的分布应该是对称式的连到各个寄存器单元，从而使时钟从同一个时钟源到达各个寄存器时，时钟延迟差异最小。这也是为什么时钟信号需要单独布线的原因。</p>
+<p> 工具：Synopsys Physical Compiler。</p>
+</li>
+<li><p>布线(Place &amp; Route)<br> 这里的布线就是普通信号布线了，包括各种标准单元（基本逻辑门电路）之间的走线。比如我们平常听到的0.13um工艺，或者说90nm工艺，实际上就是这里金属布线可以达到的最小宽度，从微观上看就是MOS管的沟道长度。</p>
+<p> 工具：Synopsys的Astro</p>
+</li>
+<li><p>寄生参数提取。由于导线本身存在的电阻，相邻导线之间的互感,耦合电容在芯片内部会产生信号噪声，串扰和反射。这些效应会产生信号完整性问题，导致信号电压波动和变化，如果严重就会导致信号失真错误。提取寄生参数进行再次的分析验证，分析信号完整性问题是非常重要的。</p>
+<p> 工具：Synopsys的Star-RCXT</p>
+</li>
+<li><p>版图物理验证<br> 对完成布线的物理版图进行功能和时序上的验证，验证项目很多，</p>
+<p> LVS（Layout Vs Schematic）验证，简单说，就是版图与逻辑综合后的门级电路图的对比验证；</p>
+<p> DRC（Design Rule Checking）：设计规则检查，检查连线间距，连线宽度等是否满足工艺要求；</p>
+<p> ERC（Electrical Rule Checking）：电气规则检查，检查短路和开路等电气规则违例；等等。</p>
+<p> 工具：Synopsys的Hercules</p>
+</li>
+</ol>
+<p>实际的后端流程还包括电路功耗分析，以及随着制造工艺不断进步产生的DFM（可制造性设计）问题，在此不说了。物理版图验证完成也就是整个芯片设计阶段完成，下面的就是芯片制造了。</p>
+<p>物理版图以GDSII的文件格式交给芯片代工厂（称为Foundry）在晶圆硅片上做出实际的电路，再进行封装和测试，就得到了我们实际看见的芯片。</p>
+
+        </section>
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 2267 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
