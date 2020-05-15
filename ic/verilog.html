@@ -165,6 +165,116 @@
 </li>
 <li><p>一般性指导原则：面积和速度的平衡与互换原则，硬件原则，系统原则</p>
 </li>
+<li><p>有时在信号敏感表中增减一些信号，会得到不同的仿真结果，但是企图依靠修改信号敏感表来完成某些逻辑设计这种做法是错误的。一般综合工具的默认操作都是将 always 模块中使用到的所有输入信号和条件判断信号当做触发信号，综合到信号敏感表中，所以增减信号敏感表后得到的综合结果其实是完全一致的。之所以在增减信号敏感表后得到不同的仿真结果，是因为仿真器的工作机制所致，大多数仿真器是由数据流和时钟周期驱动的，如果信号敏感表中没有某个信号，则无法触发和该信号相关的仿真进程，从而得到不同的仿真结果。</p>
+</li>
+<li><p>编译指令</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#96;timescale 1ns&#x2F;100os   延时单位、时间精度</span><br><span class="line">&#96;define &#96;undef   定义宏，和parmeter区别是，define为全局定义，可以被多个文件使用</span><br><span class="line">&#96;ifdef &#96;else &#96;endif</span><br><span class="line">&#96;include &quot;HEAD.H&quot; 将文件中的内容替换这一行</span><br><span class="line">&#96;resetall  重置</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>逻辑值：</p>
+<ul>
+<li>1 0</li>
+<li>X 信号未知，在casex和casez中表示不关心，综合中不存在</li>
+<li>Z高阻，没有任何驱动，通常用来对三态总线进行建模</li>
+<li>另外还存在亚稳态</li>
+</ul>
+</li>
+<li><p>常量：整数型 实数型 字符串型</p>
+<p>整数型可以使用十进制，也可以采用基数表示法 <code>8’haa</code> <code>6’o33</code> <code>4’b1011</code> <code>3’d7</code>，数字中可采用下划线增加可读性</p>
+<p>实数型以采用十进制或科学计数法132.18e2</p>
+<p>字符串型和c语言一样</p>
+</li>
+<li><p>变量类型 线网型（表示连线assign） 寄存器型（表示数据存储单元always initial）。线网是被驱动的，值不被存储，每一个仿真step都要重新计算。寄存器是被赋值的，仿真过程中会被保存。寄存器型也可以表示组合逻辑，表示组合逻辑时要注意非阻塞赋值引起的组合逻辑环</p>
+</li>
+<li><p>线网型：</p>
+</li>
+</ol>
+<pre><code>- wire、tri（多驱动源建模）
+
+- wor、trior：连线具有或功能
+
+- wand、triand
+
+- trireg  连线具有总线保持功能，未初始化为x
+
+- tri1、tri0 无驱动时该连线状态保持1或0
+
+- supply1、supply0 表示电源和地信号
+
+- 除标注外其余未初始化为z</code></pre><ol start="25">
+<li><p>寄存器型：</p>
+<ul>
+<li>reg 仅仅在仿真时的寄存器，实际电路中可以实现为组合逻辑</li>
+<li>integer 整数型数据，至少32位</li>
+<li>time 时间类型 至少64位</li>
+<li>real、realtime 实数和实数时间寄存器</li>
+<li>reg声明存储器： reg [3:0] mem [0:7] 不能对存储器中单元进行位选择，必须为每个单元赋值</li>
+</ul>
+</li>
+<li><p>参数parameter 模块内的局部定义：调用模块时定制parameter. 通过defparam重新定义   mod instance(…) defparam instance.param = 0;</p>
+</li>
+<li><p>系统任务和系统函数，不可综合，只能仿真</p>
+<ul>
+<li><p>显示任务 <code>$display(&quot;at time %t - &quot;, $time, &quot;eq 0 = 1&quot;)   $displah(&quot;val is %d&quot;, ABC)</code></p>
+</li>
+<li><p>文件输入输出</p>
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">integer</span> file;</span><br><span class="line">file = <span class="built_in">$fopen</span>(<span class="string">"file.txt"</span>);</span><br><span class="line"><span class="built_in">$fdisplay</span>(file, <span class="string">"@%h\n%h"</span>, mpi_addr, data_in); <span class="comment">//写入文件</span></span><br><span class="line"><span class="built_in">$fclose</span>(file)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">reg</span> [<span class="number">7</span>:<span class="number">0</span>] DataSource [<span class="number">0</span>:<span class="number">47</span>];</span><br><span class="line"><span class="built_in">$readmemh</span>(<span class="string">"file.txt"</span> DataSource);  <span class="comment">//读文件到存储器</span></span><br><span class="line"></span><br><span class="line">文件内容</span><br><span class="line">@<span class="number">2</span>f  <span class="comment">// 地址,16进制</span></span><br><span class="line"><span class="number">24</span>  <span class="comment">// 数值</span></span><br><span class="line">@<span class="number">2</span>e</span><br><span class="line"><span class="number">81</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>仿真控制任务</p>
+<ul>
+<li>$finish 仿真退出</li>
+<li>$stop 仿真暂停</li>
+</ul>
+</li>
+<li><p>时序验证任务和仿真时间函数</p>
+<ul>
+<li>$setup 检查建立时间</li>
+<li>$hold 检查保持时间</li>
+<li>$time 返回64位的模拟时间</li>
+</ul>
+</li>
+<li><p>概率分布函数</p>
+<ul>
+<li>$random 返回一个32位有符号整数随机数</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>当进行相等<code>==</code>运算时，两个操作数必须逐位相等，其比较结果才为1（真），如果这些位是不定态（X）或高阻态（Z），其相等比较的结果就会是不定值；而进行全等运算<code>===</code>时，对不定或高阻状态也进行比较，当两个操作数完全一致时，其结果才为1，否则为0。</p>
+</li>
+<li><p>不能在一个以上的“always”过程块中对同一个变量赋值，这样会引起冲突，在综合时会报错</p>
+</li>
+<li><p>组合逻辑反馈环路是数字同步逻辑设计的大忌，它最容易因振荡、毛刺、时序违规等问题引起整个系统的不稳定和不可靠。组合逻辑反馈环路是一种高风险的设计方式，主要原因如</p>
+<ol>
+<li><p>组合反馈环的逻辑功能完全依赖于其反馈环路上组合逻辑的门延时和布线延时等，如果这些传播延时有任何改变，则该组合反馈环单元的整体逻辑功能将彻底改变，而且改变后的逻辑功能很难确定。</p>
+</li>
+<li><p>组合反馈环的时序分析是无穷循环的时序计算，综合、实现等 EDA 工具迫不得已一般必须主动割断其时序路径，以完成相关的时序计算。而不同的 EDA 工具对组合反馈环的处理方法各不相同，所以组合反馈环的最终实现结果有很多不确定因素。 </p>
+</li>
+</ol>
+</li>
+<li><p>同步时序系统中应该避免使用组合逻辑反馈环路，具体操作方法有以下两种。 </p>
+<ol>
+<li>牢记任何反馈环路必须包含寄存器。 </li>
+<li>检查综合、实现报告的 Warning 信息，发现 Combinational Loops 后立即进行 相应的修改。</li>
+</ol>
+</li>
+<li><p>结构的层次不易太深，顶层模块最好仅仅包含对所有模块的组织和调用，如输入、输出、双向信号等的描述都在顶层模块中完成。子模块之间也可以有接口，但是最好不要建立于模块间跨层次的接口， 应该综合考虑子模块的功能、结构、时序、复杂度等多方面因素对子模块进行合理划分。</p>
+</li>
+<li><p>对每个同步时序设计的子模块的输出使用寄存器 ，将相关的逻辑或者可以复用的逻辑划分在同一模块内。将不同优化目标的逻辑分开。将时序约束较松的逻辑归入同一模块。将存储逻辑独立划分成模块。</p>
+</li>
+<li><p>for 循环会被综合器展开为所有变量依次执行的语句，每个变量独立占用寄存器资源，有些情况不能有效地复用硬件逻辑资源，会造成资源的浪费。</p>
+</li>
+<li><p>设计中考虑的因素</p>
+<ul>
+<li>时序 (Timing):要求设计满足预期的时序约束条件，满足预期频率要求</li>
+<li>面积(Area):要求设计所消耗的资源满足所规划的面积要求</li>
+<li>时钟 (Clocks):要求设计中的时钟质量满足规划要求</li>
+<li>验证(Verification):要求设计通过仿真验证的测试</li>
+<li>可测试性(DFT, Design For Test):要求设计时充分考量设计的可测试性</li>
+<li>可重用性 (Reuse):要求设计便于被重用，便于继承设计成果</li>
+<li>功耗 (Power):要求设计的最大功耗在规定范围之内</li>
+<li>原厂策略 (Vendor Policies): 这里主要指 EDA 工具的优化测量和 PLD ASIC 厂方的设计规格与软硬件需求</li>
+</ul>
+</li>
 </ol>
 
         </section>

@@ -12,7 +12,7 @@
 
 
 
-<title>数字IC求职知识梳理 | 六鹢退飞</title>
+<title>六鹢退飞</title>
 
 
 
@@ -108,24 +108,20 @@
             <div class="container">
     <article class="post-wrap page">
         
-        <h2 class="post-title">数字IC求职知识梳理</h2>
+        <h2 class="post-title"></h2>
         
         <section class="post-content">
-            <ul>
-<li><a href="ic.html">数字IC流程</a></li>
-<li><a href="setup-hold-time.html">建立保持时间、歪斜和抖动</a></li>
-<li><a href="verilog.html">verilog知识点</a></li>
-<li><a href="verilog-example.html">常用模块的verilog实现</a></li>
-<li><a href="block.html">阻塞赋值和非阻塞赋值的使用原则</a></li>
-<li>FSM的三种写法</li>
-<li><a href="syn.html">同步和异步电路</a></li>
-<li><a href="reset.html">同步和异步复位</a></li>
-<li>同步和异步FIFO</li>
-<li>亚稳态和避免亚稳态的方法</li>
-<li>低功耗方法</li>
-<li>跨时钟域信号处理</li>
-<li>时序分析</li>
-</ul>
+            <ol>
+<li><strong>当模型触发器(Fip-fop) 时，使用非阻塞赋值。</strong></li>
+<li><strong>当模型锁存器(Latch)时，使用非阻塞赋值。</strong></li>
+<li><strong>当模型组合逻辑(使用always块)时，使用阻塞赋值。</strong></li>
+<li><strong>当在同个always块中，如果既模型时序逻辑，又模型组合逻辑，那么使用非阻塞赋值。</strong></li>
+<li>不要在同一个always块中既使用阻塞赋值，又使用非阻塞赋值。</li>
+<li>不要在两个或多个always块中对同一个变量赋值。</li>
+<li>使用$strobe显示那些用非阻塞赋值的变量。</li>
+<li>不要赋值使用#0延迟。</li>
+</ol>
+<p>转载自 <a href="https://blog.csdn.net/qq_38169589/article/details/82384640" target="_blank" rel="noopener">https://blog.csdn.net/qq_38169589/article/details/82384640</a></p>
 
         </section>
     </article>

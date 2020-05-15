@@ -12,7 +12,7 @@
 
 
 
-<title>数字IC求职知识梳理 | 六鹢退飞</title>
+<title>六鹢退飞</title>
 
 
 
@@ -108,24 +108,29 @@
             <div class="container">
     <article class="post-wrap page">
         
-        <h2 class="post-title">数字IC求职知识梳理</h2>
+        <h2 class="post-title"></h2>
         
         <section class="post-content">
-            <ul>
-<li><a href="ic.html">数字IC流程</a></li>
-<li><a href="setup-hold-time.html">建立保持时间、歪斜和抖动</a></li>
-<li><a href="verilog.html">verilog知识点</a></li>
-<li><a href="verilog-example.html">常用模块的verilog实现</a></li>
-<li><a href="block.html">阻塞赋值和非阻塞赋值的使用原则</a></li>
-<li>FSM的三种写法</li>
-<li><a href="syn.html">同步和异步电路</a></li>
-<li><a href="reset.html">同步和异步复位</a></li>
-<li>同步和异步FIFO</li>
-<li>亚稳态和避免亚稳态的方法</li>
-<li>低功耗方法</li>
-<li>跨时钟域信号处理</li>
-<li>时序分析</li>
+            <p><strong>异步电路</strong> </p>
+<ul>
+<li>电路的核心逻辑用组合电路实现，比如异步的 FIFO，RAM 读写信号、地址译码等电路。 </li>
+<li>电路的主要信号、输出信号等并不依赖于任何一个时钟性信号，不是由时钟信号驱动触发器 (FF) 产生的。 </li>
+<li>异步时序电路的最大缺点是容易产生毛刺。在布局布线后仿真和用高分辨率逻 辑分析仪观测实际信号时，这种毛刺尤其明显。 不利于器件移植，包括 FPGA 器件族之间的移植和从 FPGA 向结构化 ASIC 移植</li>
+<li>不利于静态时序分析 (STA) 和验证设计时序的性能。</li>
 </ul>
+<p><strong>同步时序电路</strong> </p>
+<ul>
+<li>电路的核心逻辑用各种各样的触发器实现。 </li>
+<li>电路的主要信号、输出信号等都是由某个时钟沿驱动触发器产生的。 </li>
+<li>同步时序电路可以很好地避免毛刺。布局布线后仿真和用高速逻辑分析仪采样实际工作信号时皆无毛刺。 </li>
+<li>有利于器件移植，包括 FPGA 器件族之间的移植和从 FPGA 向结构化 ASIC 移植</li>
+<li>有利于静态时序分析( STA) 和验证设计时序的性能。</li>
+</ul>
+<p>同步设计中，稳定可靠的数据采样必须遵从以下两个基本原则（建立保持时间）: </p>
+<ol>
+<li>在有效时钟沿到达前，数据输入至少已经稳定了采样寄存器的 Setup 时间之久，这条原则简称为满足 Setup 时间原则; </li>
+<li>在有效时钟沿到达后，数据输入至少还将稳定保持采样寄存器的 Hold 时间之久，这条原则简称为满足 Hold 时间原则。</li>
+</ol>
 
         </section>
     </article>
