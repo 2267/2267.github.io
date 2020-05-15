@@ -144,7 +144,7 @@
 <li>检查设计中是否含有组合逻辑反馈环路</li>
 </ul>
 </li>
-<li><p>case与if不同，每个判断都具有一样的优先级。casez 将分支条件中的<code>z</code>看做不关心的值，在条件中可以写为<code>？</code>、casex 将分支条件中的<code>x</code>和<code>z</code>都看做不关心的值。</p>
+<li><p>case与if不同，每个判断都具有一样的优先级。casez 将分支条件中的<code>z</code>看做不关心的值，在条件中可以写为<code>？</code>、casex 将分支条件中的<code>x</code>和<code>z</code>都看做不关心的值。有些时候，有些信号先到达，有些信号后到达，此时需要if建立拥有优先级的判断结构。</p>
 </li>
 <li><p>forever 循环和repeat循环</p>
 <ul>
@@ -163,7 +163,8 @@
 <p>  output是线网或寄存器，相连 一定是线网</p>
 <p>  inout是线网，相连一定是线网类型</p>
 </li>
-<li></li>
+<li><p>一般性指导原则：面积和速度的平衡与互换原则，硬件原则，系统原则</p>
+</li>
 </ol>
 
         </section>
