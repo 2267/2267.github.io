@@ -12,7 +12,7 @@
 
 
 
-<title>六鹢退飞</title>
+<title>verilog笔记 | 六鹢退飞</title>
 
 
 
@@ -102,11 +102,35 @@
 </script>
         <div class="main">
             <div class="container">
-    <article class="post-wrap page">
-        
-        <h2 class="post-title"></h2>
-        
-        <section class="post-content">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">verilog笔记</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">May 19, 2018&nbsp;&nbsp;15:00:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E9%9B%86%E6%88%90%E7%94%B5%E8%B7%AF/">集成电路</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
             <ol>
 <li><p>HDL语言可以从：算法、系统级、功能模块级、行为级、寄存器传输级、门级、开关级描述。RTL 和行为级区别：行为级不会考虑电路细节。RTL关心电路的实现方式和性能，行为级关心的是代码的行为，一般用于验证。</p>
 </li>
@@ -135,49 +159,38 @@
 <li><p>使用if-else或case，尤其在组合逻辑中，要注意不要引入latch电路。未指定的比较会被认为是保持不变，进而引入锁存器。在数字同步逻辑中要避免引入锁存器，会造成竞争冒险，同时静态时序分析工具也很难分析锁存器经过的路径。</p>
 </li>
 <li><p>避免锁存器：</p>
-<ul>
-<li>使用完备的 if…else 语句，为 case 语句设置 default 操作</li>
-<li>检查设计中是否含有组合逻辑反馈环路</li>
-</ul>
-</li>
+<pre><code>- 使用完备的 if...else 语句，为 case 语句设置 default 操作
+- 检查设计中是否含有组合逻辑反馈环路</code></pre></li>
 <li><p>case与if不同，每个判断都具有一样的优先级。casez 将分支条件中的<code>z</code>看做不关心的值，在条件中可以写为<code>？</code>、casex 将分支条件中的<code>x</code>和<code>z</code>都看做不关心的值。有些时候，有些信号先到达，有些信号后到达，此时需要if建立拥有优先级的判断结构。</p>
 </li>
 <li><p>forever 循环和repeat循环</p>
-<ul>
-<li><p>forever永远执行  <code>forever #25 clk=~clk;</code></p>
-</li>
-<li><p>repeat 循环 执行固定的次数</p>
-<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">repeat</span> (<span class="number">8</span>)</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">	tmp = data[<span class="number">15</span>];</span><br><span class="line">	data = &#123;data &lt;&lt; <span class="number">1</span>, tmp&#125;</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-</li>
+<pre><code>- forever永远执行  `forever #25 clk=~clk;`
+- repeat 循环 执行固定的次数
+
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">repeat</span> (<span class="number">8</span>)</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">	tmp = data[<span class="number">15</span>];</span><br><span class="line">	data = &#123;data &lt;&lt; <span class="number">1</span>, tmp&#125;</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure></code></pre></li>
 <li><p>结构化描述：</p>
-<p>  <code>xor u_xor(sum, x, y);</code> 不连接可以留空</p>
-<p>  <code>HalfAdd u_halfadd_a ( .X(X), .Y(Y), .SUM(SUM))</code></p>
-</li>
+<pre><code>`xor u_xor(sum, x, y);` 不连接可以留空
+
+`HalfAdd u_halfadd_a ( .X(X), .Y(Y), .SUM(SUM))`</code></pre></li>
 <li><p>input是线网，可以连接线网或寄存器</p>
-<p>  output是线网或寄存器，相连 一定是线网</p>
-<p>  inout是线网，相连一定是线网类型</p>
-</li>
+<pre><code>output是线网或寄存器，相连 一定是线网
+
+inout是线网，相连一定是线网类型</code></pre></li>
 <li><p>一般性指导原则：面积和速度的平衡与互换原则，硬件原则，系统原则</p>
 </li>
 <li><p>有时在信号敏感表中增减一些信号，会得到不同的仿真结果，但是企图依靠修改信号敏感表来完成某些逻辑设计这种做法是错误的。一般综合工具的默认操作都是将 always 模块中使用到的所有输入信号和条件判断信号当做触发信号，综合到信号敏感表中，所以增减信号敏感表后得到的综合结果其实是完全一致的。之所以在增减信号敏感表后得到不同的仿真结果，是因为仿真器的工作机制所致，大多数仿真器是由数据流和时钟周期驱动的，如果信号敏感表中没有某个信号，则无法触发和该信号相关的仿真进程，从而得到不同的仿真结果。</p>
 </li>
 <li><p>编译指令</p>
-  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#96;timescale 1ns&#x2F;100os   延时单位、时间精度</span><br><span class="line">&#96;define &#96;undef   定义宏，和parmeter区别是，define为全局定义，可以被多个文件使用</span><br><span class="line">&#96;ifdef &#96;else &#96;endif</span><br><span class="line">&#96;include &quot;HEAD.H&quot; 将文件中的内容替换这一行</span><br><span class="line">&#96;resetall  重置</span><br></pre></td></tr></table></figure>
-</li>
+<pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#96;timescale 1ns&#x2F;100os   延时单位、时间精度</span><br><span class="line">&#96;define &#96;undef   定义宏，和parmeter区别是，define为全局定义，可以被多个文件使用</span><br><span class="line">&#96;ifdef &#96;else &#96;endif</span><br><span class="line">&#96;include &quot;HEAD.H&quot; 将文件中的内容替换这一行</span><br><span class="line">&#96;resetall  重置</span><br></pre></td></tr></table></figure></code></pre></li>
 <li><p>逻辑值：</p>
-<ul>
-<li>1 0</li>
-<li>X 信号未知，在casex和casez中表示不关心，综合中不存在</li>
-<li>Z高阻，没有任何驱动，通常用来对三态总线进行建模</li>
-<li>另外还存在亚稳态</li>
-</ul>
-</li>
+<pre><code>- 1 0
+- X 信号未知，在casex和casez中表示不关心，综合中不存在
+- Z高阻，没有任何驱动，通常用来对三态总线进行建模
+- 另外还存在亚稳态</code></pre></li>
 <li><p>常量：整数型 实数型 字符串型</p>
-<p>整数型可以使用十进制，也可以采用基数表示法 <code>8’haa</code> <code>6’o33</code> <code>4’b1011</code> <code>3’d7</code>，数字中可采用下划线增加可读性</p>
-<p>实数型以采用十进制或科学计数法132.18e2</p>
-<p>字符串型和c语言一样</p>
+<p>  整数型可以使用十进制，也可以采用基数表示法 <code>8’haa</code> <code>6’o33</code> <code>4’b1011</code> <code>3’d7</code>，数字中可采用下划线增加可读性</p>
+<p>  实数型以采用十进制或科学计数法132.18e2</p>
+<p>  字符串型和c语言一样</p>
 </li>
 <li><p>变量类型 线网型（表示连线assign） 寄存器型（表示数据存储单元always initial）。线网是被驱动的，值不被存储，每一个仿真step都要重新计算。寄存器是被赋值的，仿真过程中会被保存。寄存器型也可以表示组合逻辑，表示组合逻辑时要注意非阻塞赋值引起的组合逻辑环</p>
 </li>
@@ -198,55 +211,42 @@
 
 - 除标注外其余未初始化为z</code></pre><ol start="25">
 <li><p>寄存器型：</p>
-<ul>
-<li>reg 仅仅在仿真时的寄存器，实际电路中可以实现为组合逻辑</li>
-<li>integer 整数型数据，至少32位</li>
-<li>time 时间类型 至少64位</li>
-<li>real、realtime 实数和实数时间寄存器</li>
-<li>reg声明存储器： reg [3:0] mem [0:7] 不能对存储器中单元进行位选择，必须为每个单元赋值</li>
-</ul>
-</li>
+<pre><code>- reg 仅仅在仿真时的寄存器，实际电路中可以实现为组合逻辑
+- integer 整数型数据，至少32位
+- time 时间类型 至少64位
+- real、realtime 实数和实数时间寄存器
+- reg声明存储器： reg [3:0] mem [0:7] 不能对存储器中单元进行位选择，必须为每个单元赋值</code></pre></li>
 <li><p>参数parameter 模块内的局部定义：调用模块时定制parameter. 通过defparam重新定义   mod instance(…) defparam instance.param = 0;</p>
 </li>
 <li><p>系统任务和系统函数，不可综合，只能仿真</p>
-<ul>
-<li><p>显示任务 <code>$display(&quot;at time %t - &quot;, $time, &quot;eq 0 = 1&quot;)   $displah(&quot;val is %d&quot;, ABC)</code></p>
-</li>
-<li><p>文件输入输出</p>
+<pre><code>- 显示任务 `$display(&quot;at time %t - &quot;, $time, &quot;eq 0 = 1&quot;)   $displah(&quot;val is %d&quot;, ABC)`
+
+- 文件输入输出
+
 <figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">integer</span> file;</span><br><span class="line">file = <span class="built_in">$fopen</span>(<span class="string">"file.txt"</span>);</span><br><span class="line"><span class="built_in">$fdisplay</span>(file, <span class="string">"@%h\n%h"</span>, mpi_addr, data_in); <span class="comment">//写入文件</span></span><br><span class="line"><span class="built_in">$fclose</span>(file)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">reg</span> [<span class="number">7</span>:<span class="number">0</span>] DataSource [<span class="number">0</span>:<span class="number">47</span>];</span><br><span class="line"><span class="built_in">$readmemh</span>(<span class="string">"file.txt"</span> DataSource);  <span class="comment">//读文件到存储器</span></span><br><span class="line"></span><br><span class="line">文件内容</span><br><span class="line">@<span class="number">2</span>f  <span class="comment">// 地址,16进制</span></span><br><span class="line"><span class="number">24</span>  <span class="comment">// 数值</span></span><br><span class="line">@<span class="number">2</span>e</span><br><span class="line"><span class="number">81</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>仿真控制任务</p>
-<ul>
-<li>$finish 仿真退出</li>
-<li>$stop 仿真暂停</li>
-</ul>
-</li>
-<li><p>时序验证任务和仿真时间函数</p>
-<ul>
-<li>$setup 检查建立时间</li>
-<li>$hold 检查保持时间</li>
-<li>$time 返回64位的模拟时间</li>
-</ul>
-</li>
-<li><p>概率分布函数</p>
-<ul>
-<li>$random 返回一个32位有符号整数随机数</li>
-</ul>
-</li>
-</ul>
-</li>
+
+- 仿真控制任务
+
+    - $finish 仿真退出
+    - $stop 仿真暂停
+
+- 时序验证任务和仿真时间函数
+
+    - $setup 检查建立时间
+    - $hold 检查保持时间
+    - $time 返回64位的模拟时间
+
+- 概率分布函数
+
+    - $random 返回一个32位有符号整数随机数</code></pre></li>
 <li><p>当进行相等<code>==</code>运算时，两个操作数必须逐位相等，其比较结果才为1（真），如果这些位是不定态（X）或高阻态（Z），其相等比较的结果就会是不定值；而进行全等运算<code>===</code>时，对不定或高阻状态也进行比较，当两个操作数完全一致时，其结果才为1，否则为0。</p>
 </li>
 <li><p>不能在一个以上的“always”过程块中对同一个变量赋值，这样会引起冲突，在综合时会报错</p>
 </li>
 <li><p>组合逻辑反馈环路是数字同步逻辑设计的大忌，它最容易因振荡、毛刺、时序违规等问题引起整个系统的不稳定和不可靠。组合逻辑反馈环路是一种高风险的设计方式，主要原因如</p>
-<ol>
-<li><p>组合反馈环的逻辑功能完全依赖于其反馈环路上组合逻辑的门延时和布线延时等，如果这些传播延时有任何改变，则该组合反馈环单元的整体逻辑功能将彻底改变，而且改变后的逻辑功能很难确定。</p>
-</li>
-<li><p>组合反馈环的时序分析是无穷循环的时序计算，综合、实现等 EDA 工具迫不得已一般必须主动割断其时序路径，以完成相关的时序计算。而不同的 EDA 工具对组合反馈环的处理方法各不相同，所以组合反馈环的最终实现结果有很多不确定因素。 </p>
-</li>
-</ol>
-</li>
+<pre><code>1. 组合反馈环的逻辑功能完全依赖于其反馈环路上组合逻辑的门延时和布线延时等，如果这些传播延时有任何改变，则该组合反馈环单元的整体逻辑功能将彻底改变，而且改变后的逻辑功能很难确定。
+
+2. 组合反馈环的时序分析是无穷循环的时序计算，综合、实现等 EDA 工具迫不得已一般必须主动割断其时序路径，以完成相关的时序计算。而不同的 EDA 工具对组合反馈环的处理方法各不相同，所以组合反馈环的最终实现结果有很多不确定因素。 </code></pre></li>
 <li><p>同步时序系统中应该避免使用组合逻辑反馈环路，具体操作方法有以下两种。 </p>
 <ol>
 <li>牢记任何反馈环路必须包含寄存器。 </li>
@@ -260,20 +260,52 @@
 <li><p>for 循环会被综合器展开为所有变量依次执行的语句，每个变量独立占用寄存器资源，有些情况不能有效地复用硬件逻辑资源，会造成资源的浪费。</p>
 </li>
 <li><p>设计中考虑的因素</p>
-<ul>
-<li>时序 (Timing):要求设计满足预期的时序约束条件，满足预期频率要求</li>
-<li>面积(Area):要求设计所消耗的资源满足所规划的面积要求</li>
-<li>时钟 (Clocks):要求设计中的时钟质量满足规划要求</li>
-<li>验证(Verification):要求设计通过仿真验证的测试</li>
-<li>可测试性(DFT, Design For Test):要求设计时充分考量设计的可测试性</li>
-<li>可重用性 (Reuse):要求设计便于被重用，便于继承设计成果</li>
-<li>功耗 (Power):要求设计的最大功耗在规定范围之内</li>
-<li>原厂策略 (Vendor Policies): 这里主要指 EDA 工具的优化测量和 PLD ASIC 厂方的设计规格与软硬件需求</li>
-</ul>
-</li>
+<pre><code>- 时序 (Timing):要求设计满足预期的时序约束条件，满足预期频率要求
+- 面积(Area):要求设计所消耗的资源满足所规划的面积要求
+- 时钟 (Clocks):要求设计中的时钟质量满足规划要求
+- 验证(Verification):要求设计通过仿真验证的测试
+- 可测试性(DFT, Design For Test):要求设计时充分考量设计的可测试性
+- 可重用性 (Reuse):要求设计便于被重用，便于继承设计成果
+- 功耗 (Power):要求设计的最大功耗在规定范围之内
+- 原厂策略 (Vendor Policies): 这里主要指 EDA 工具的优化测量和 PLD ASIC 厂方的设计规格与软硬件需求</code></pre></li>
 </ol>
 
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>2267</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://2267.github.io/2018/05/19/ic-verilog/">https://2267.github.io/2018/05/19/ic-verilog/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) <a href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC-BY-NC-4.0</a> LICENSE， 转载请注明出处</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/05/20/nvmain/">nvmain使用</a>
+            
+            
+            <a class="next" rel="next" href="/2018/04/05/gcc-static-lib/">gcc静态链接库的生成和使用</a>
+            
         </section>
+
+
     </article>
 </div>
 

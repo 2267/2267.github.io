@@ -12,7 +12,7 @@
 
 
 
-<title>diff, patch 文件差异比较及打补丁 | 六鹢退飞</title>
+<title>同步电路和异步电路 | 六鹢退飞</title>
 
 
 
@@ -108,21 +108,21 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">diff, patch 文件差异比较及打补丁</h1>
+            <h1 class="post-title">同步电路和异步电路</h1>
             
                 <div class="post-meta">
                     
 
                     
                         <span class="post-time">
-                        Date: <a href="#">March 3, 2020&nbsp;&nbsp;10:04:46</a>
+                        Date: <a href="#">May 19, 2020&nbsp;&nbsp;15:00:00</a>
                         </span>
                     
                     
                         <span class="post-category">
                     Category:
                             
-                                <a href="/categories/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/">工具使用</a>
+                                <a href="/categories/%E9%9B%86%E6%88%90%E7%94%B5%E8%B7%AF/">集成电路</a>
                             
                         </span>
                     
@@ -131,21 +131,26 @@
         </header>
 
         <div class="post-content">
-            <p>假设存在两个文件夹，old和new，new是在old的代码上进行了一系列的修改的新文件夹</p>
-<p>diff -ruN old new &gt; 1.patch， 这里的 patch文件包含了不同的内容的信息</p>
-<p>假设有人同样有old文件夹，将patch分享给他，它可以将old文件夹和patch文件放在同一文件夹后<br>patch -s -p0 &lt; 1.patch</p>
-<p>或者进入old文件夹，把patch文件放在old中之后<br>patch -s -p1 &lt; 1.patch</p>
-<p>解释：<br>diff</p>
+            <p><strong>异步电路</strong> </p>
 <ul>
-<li>r：递归的比较，用于文件夹</li>
-<li>u：貌似不加这个参数也行，据说的增加可读性</li>
-<li>N：不带这个参数的话，new中有新文件，新文件的内容不会被记录在patch中（diff的输出里）</li>
+<li>电路的核心逻辑用组合电路实现，比如异步的 FIFO，RAM 读写信号、地址译码等电路。 </li>
+<li>电路的主要信号、输出信号等并不依赖于任何一个时钟性信号，不是由时钟信号驱动触发器 (FF) 产生的。 </li>
+<li>异步时序电路的最大缺点是容易产生毛刺。在布局布线后仿真和用高分辨率逻 辑分析仪观测实际信号时，这种毛刺尤其明显。 不利于器件移植，包括 FPGA 器件族之间的移植和从 FPGA 向结构化 ASIC 移植</li>
+<li>不利于静态时序分析 (STA) 和验证设计时序的性能。</li>
 </ul>
-<p>patch</p>
+<p><strong>同步时序电路</strong> </p>
 <ul>
-<li>s：只显示错误的信息</li>
-<li>p：去除diff输出中文件夹路径的层级数目</li>
+<li>电路的核心逻辑用各种各样的触发器实现。 </li>
+<li>电路的主要信号、输出信号等都是由某个时钟沿驱动触发器产生的。 </li>
+<li>同步时序电路可以很好地避免毛刺。布局布线后仿真和用高速逻辑分析仪采样实际工作信号时皆无毛刺。 </li>
+<li>有利于器件移植，包括 FPGA 器件族之间的移植和从 FPGA 向结构化 ASIC 移植</li>
+<li>有利于静态时序分析( STA) 和验证设计时序的性能。</li>
 </ul>
+<p>同步设计中，稳定可靠的数据采样必须遵从以下两个基本原则（建立保持时间）: </p>
+<ol>
+<li>在有效时钟沿到达前，数据输入至少已经稳定了采样寄存器的 Setup 时间之久，这条原则简称为满足 Setup 时间原则; </li>
+<li>在有效时钟沿到达后，数据输入至少还将稳定保持采样寄存器的 Hold 时间之久，这条原则简称为满足 Hold 时间原则。</li>
+</ol>
 
         </div>
 
@@ -160,7 +165,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="https://2267.github.io/2020/03/03/diff-patch/">https://2267.github.io/2020/03/03/diff-patch/</a></span>
+                        <span><a href="https://2267.github.io/2020/05/19/ic-asyn/">https://2267.github.io/2020/05/19/ic-asyn/</a></span>
                     </p>
                 
                 
@@ -175,10 +180,10 @@
         
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2020/05/19/ic-block/">阻塞赋值与非阻塞赋值的使用场景</a>
+                <a class="prev" rel="prev" href="/2020/05/28/sniper/">sniper模拟器用法整合</a>
             
             
-            <a class="next" rel="next" href="/2020/02/21/gem5-pim/">gem5中pim的一种实现</a>
+            <a class="next" rel="next" href="/2020/05/19/ic-reset/">同步、异步复位</a>
             
         </section>
 

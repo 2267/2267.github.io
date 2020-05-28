@@ -12,7 +12,7 @@
 
 
 
-<title>六鹢退飞</title>
+<title>亚稳态和避免亚稳态的方法 | 六鹢退飞</title>
 
 
 
@@ -102,11 +102,35 @@
 </script>
         <div class="main">
             <div class="container">
-    <article class="post-wrap page">
-        
-        <h2 class="post-title"></h2>
-        
-        <section class="post-content">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">亚稳态和避免亚稳态的方法</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">May 19, 2020&nbsp;&nbsp;15:00:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E9%9B%86%E6%88%90%E7%94%B5%E8%B7%AF/">集成电路</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
             <p>亚稳态：既不是0又不是1的状态。在时钟有效沿到来的前后，触发器的数据端的数据不稳定导致违反触发器的建立时间或者保持时间，引起触发器的输出处于未知的状态。</p>
 <p>如果触发器的建立保持时间不能得到满足，则有可能会产生亚稳态另外复位过程中复位信号的释放相对于有效时钟沿的恢复时间（recovery time）不满足，也可能产生亚稳态，此时触发器输出端在有效时钟沿到达之后比较长的一段时间内将处于不确定的状态，将会产生毛刺并不断振荡，在这段时间里输出端在0和1之间处于振荡状态，而不是等于数据输入端的值。这段时间称为决断时间（resolution time）。经过决断之后输出端将稳定到0或1上，但是稳定到0或者1，是随机的，与输入没有必然的关系</p>
 <p>只要系统中有异步元件，亚稳态就是无法避免的，亚稳态主要发生在异步信号检测、跨时钟域信号传输以及复位电路等常用设计中。在跨时钟域信号传输时，由于源寄存器时钟和目的寄存器时钟相移未知，所以源寄存器数据发出数据，数据可能在任何时间到达异步时钟域的目的寄存器，所以无法保证满足目的寄存器Tsu和Th的要求。在异步信号采集中，由于异步信号可以在任意时间点到达目的寄存器，所以也无法保证满足目的寄存器Tsu和Th的要求；</p>
@@ -120,7 +144,42 @@
 </ol>
 <p>内容主要参考自：<a href="https://blog.csdn.net/gordon_77/article/details/79483119" target="_blank" rel="noopener">https://blog.csdn.net/gordon_77/article/details/79483119</a></p>
 
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>2267</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://2267.github.io/2020/05/19/ic-metastable/">https://2267.github.io/2020/05/19/ic-metastable/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) <a href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC-BY-NC-4.0</a> LICENSE， 转载请注明出处</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/05/19/ic-setup-hold-time/">建立时间、保持时间、歪斜、抖动</a>
+            
+            
+            <a class="next" rel="next" href="/2020/05/19/ic-block/">阻塞赋值与非阻塞赋值的使用场景</a>
+            
         </section>
+
+
     </article>
 </div>
 
