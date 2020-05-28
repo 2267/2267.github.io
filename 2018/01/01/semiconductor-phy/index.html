@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="2267">
+
+
+
+
+
+<title>半导体物理笔记 | 六鹢退飞</title>
+
+
+
+    <link rel="icon" href="/image/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">半导体物理笔记</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 1, 2018&nbsp;&nbsp;0:00:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E9%9B%86%E6%88%90%E7%94%B5%E8%B7%AF/">集成电路</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>本科学习半导体物理时写的笔记。公式语法在hexo主题上可能显示的不好。</p>
+<h1 id="一．半导体中的电子状态"><a href="#一．半导体中的电子状态" class="headerlink" title="一．半导体中的电子状态 "></a>一．半导体中的电子状态 </h1><h2 id="1-半导体的晶格结构和结合性质："><a href="#1-半导体的晶格结构和结合性质：" class="headerlink" title="1.半导体的晶格结构和结合性质："></a>1.半导体的晶格结构和结合性质：</h2><p>金刚石型结构和共价键</p>
+<p>闪锌矿型结构和混合键</p>
+<p>纤锌矿型结构</p>
+<h2 id="2-半导体中的电子状态和能带"><a href="#2-半导体中的电子状态和能带" class="headerlink" title="2.半导体中的电子状态和能带"></a>2.半导体中的电子状态和能带</h2><p>原子的能级和晶体的能带</p>
+<p>半导体中电子的状态和能带</p>
+<p>导体、半导体、绝缘体的能带</p>
+<h2 id="3-半导体中电子的运动-有效质量"><a href="#3-半导体中电子的运动-有效质量" class="headerlink" title="3.半导体中电子的运动 有效质量"></a>3.半导体中电子的运动 有效质量</h2><p>对于半导体来说，起作用的常常是接近于能带底部或能带顶部的电子</p>
+<p>$E\left( k \right) - E\left( 0 \right) = \frac{\hslash^{2}k^{2}}{2m_{n}^{<em>}}$<br>$m_{n}^{</em>} = \frac{\hslash^{2}}{\frac{d^{2}E}{dk^{2}}}$</p>
+<p>$v = \frac{\text{ℏk}}{m_{n}^{<em>}} = \frac{1}{\hslash}\frac{\text{dE}}{\text{dk}}$<br>$a = \frac{f}{m_{n}^{</em>}} = \frac{f}{\hslash^{2}}\frac{d^{2}E}{dk^{2}}$</p>
+<p>能带顶部电子的有效质量是负值，能带底部的电子有效质量是正值</p>
+<p>引进有效质量的意义在于它概括了半导体内部势场的作用，使得在解决半导体中电子在外力作用下的运动规律时，可以不涉及半导体内部势场的作用。特别是有效质量可以直接由实验测定。引入有效质量后可使问题变得简单，直接把外力和电子的加速度联系起来。</p>
+<h2 id="4-本征半导体的导电结构-空穴"><a href="#4-本征半导体的导电结构-空穴" class="headerlink" title="4.本征半导体的导电结构 空穴"></a>4.本征半导体的导电结构 空穴</h2><h2 id="5-回旋共振"><a href="#5-回旋共振" class="headerlink" title="5.回旋共振"></a>5.回旋共振</h2><h2 id="6-硅和锗的能带结构"><a href="#6-硅和锗的能带结构" class="headerlink" title="6.硅和锗的能带结构"></a>6.硅和锗的能带结构</h2><p>硅和锗的导带结构</p>
+<p>硅和锗的价带结构</p>
+<h1 id="二、半导体中杂质和缺陷能级"><a href="#二、半导体中杂质和缺陷能级" class="headerlink" title="二、半导体中杂质和缺陷能级"></a>二、半导体中杂质和缺陷能级</h1><p>缺陷分为三类：1.点缺陷，如空位、间隙原子2.线缺陷，如位错3.面缺陷，如层错、多晶体中的晶粒间界等。</p>
+<p>极微量的杂质和缺陷能够对半导体材料和物理性质和化学性质产生决定性的影响，也严重地影响半导体器件的质量。目前用于生产一般硅平面器件的硅单晶，要求控制位错密度在1000$\text{cm}^{- 2}$以下。</p>
+<p>原因：由于杂质和缺陷的存在，会使严格按周期性排列的原子所产生的周期性势场受到破坏，有可能在禁带中引入允许电子具有的能量状态（即能级）。</p>
+<p>即：杂质和缺陷能在禁带中引入能级。</p>
+<h2 id="硅、锗晶体中的杂质能级"><a href="#硅、锗晶体中的杂质能级" class="headerlink" title="硅、锗晶体中的杂质能级"></a>硅、锗晶体中的杂质能级</h2><p>杂质进入半导体硅以后，只可能以两种方式存在。间隙式杂质和替位式杂质。3、5族在硅、锗晶体中都是替位式杂质。</p>
+<p>电子脱离杂质原子的束缚成为导电电子的过程成为杂质电离。使这个多余的价电子挣脱束缚成为导电电子所需要的能量成为杂质电离能。用$\mathrm{\Delta}E_{D}$表示。5族杂质电离时能够释放电子而产生导电电子并形成正电中心，称他们为施主杂质或n型杂质。释放电子的过程叫做施主电离。施主杂质未电离时是中性的，成为束缚态或中性态，电离后成为正电中心，称为离化态。把主要依靠导带电子导电的半导体称为电子型或n型半导体。</p>
+<p>3族杂质在硅、锗中能够接受电子而产生导电空穴并形成负电中心，所以称它们为受主杂质或p型杂质。空穴挣脱受主杂质束缚的过程称为受主电离。受主杂质未电离时是中性的，称为束缚态或中性态。电离后成为负电中心，称为受主离化态。把主要依靠空穴导电的半导体称为空穴型或p型半导体。</p>
+<p>价带电子激发成为导带电子的过程成为本征激发。</p>
+<p>实验证明硅、锗中的3、5族杂质的电离能都很小，所以受主能级很接近于价带顶，施主能级很接近与导带底。通常将这些杂质能级称为浅能级，将产生浅能级的杂质称为浅能级杂质。浅能级杂质电离能很低，可以利用类氢模型来估算杂质的电离能。</p>
+<p>氢原子：</p>
+<p>$E_{n} = - \frac{m_{0}q^{4}}{2{(4\pi\varepsilon_{0})}^{2}\hslash^{2}\text{\ n}^{2}}$<br>$E_{0} = 13.6eV$</p>
+<p>$\mathrm{\Delta}E_{D} = \frac{m_{n}^{<em>}q^{4}}{2{(4\pi\varepsilon_{0}\varepsilon_{r})}^{2}\hslash^{2}} = \frac{m_{n}^{</em>} }{m_{0}}\frac{E_{0} }{ {\varepsilon_{r} }^{2} }$<br>$\mathrm{\Delta}E_{A} = \frac{m_{p}^{<em>}q^{4}}{2{(4\pi\varepsilon_{0}\varepsilon_{r})}^{2}\hslash^{2} } = \frac{m_{p}^{</em>}}{m_{0}}\frac{E_{0}}{ {\varepsilon_{r}}^{2} }$</p>
+<p>锗、硅的相对介电常数分别为16、12。</p>
+<p>类氢模型只是对实际情况的一个近似。</p>
+<p>$N_{D}$表示施主杂质浓度，$N_{A}$表示受主杂质浓度</p>
+<p>经过杂质补偿后半导体中的净杂质浓度称为有效杂质浓度。$N_{D} \approx N_{A}$时称为杂质的高度补偿，性能很差，不能用来制造半导体器件。</p>
+<p>非3、5族杂质在硅、锗的禁带中产生的施主能级距离导带底较远，它们产生的受主能级距离价带顶也较远，通常称为深能级和深能级杂质</p>
+<p>这些深能级杂质能够产生多次电离，每一次电离相应地由一个能级，往往能引入若干个能级，而且有的杂质既能引入施主能级又能引入受主能级。</p>
+<p>深能级杂质一般情况下含量很少，而且能级较深，它们对半导体中的载流子浓度和导电类型的影响没有浅能级杂质显著，但对于载流子的复合作用比浅能级杂质强，故这些杂质也称为复合中心。</p>
+<ol start="2">
+<li>3、5族化合物中的杂质能级</li>
+</ol>
+<hr>
+<ol start="3">
+<li>氮化镓、氮化铝、碳化硅中的杂质能级</li>
+</ol>
+<hr>
+<ol start="4">
+<li>缺陷、位错能级</li>
+</ol>
+<hr>
+<p>点缺陷：</p>
+<p>弗仓克耳缺陷：一部分原子会获得足够的能量，克服周围原子对它的束缚，挤入晶格原子间的间隙，形成间隙原子，原来的位置便形成空位。这时间隙原子和空位是成对出现的。</p>
+<p>肖特基缺陷：只在晶体内形成空穴而无间隙原子。</p>
+<p>这两种由温度决定的点缺陷又称为热缺陷，它们总是同时存在的。</p>
+<p>空位比间隙原子多得多，因而空位是常见的点缺陷。</p>
+<p>替位原子：这类缺陷在离子性强的化合物中存在的概率很小，所以在离子晶体中常可以忽略它们的作用。这种缺陷也称为反结构缺陷。</p>
+<p>位错：</p>
+<p>目前仅仅对具有金刚石结构的硅、锗中的位错了解得稍多一些。</p>
+<h1 id="三、半导体中载流子的统计分布"><a href="#三、半导体中载流子的统计分布" class="headerlink" title="三、半导体中载流子的统计分布"></a>三、半导体中载流子的统计分布</h1><p>半导体的导电性强烈地随温度而变化，这种变化主要是由于半导体中载流子浓度随温度而变化造成的</p>
+<h2 id="状态密度"><a href="#状态密度" class="headerlink" title="状态密度"></a>状态密度</h2><p>假定在能带中能量E~(E+dE)之间无限小的能量间隔内有dZ个量子态，则状态密度g(E)为</p>
+<p>$$g\left( E \right) = \frac{dZ}{\text{dE}}$$</p>
+<p>在k空间中，电子的允许量子态密度是$\frac{2V}{8\pi^{3}}$，这时，每个量子态最多只能容纳一个电子。</p>
+<p>导带底部附近$\text{\ \ \ \ \ }E\left( k \right) = E_{c} + \frac{\hslash^{2}k^{2}}{2m_{n}^{*}}$</p>
+<p>导带底附近状态密度为<br>$g_{C}\left( E \right) = \frac{V}{2\pi^{2}}\frac{ {(2m_{n}^{*})}^{\frac{3}{2} } }{\hslash^{3}}{(E - E_{c})}^{\frac{1}{2} }$</p>
+<p>价带顶附近状态密度为<br>$g_{V}\left( E \right) = \frac{V}{2\pi^{2} }\frac{ {(2m_{p}^{*})}^{\frac{3}{2} } }{\hslash^{3} }{(E_{v} - E)}^{\frac{1}{2}}$</p>
+<h2 id="费米能级和载流子的统计分布"><a href="#费米能级和载流子的统计分布" class="headerlink" title="费米能级和载流子的统计分布"></a>费米能级和载流子的统计分布</h2><p>费米分布函数<em>：</em>$f\left( E \right) = \frac{1}{1 + exp(\frac{E - E_{F}}{k_{0}T})}$</p>
+<p>空穴的费米分布函数：$1 - f\left( E \right) = \frac{1}{1 + exp(\frac{E_{F} - E}{k_{0}T})}$</p>
+<p>描写了热平衡条件下，电子在允许的量子态上如何分布的一个统计分布函数，$k_{0}$是玻耳兹曼常数，T是热力学温度。$E_{F}$是费米能级或费米能量，和温度、半导体材料的导电类型、杂质的含量以及能量零点的选取有关。</p>
+<p>当量子态的能量等于费米能级时，则该量子态被电子占据的概率为50%。</p>
+<p>玻耳兹曼分布函数：$f_{B}\left( E \right) = exp(\frac{E_{F} - E}{k_{0}T})$</p>
+<p>空穴的玻耳兹曼分布函数：$1 - f_{B}\left( E \right) = exp(\frac{E - E_{F}}{k_{0}T})$</p>
+<p>在半导体中，通常费米能级位于禁带内，而且与导带底或价带顶的距离远大于$k_{0}T$，一般可以用玻耳兹曼分布函数描写。</p>
+<p>服从玻耳兹曼统计律的电子系统称为非兼并系统。</p>
+<p>服从费米统计律的电子系统称为简并性系统。</p>
+<p>导带中的电子大多数是在导带底附近，价带中大多数空穴则在价带顶附近。</p>
+<p>$f\left( E_{C} \right) = exp( - \frac{E_{C} - E_{F}}{k_{0}T})$<br>$f\left( E_{V} \right) = exp(\frac{E_{V} - E_{F}}{k_{0}T})$</p>
+<p>$N_{C} = 2{(\frac{m_{n}^{*}k_{0}T}{2\pi\hslash^{2} })}^{\frac{3}{2} }$<br>$n_{0} = N_{C}exp( - \frac{E_{c} - E_{F}}{k_{0}T})$</p>
+<p>$N_{V} = 2{(\frac{m_{p}^{*}k_{0}T}{2\pi\hslash^{2}})}^{\frac{3}{2}}$<br>$p_{0} = N_{V}\exp\left( \frac{E_{V} - E_{F}}{k_{0}T} \right)$</p>
+<p>导带、价带的有效状态密度</p>
+<p>导带中的电子浓度和价带中的空穴浓度</p>
+<p>电子占据能量为$E_{C}$的量子态的概率，空穴占据能量为$E_{V}$的量子态的概率</p>
+<p>对一定的半导体材料，乘积$n_{0}p_{0}$只取决于温度T，与所含杂质无关。</p>
+<p>对于不同的半导体材料，禁带宽度不同，乘积也不相同。</p>
+<h2 id="本征半导体的载流子浓度"><a href="#本征半导体的载流子浓度" class="headerlink" title="本征半导体的载流子浓度"></a>本征半导体的载流子浓度</h2><p>本征半导体中$n_{0}{= p}_{0}$，即本征激发情况下的电中性条件。</p>
+<p>本征半导体的费米能级:$\ {\ E}<em>{i} = \frac{E</em>{C} + E_{V}}{2} + \frac{k_{0}T}{2}\ln\frac{N_{V}}{N_{C}} = \frac{E_{C} + E_{V}}{2} + \frac{3k_{0}T}{4}\ln\frac{m_{p}^{<em>}}{m_{n}^{</em>}}$</p>
+<p>对于硅、锗和砷化镓，费米能级约在禁带中线附近的1.5$k_{0}T$范围内。</p>
+<p>本征载流子浓度：${\ n}<em>{i} = {(N</em>{C}N_{V})}^{\frac{1}{2}}exp( - \frac{E_{g}}{2k_{0}T})$</p>
+<p>在一定温度下，任何非简并半导体，也适用于包含杂质的情况：$n_{0}p_{0} = n_{i}^{2}$</p>
+<h2 id="杂质半导体的载流子浓度"><a href="#杂质半导体的载流子浓度" class="headerlink" title="杂质半导体的载流子浓度"></a>杂质半导体的载流子浓度</h2><p>电子占据施主能级的概率：$f_{D}\left( E \right) = \frac{1}{1 + \frac{1}{g_{D}}exp(\frac{E_{D} - E_{F}}{k_{0}T})}$</p>
+<p>空穴占据受主能级的概率：$f_{A}\left( E \right) = \frac{1}{1 + \frac{1}{g_{A}}exp(\frac{E_{F} - E_{A}}{k_{0}T})}$</p>
+<p>$g_{D}$是施主能级的基态简并度，$g_{A}$是受主能级的基态简并度，通常称为简并因子，对锗、硅、砷化镓等材料，$g_{D} = 2$，$g_{A} = 4$<br>。</p>
+<p>施主浓度$N_{D}$和受主浓度$N_{A}$就是杂质的量子态密度</p>
+<p>施主能级上的电子浓度（没有电离的施主浓度）:$n_{D} = \frac{N_{D}}{1 + \frac{1}{g_{D}}exp(\frac{E_{D} - E_{F}}{k_{0}T})}$</p>
+<p>受主能级上的空穴浓度（没有电离的受主浓度）:$p_{A} = \frac{N_{A}}{1 + \frac{1}{g_{A}}exp(\frac{E_{F} - E_{A}}{k_{0}T})}$</p>
+<p>电离施主浓度：$n_{D}^{+} = N_{D} - n_{D} = \frac{N_{D}}{1 + g_{D}exp( - \frac{E_{D} - E_{F}}{k_{0}T})}$</p>
+<p>电离受主浓度：$p_{A}^{+} = N_{A} - p_{A} = \frac{N_{A}}{1 + g_{A}exp( - \frac{E_{F} - E_{A}}{k_{0}T})}$</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>2267</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://2267.github.io/2018/01/01/semiconductor-phy/">https://2267.github.io/2018/01/01/semiconductor-phy/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) <a href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC-BY-NC-4.0</a> LICENSE， 转载请注明出处</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/01/01/micro-device2/">微电子器件笔记-2</a>
+            
+            
+            <a class="next" rel="next" href="/2017/12/30/virtual-memory/">阅读笔记-虚拟地址空间</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 2267 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

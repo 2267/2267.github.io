@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="2267">
+
+
+
+
+
+<title>微电子器件笔记-2 | 六鹢退飞</title>
+
+
+
+    <link rel="icon" href="/image/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">微电子器件笔记-2</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 1, 2018&nbsp;&nbsp;0:00:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E9%9B%86%E6%88%90%E7%94%B5%E8%B7%AF/">集成电路</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p><strong>双极结型晶体管</strong></p>
+<p>均匀基区晶体管：基区掺杂为均匀分布，少子在基区主要作扩散运动，又称扩散晶体管</p>
+<p>缓变基区晶体管：基区掺杂近似为指数分布，少子在基区主要作漂移运动，又称漂移晶体管</p>
+<p><strong>双极型晶体管在四种工作状态下的少子分布图与能带图</strong></p>
+<p>放大状态：发射结正偏，集电结反偏</p>
+<p>饱和状态：发射结正偏，集电结正偏</p>
+<p>截止状态：发射结反偏，集电结正偏</p>
+<p>倒向放大状态：发射结反偏，集电结正偏</p>
+<p><strong>共基极与共发射极直流电流放大系数的定义及计算</strong></p>
+<p>共基极直流短路电流放大系数：</p>
+<p>$$\alpha \equiv \frac{I_{C}}{I_{E}}{|\ }<em>{V</em>{\text{EB}} &gt; 0,V_{\text{CB}} = 0}$$</p>
+<p>共基极静态电流放大系数：</p>
+<p>$$h_{\text{FB}} \equiv \frac{I_{C}}{I_{E}}{|\ }<em>{V</em>{\text{EB}} &gt; 0,V_{\text{CB}} &lt; 0}$$</p>
+<p>共发射极直流短路电流放大系数：</p>
+<p>$$\beta \equiv \frac{I_{C}}{I_{B}}{|\ }<em>{V</em>{\text{EB}} &gt; 0,V_{\text{CB}} = 0}$$</p>
+<p>共发射极静态电流放大系数：</p>
+<p>$$h_{\text{FE}} \equiv \frac{I_{C}}{I_{B}}{|\ }<em>{V</em>{\text{EB}} &gt; 0,V_{\text{CB}} &lt; 0}$$</p>
+<p>$$\beta = \frac{\alpha}{1 - \alpha}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \alpha = \frac{\beta}{1 + \beta}$$</p>
+<p>直流小信号电流放大系数：</p>
+<p>$$\alpha_{0} \equiv \frac{dI_{C}}{\text{dI}<em>{E}}{|\ }</em>{V_{\text{EB}} &gt; 0,V_{\text{CB}} &lt; 0}\text{\ \ \ \ \ \ \ \ \ \ \ }\beta_{0} \equiv \frac{dI_{C}}{\text{dI}<em>{B}}{|\ }</em>{V_{\text{EB}} &gt; 0,V_{\text{CB}} &lt; 0}$$</p>
+<p><strong>基区输运系数与发射结注入效率的定义及计算，基区渡越时间的概念及计算</strong></p>
+<p>基区输运系数：基区中到达集电结的少子电流与从发射区注入基区的少子形成的电流之比</p>
+<p>$$\beta^{*} = \frac{J_{\text{pC}}}{J_{\text{pE}}} = 1 - \frac{1}{2}\left( \frac{W_{B}}{L_{B}} \right)^{2} = 1 - \frac{\tau_{b}}{\tau_{B}}\text{\ \ \ \ \ \ \ \ \ }\tau_{B} = \frac{Q_{B}}{J_{\text{pr}}}$$</p>
+<p>基区渡越时间：少子在基区内从发射结渡越到集电结所需要的平均时间τ<del>b</del></p>
+<p>$$\tau_{b} = \frac{Q_{B}}{J_{\text{pE}}} = \frac{W_{B}^{2}}{2D_{B}}$$</p>
+<p>发射结注入效率/发射效率：从发射区注入基区的少子形成的电流与总的发射极电流之比</p>
+<p>$$\gamma = \frac{I_{\text{pE}}}{I_{E}} = \frac{1}{1 + \frac{I_{\text{nE}}}{I_{\text{pE}}}} \approx 1 - \frac{J_{\text{nE}}}{J_{\text{pE}}} = 1 - \frac{D_{E}W_{B}N_{B}}{D_{B}W_{E}N_{E}} = 1 - \frac{W_{B}\rho_{E}}{W_{E}\rho_{B}} = 1 - \frac{R_{\square E}}{R_{\square B1}}$$</p>
+<p>爱因斯坦关系式：$\frac{D}{\mu} = \frac{\text{kT}}{q}$<br>电阻率与掺杂浓度的关系：$\rho = \frac{1}{\text{qμN}}$</p>
+<p>$$\alpha = \beta^{*}\gamma = \left( 1 - \frac{\tau_{b}}{\tau_{B}} \right)\left( 1 - \frac{R_{\square E}}{R_{\square B1}} \right) \approx 1 - \frac{\tau_{b}}{\tau_{B}} - \frac{R_{E}}{R_{B1}} = 1 - \delta\ \ \ \ \ \delta 为亏损因子$$</p>
+<p>$$\beta = \frac{1 - \delta}{\delta} \approx \delta^{- 1}$$</p>
+<p><strong>缓变基区晶体管的特点</strong></p>
+<p>基区自建电场：</p>
+<p>$$E = \frac{\text{kT}}{q}\frac{1}{N_{B}(x)}\frac{dN_{B}(x)}{\text{dx}}$$</p>
+<p>当杂质浓度为指数分布时：$N_{B}\left( x \right) = N_{B}(0)exp( - \frac{\text{ηx}}{W_{B}})$，$E = - \frac{\text{kT}}{q}\frac{\eta}{W_{B}}$为常数</p>
+<p>内建电场对渡越基区的电子起加速作用，是加速场</p>
+<p>自建场因子/基区漂移系数：</p>
+<p>$$\eta = ln\frac{N_{B}(0)}{N_{B}(W_{B})}\text{\ \ \ \ \ \ \ \ η}为0时为均匀基区$$</p>
+<p>基区少子电流密度与基区少子浓度分布</p>
+<p>基区渡越时间：$\tau_{b} = \frac{W_{B}^{2}}{2D_{B}}\frac{2}{\eta}(1 - \frac{1}{\eta})$</p>
+<p>内建电场的存在使少子的基区渡越时间大为减少</p>
+<p>基区输运系数：$\beta^{*} = 1 - \frac{\tau_{b}}{\tau_{B}} = 1 - \frac{W_{B}^{2}}{2L_{B}^{2}}\frac{2}{\eta}(1 - \frac{1}{\eta})$</p>
+<p>注入效率：$\gamma = 1 - \frac{R_{\square E}}{R_{\square B1}}$</p>
+<p>电流放大系数：$\alpha = \beta^{*}\gamma \approx 1 - \frac{W_{B}^{2}}{2L_{B}^{2}}\frac{2}{\eta}(1 - \frac{1}{\eta}) - \frac{R_{\square E}}{R_{\square B1}} = 1 - \delta$<br>$\beta = \frac{1 - \delta}{\delta} \approx \delta^{- 1}$</p>
+<p><strong>小电流时电流放大系数的下降</strong></p>
+<p>小电流时α下降的原因：当发射结正向电流很小时，发射结势垒区复合电流密度J<del>rE</del>的比例将增大，使注入效率下降</p>
+<p>当不忽略J<del>rE</del>时：$\gamma = \frac{1}{1 + \frac{R_{E}}{R_{B1}} + \frac{J_{\text{rE}}}{J_{\text{nE}}}}$<br>$\frac{J_{\text{rE}}}{J_{\text{nE}}} = \frac{x_{d}N_{E}}{2L_{B}n_{i}}exp( - \frac{qV_{\text{BE}}}{2kT})$</p>
+<p>电流很小时，$\frac{J_{\text{rE}}}{J_{\text{nE}}}$很大，使$\gamma$减小，从而使α下降，随着电流增加，$\frac{J_{\text{rE}}}{J_{\text{nE}}}$减小，继续增大，$\frac{J_{\text{rE}}}{J_{\text{nE}}}$可以被忽略，α变大。Α随电流的减小而下降</p>
+<p>电流很大时，α又会随电流的增加而下降，这是由于大注入效应和基区扩展效应引起的</p>
+<p><strong>发射区重掺杂效应</strong></p>
+<p>当发射区掺杂浓度N<del>E</del>太高时，不但不能提高注入效率γ，反而会使其下降，从而使α和β下降</p>
+<p>原因：发射区禁带宽度变窄与发射区俄歇复合增强</p>
+<p>发射区禁带变窄后，会使其本征载流子浓度n<del>i</del>变大<br>$\gamma = 1 - \frac{R_{\square E}}{R_{\square B1}}exp(\frac{\mathrm{\Delta}E_{g}}{\text{kT}})$</p>
+<p>随着N<del>E</del>的增大，$\frac{R_{\square E}}{R_{\square B1}}$减小，$exp(\frac{\mathrm{\Delta}E_{g}}{\text{kT}})$增大，$\gamma$先增大后减小</p>
+<p>发射区俄歇复合增强：$N_{E} \uparrow \rightarrow \tau_{E} \downarrow \rightarrow L_{E} \downarrow \rightarrow J_{\text{pE}} \uparrow \rightarrow \gamma \downarrow \rightarrow \alpha \downarrow \rightarrow \beta \downarrow$</p>
+<p>基区陷落效应：当发射区的磷掺杂浓度很高时，会使发射区下方的集电结结面向下扩展</p>
+<p>由于基区陷落效应，使得结深不易控制，难以将基区宽度做得很薄</p>
+<p>为了避免基区陷落效应，目前微波晶体管的发射区掺杂多采用砷来代替磷</p>
+<p><strong>晶体管的直流电流电压方程、晶体管的直流输出特性曲线图</strong></p>
+<p>集电结/发射结短路时的电流：</p>
+<p>$$I_{E} = I_{\text{ES}}\left\lbrack \exp\left( \frac{qV_{\text{BE}}}{\text{kT}} \right) - 1 \right\rbrack{\text{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }I}<em>{E} = - \alpha</em>{R}I_{\text{CS}}\lbrack\exp\left( \frac{qV_{\text{BC}}}{\text{kT}} \right) - 1\rbrack$$</p>
+<p>$$I_{C} = \alpha I_{E} = \alpha I_{\text{ES}}\left\lbrack \exp\left( \frac{qV_{\text{BE}}}{\text{kT}} \right) - 1 \right\rbrack\text{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }I_{C} = - I_{\text{CS}}\lbrack\exp\left( \frac{qV_{\text{BC}}}{\text{kT}} \right) - 1\rbrack$$</p>
+<p>$$I_{B} = I_{E} - I_{c} = \left( 1 - \alpha \right)I_{\text{ES}}\left\lbrack \exp\left( \frac{qV_{\text{BE}}}{\text{kT}} \right) - 1 \right\rbrack\text{\ \ \ \ \ \ \ \ \ \ \ \ \ }I_{B} = (1 - \alpha_{R})I_{\text{CS}}\lbrack\exp\left( \frac{qV_{\text{BC}}}{\text{kT}} \right) - 1\rbrack$$</p>
+<p>共基极直流电流电压方程/埃伯斯-莫尔方程：</p>
+<p>$$I_{E} = I_{\text{ES}}\left\lbrack \exp\left( \frac{qV_{\text{BE}}}{\text{kT}} \right) - 1 \right\rbrack - \alpha_{R}I_{\text{CS}}\lbrack\exp\left( \frac{qV_{\text{BC}}}{\text{kT}} \right) - 1\rbrack$$</p>
+<p>$$I_{C} = \alpha I_{E} = \alpha I_{\text{ES}}\left\lbrack \exp\left( \frac{qV_{\text{BE}}}{\text{kT}} \right) - 1 \right\rbrack - I_{\text{CS}}\lbrack\exp\left( \frac{qV_{\text{BC}}}{\text{kT}} \right) - 1\rbrack$$</p>
+<p>共发射极直流电流电压方程：</p>
+<p>$$I_{B} = I_{E} - I_{c} = \left( 1 - \alpha \right)I_{\text{ES}}\left\lbrack \exp\left( \frac{qV_{\text{BE}}}{\text{kT}} \right) - 1 \right\rbrack + (1 - \alpha_{R})I_{\text{CS}}\lbrack\exp\left( \frac{qV_{\text{BC}}}{\text{kT}} \right) - 1\rbrack$$</p>
+<p>$$I_{C} = \alpha I_{E} = \alpha I_{\text{ES}}\left\lbrack \exp\left( \frac{qV_{\text{BE}}}{\text{kT}} \right) - 1 \right\rbrack - I_{\text{CS}}\lbrack\exp\left( \frac{qV_{\text{BC}}}{\text{kT}} \right) - 1\rbrack$$</p>
+<p>互易关系：$\alpha I_{\text{ES}} = \alpha_{R}I_{CS}$</p>
+<p>共基极输出特性：</p>
+<p>$$I_{C} = \alpha I_{E} - I_{\text{CBO}}\lbrack\exp\left( \frac{qV_{\text{BC}}}{\text{kT}} \right) - 1\rbrack$$</p>
+<p>$$I_{\text{CBO}} = (1 - \alpha\alpha_{R})I_{\text{CS}}$$</p>
+<p>$I_{\text{CBO}}$代表发射极开路，集电结反偏时的集电极电流，称为共基极反向截止电流</p>
+<p>在放大区$V_{\text{BC}} &lt; 0且\left| V_{\text{BC}} \right| \gg \frac{\text{kT}}{q}时：I_{C} = \alpha I_{E} + I_{\text{CBO}}$</p>
+<p>共发射极输出特性：</p>
+<p>$$I_{C} = \beta I_{B} - I_{\text{CEO}}\lbrack\exp\left( \frac{q{(V}<em>{\text{BE}} - V</em>{\text{CE}})}{\text{kT}} \right) - 1\rbrack$$</p>
+<p>$$I_{\text{CEO}} = \frac{I_{\text{CBO}}}{1 + \alpha} = \frac{(1 - \alpha\alpha_{R})}{1 + \alpha}I_{\text{CS}} \approx \beta I_{\text{CBO}}$$</p>
+<p>$I_{\text{CEO}}$代表基极开路，集电结反偏时从发射极穿透到集电极的电流，称为共发射极反向截止电流，或共发射极穿透电流</p>
+<p><strong>基区宽度调变效应/厄尔利效应</strong></p>
+<p>在共发射极放大区，理论上$I_{C} = \beta I_{B} + I_{\text{CEO}}$，即$I_{C}$与$V_{\text{CE}}$无关。但实际上$I_{C}$随$V_{\text{CE}}$的增大而略有增大</p>
+<p>原因：当$V_{\text{CE}}$增大时，集电结反偏增大，集电结耗尽区增宽，使中性基区的宽度变窄，基区少子浓度分布的梯度增大，从而使$I_{C}$增大。</p>
+<p>忽略基区少子的复合和$I_{\text{CEO}}$时：$\frac{\partial I_{C}}{\partial V_{\text{CE}}}|<em>{V</em>{\text{BE}}} = \frac{I_{C}}{V_{A}} = \frac{1}{r_{0}}$，$V_{A}$为厄尔利电压，$r_{0}$为共发射极增量输出电阻</p>
+<p>为减小厄尔利效应，应增大基区宽度W<del>B</del>，减小集电结耗尽区在基区内的宽度x<del>d<strong>B</strong></del><strong>，</strong>即增大基区掺杂浓度N<del>B</del></p>
+<p><strong>晶体管各种反向电流的定义与测量</strong></p>
+<p>1.<br>$I_{\text{ES}}$：$V_{\text{BE}} &lt; 0、V_{\text{BC}} = 0$时的$I_{E}$，即单个发射结的反向饱和电流</p>
+<p>2.<br>$I_{CS}$：$V_{\text{BC}} &lt; 0、V_{\text{BE}} = 0$时的$I_{C}$，即单个集电结的反向饱和电流</p>
+<p>3. $I_{\text{CBO}}$：$V_{\text{BC}} &lt; 0、I_{E} = 0$时的$I_{C}$</p>
+<p>4.$\text{\ \ }I_{\text{CEO}}$：$V_{\text{BC}} &lt; 0、I_{B} = 0$时的$I_{C}$</p>
+<p>5. $I_{\text{EBO}}$：$V_{\text{BE}} &lt; 0、I_{C} = 0$时的$I_{E}$</p>
+<p>浮空电势与$I_{\text{CBO}}$：$V_{\text{BE}} = \frac{\text{kT}}{q}\ln\left( 1 - \alpha \right) &lt; 0$</p>
+<p>$I_{\text{CBO}} = \left( 1 - \alpha\alpha_{R} \right)I_{\text{CS}} &lt; I_{\text{CS}} &lt; I_{\text{CEO}} = \frac{(1 - \alpha\alpha_{R})}{1 + \alpha}I_{\text{CS}}$</p>
+<p><strong>晶体管各种击穿电压的定义与测量</strong></p>
+<p>共基极集电结雪崩击穿电压$\text{BV}<em>{\text{CBO}}$：发射极开路时，使$I</em>{C\text{BO}}^{‘} = MI_{\text{CBO}} \rightarrow \infty$时的$|V_{BC}|$。就是集电结的PN结雪崩击穿电压$V_{B}$。$I_{C} = AI_{E} + I_{C\text{BO}}^{‘}\ \ \ A = \alpha M$<br>$M = \frac{1}{1 - {(\frac{|V|}{V_{B}})}^{S}}$ PN^+^：S=2 P^+^N：S=4</p>
+<p>共发射极集电结雪崩击穿电压$\text{BV}<em>{CEO}$：基极开路时，使$I</em>{\text{CE}O}^{‘} = \frac{I_{C\text{BO}}^{‘}}{1 - A} \rightarrow \infty$时的$V_{\text{CE}}$。$I_{C} = BI_{E} + I_{C\text{EO}}^{‘}\ \ \ B = \frac{A}{1 - A}$</p>
+<p>当A=1时：$\text{BV}<em>{CEO} = \frac{\text{BV}</em>{\text{CBO}}}{\sqrt[s]{\beta}}$</p>
+<p>发射结击穿电压$\text{BV}<em>{E\text{BO}}$：集电极开路，发射极与基极之间加反向电压时的$I</em>{E}$记为$I_{E\text{BO}}^{‘}$，使$I_{\text{EB}O}^{‘} \rightarrow \infty$的发射极与基极间反向电压</p>
+<p>$$\text{BV}<em>{E\text{BO}} &lt; \text{BV}</em>{\text{CEO}} &lt; \text{BV}_{\text{CBO}}$$</p>
+<p><strong>基区穿通效应</strong></p>
+<p>集电结上的反向电压增大到其势垒区将基区全部占据时，$W_{B}^{‘} = 0$这种现象称为基区穿通，相应的集电结反向电压称为基区穿通电压，记为$V_{\text{pt}}$</p>
+<p>防止基区穿通的措施，增大W<del>B</del>与N­<del>B</del>，与防止厄尔利效应的措施一致，但与提高放大系数的要求相矛盾</p>
+<p>$$\text{BV}<em>{\text{CBO}} = V</em>{\text{pt}} + \text{BV}_{E\text{BO}}$$</p>
+<p>$$\text{BV}<em>{\text{CEO}} = V</em>{\text{pt}} + V_{F} \approx V_{\text{pt}}$$</p>
+<p><strong>方块电阻的概念及计算</strong></p>
+<p>方块电阻是指一个正方形薄层材料当电流方向与其某个边相平行时的电阻</p>
+<p>均匀材料：$R_{\square} = \frac{\rho}{W} = \frac{1}{\text{σW}} = \frac{1}{\text{qμNW}}$</p>
+<p>对于沿厚度方向不均匀的材料：$R_{\square} = \frac{1}{\int_{0}^{W}\text{σdx}} = \frac{1}{\text{qμ}\int_{0}^{W}\text{Ndx}}$</p>
+<p>发射区：$R_{\square E} = \frac{1}{q\mu_{E}\int_{0}^{x_{\text{je}}}{N_{E}\text{dx}}}$</p>
+<p>工作基区：$R_{\square B1} = \frac{1}{q\mu_{B}\int_{x_{\text{je}}}^{x_{\text{jc}}}{N_{B}\text{dx}}}$</p>
+<p>非工作基区：$R_{\square B2} = \frac{1}{q\mu_{B}\int_{0}^{x_{\text{jc}}}{N_{B}\text{dx}}}$</p>
+<p>重掺杂非工作基区：$R_{\square B3} = \frac{1}{q\mu_{p}\int_{0}^{x_{\text{jc}}^{+}}{N_{B}^{+}\text{dx}}}$</p>
+<p><strong>晶体管的小信号参数</strong></p>
+<p>$\gamma_{\omega}$：高频小信号发射结注入系数</p>
+<p>$\beta_{\omega}^{*}$：高频小信号基区输运系数</p>
+<p>$\alpha_{\omega}$：共基极高频小信号电流放大系数</p>
+<p>$\beta_{\omega}$：共发射极高频小信号电流放大系数</p>
+<p><strong>晶体管的电流放大系数与频率的关系</strong></p>
+<p>随着<em>f</em>的增加，$\alpha_{\omega}和\beta_{\omega}$的幅度会减小，相角会滞后</p>
+<p>$$\beta_{\omega}^{<em>} = \frac{\beta_{0}^{</em>}}{1 + j\omega\tau_{b}} = \frac{1 - \frac{\tau_{b}}{\tau_{B}}}{1 + j\omega\tau_{b}} \approx \frac{\beta_{0}^{*}}{\sqrt{1 + \omega^{2}{\tau_{b}}^{2}}}e^{- j\omega\tau_{b}}$$</p>
+<p>延迟时间：由于采用了$i_{\text{pc}} = \frac{q_{b}}{\tau_{b}}$的假设而使$\beta_{\omega}^{*}$表达式不够精确，在交流情况下，从发射结注入基区的少子电荷q<del>b</del>，要延迟一段时间τ<del>dB</del>后才会在集电结产生集电极电流$i_{\text{pc}}$。令$m = \frac{\tau_{\text{dB}}}{\tau_{b} - \tau_{\text{dB}}}$，延迟时间可表示为$\tau_{\text{dB}} = \frac{m}{1 + m}\tau_{b}$，m称为超相移因子，或剩余相移因子。$m = 0.22 + 0.098\eta$。$\tau_{b} = \frac{W_{B}^{2}}{2D_{B}}\frac{2}{\eta}(1 - \frac{1}{\eta})$</p>
+<p>这样，虽然少子在基区内持续的平均时间是$\tau_{b}$，但只有其中的$\tau_{b}^{‘} = \tau_{b} - \frac{m}{1 + m}\tau_{b} = \frac{\tau_{b}}{1 + m}$时间才对$i_{\text{pc}}$有贡献，因此$i_{\text{pc}} = \frac{q_{b}}{\tau_{b}^{‘}}$</p>
+<p>$$\beta_{\omega}^{<em>} = \frac{\beta_{0}^{</em>}}{1 + j\omega\tau_{b}^{‘}}e^{- j\omega m\tau_{b}^{‘}}$$</p>
+<p>把$|\beta_{\omega}^{<em>}|$下降到$\frac{\beta_{0}^{</em>}}{\sqrt{2}}$时对应的角频率与频率称为截止角频率$\omega_{\beta^{<em>}} = \frac{1 + m}{\tau_{b}}$和截止频率$f_{\beta^{</em>}} = \frac{1 + m}{2\pi\tau_{b}}$</p>
+<p>则$\beta_{\omega}^{<em>} = \frac{\beta_{0}^{</em>}}{1 + j\frac{f}{f_{\beta^{<em>}}}}e^{- jm\frac{f}{f_{\beta^{</em>}}}}$</p>
+<p>$$\gamma_{\omega} = \frac{i_{\text{pe}}}{i_{e}} = \frac{r_{0}}{1 + j\omega\tau_{\text{eb}}}$$</p>
+<p>不考虑发射结扩散电容$C_{\text{DE}}$和其他寄生参数时，发射结的高频小信号等效电路是发射结增量电阻</p>
+<p>$r_{e} = \frac{v_{\text{eb}}}{i_{e}} = \frac{\text{kT}}{qI_{E}}$和发射结势垒电容$C_{TE}$的并联</p>
+<p>$$\beta_{\omega}^{<em>} = \frac{i_{\text{pc}}}{i_{\text{pe}}} = \frac{\beta_{0}^{</em>}}{1 + j\omega\tau_{b}}$$</p>
+<p>不考虑发射结势垒电容$C_{TE}$和其他寄生参数时，发射结的高频小信号等效电路由发射结增量电阻</p>
+<p>$r_{e}$和发射结势垒电容$C_{DE} = \frac{q_{b} + q_{e}}{v_{\text{eb}}} \approx \frac{q_{b}}{v_{\text{eb}}} = \frac{\tau_{b}i_{\text{pc}}}{r_{e}i_{\text{pc}}} = \frac{\tau_{b}}{r_{e}}$构成</p>
+<p>$$\frac{i_{\text{pcc}}}{i_{\text{pc}}} = \frac{1}{1 + j\omega\frac{\tau_{t}}{2}} = \frac{1}{1 + j\omega\tau_{d}}$$</p>
+<p>$$\frac{i_{c}}{i_{\text{pcc}}} = \frac{1}{1 + j\omega\tau_{c}}$$</p>
+<p>$$\alpha_{\omega} = \frac{i_{c}}{i_{e}}|<em>{v</em>{\text{cb}} = 0} = \frac{i_{\text{pe}}}{i_{e}}\frac{i_{\text{pc}}}{i_{\text{pe}}}\frac{i_{\text{pcc}}}{i_{\text{pc}}}\frac{i_{c}}{i_{\text{pcc}}} = \frac{\alpha_{0}e^{- j\omega m\tau_{b}^{‘}}}{(1 + j\omega\tau_{\text{eb}})(1 + j\omega\tau_{b}^{‘})(1 + j\omega\tau_{d})(1 + j\omega\tau_{c})}$$</p>
+<p>$$\alpha_{\omega} \approx \frac{\alpha_{0}e^{- j\omega m\tau_{b}^{‘}}}{1 + \text{jω}\left( \tau_{\text{ec}} - m\tau_{b}^{‘} \right)} = \frac{\alpha_{0}}{\sqrt{1 + \omega^{2}\left( \tau_{\text{ec}} - m\tau_{b}^{‘} \right)^{2}}}e^{- j\omega\tau_{\text{ec}}} = \frac{\alpha_{0}e^{- j\omega m\tau_{b}^{‘}}}{1 + j\frac{\omega}{\omega_{\alpha}}}$$</p>
+<p>信号延迟时间：$\tau_{\text{ec}} = \tau_{\text{eb}} + \tau_{b}^{‘} + \tau_{d} + \tau_{c}$</p>
+<p>当|$\alpha_{\omega}|$下降到$\frac{\alpha_{0}}{\sqrt{2}}$时的角频率和频率称为$\alpha_{\omega}$的截止角频率$\omega_{\alpha} = \frac{1}{\tau_{\text{ec}} - m\tau_{b}^{‘}} = \frac{1}{\tau_{\text{eb}} + \tau_{b}^{‘} + \tau_{d} + \tau_{c}}$和截止频率$f_{\alpha}$</p>
+<p>1.<br>对于截止频率不是特别高的一般高频管，例如$f_{\alpha} \ll 500MHz$的高频晶体管，基区宽度$W_{B} &gt; 1\mu m$，此时$\tau_{b}^{‘} \gg (\tau_{\text{eb}} + \tau_{d} + \tau_{c})$，$\tau_{\text{ec}} \approx \tau_{b}^{‘}$，$\alpha_{\omega}$特性主要由$W_{B}$和$\tau_{b}^{‘}$决定，$\omega_{\alpha} = \omega_{\beta}$</p>
+<p>2.<br>对于$f_{\alpha} &gt; 500MHz$的现代微波管，度$W_{B} &lt; 1\mu m$，可忽略$m\tau_{b}^{‘}$，$\omega_{\alpha} = \frac{1}{\tau_{\text{ec}}}$</p>
+<p>$$\beta_{\omega} = \frac{\alpha_{\omega}}{1 - \alpha_{\omega}} = \frac{\alpha_{0}}{1 - \alpha_{0}}\frac{1}{1 + \frac{j\omega\tau_{\text{ec}}}{1 - \alpha_{0}}} \approx \frac{\beta_{0}}{1 + j\omega\beta_{0}\tau_{\text{ec}}} = \frac{\beta_{0}}{1 + j\frac{\omega}{\omega_{\beta}}}$$</p>
+<p>当$|\beta_{\omega}|$下降到$\frac{\beta_{0}}{\sqrt{2}}$时的角频率和频率称为$\beta_{\omega}$的截止角频率$\omega_{\beta} = \frac{1}{\beta_{0}\tau_{\text{ec}}}$和截止频率$f_{\beta}$，$\omega_{\beta} \ll \omega_{\alpha}$</p>
+<p>$$\beta_{\omega} = \frac{\beta_{0}}{1 + j\frac{f}{f_{\beta}}}$$</p>
+<p>当$f \ll f_{\beta}$时，$\beta_{\omega} \approx \beta_{0}$，为实数，相角为零</p>
+<p>当$f = f_{\beta}$时，$\beta_{\omega} = \frac{\beta_{0}}{1 + j}$，$|\beta_{\omega}| = \frac{\beta_{0}}{\sqrt{2}}$，相角=-45^o^</p>
+<p>当$f \gg f_{\beta}$时，$\beta_{\omega} \approx \frac{\beta_{0}f_{\beta}}{jf}$，$f_{T} = \frac{\beta_{0}f_{\beta}}{f}$，相角=-90^o^</p>
+<p><strong>组成晶体管信号延迟时间的四个主要时间常数</strong></p>
+<p>发射结势垒电容充放电时间常数$\tau_{\text{eb}} = C_{\text{TE}}r_{e}$</p>
+<p>发射结扩散电容充放电时间常数$\tau_{b} = C_{DE}r_{e}$</p>
+<p>集电结耗尽区延迟时间$\tau_{d} = \frac{\tau_{t}}{2} = \frac{x_{\text{dc}}}{2v_{\max}}$</p>
+<p>集电结势垒电容经集电区充放电的时间常数$\tau_{c} = C_{\text{TC}}r_{\text{cs}}$</p>
+<p><strong>高频晶体管特征频率的定义、计算与测量、影响特征频率的主要因素</strong></p>
+<p>当$|\beta_{\omega}|$降为$1$时的频率为特征频率$f_{T}$=$\beta_{0}f_{\beta} = \frac{1}{2\pi\tau_{\text{ec}}}$</p>
+<p>对于$f_{\alpha} \ll 500MHz$的晶体管$f_{T} = \frac{1}{2\pi\tau_{b}}$,<br>对于$f_{\alpha} &gt; 500MHz$的现代微波管$f_{T} = \frac{1}{2\pi\tau_{\text{ec}}}$</p>
+<p>实际测量$f_{T}$时，在$f_{\beta} &lt; f &lt; f_{T}$的条件测量$|\beta_{\omega}|$，$f_{T} = |\beta_{\omega}|f$，因此$f_{T}$又称为晶体管的增益带宽乘积</p>
+<p>高频工作管的工作频率一般介于$f_{\beta}和f_{T}$之间</p>
+<p>偏置电流的影响：</p>
+<blockquote>
+<p>小电流时，随着I<del>E</del>或I<del>C</del>的增大，$\tau_{eb}$减小，使$f_{T}$提高，所以$f_{T}$在小电流时随电流的增大而提高。但是电流增大时，$\tau_{eb}$的影响变小，甚至可以略去</p>
+<p>大电流时，当基区发生纵向扩散ΔW<del>B</del>时，使基区渡越时间$\tau_{b}$增加。同时将减小集电结势垒厚度，减小$\tau_{d}$，使C<del>TC</del>增加。由于$\tau_{b}$和C<del>TC</del>的增加比$\tau_{d}$的减小大得多，所以$f_{T}$在大电流时随电流的增大而降低</p>
+</blockquote>
+<p>发射区延迟时间：$\tau_{e} = \frac{x_{\text{je}}^{2}}{2\beta_{0}D_{E}}$</p>
+<p>对$\tau_{b}$的修正：$\Delta\tau_{b} = \frac{W_{B}}{v_{\max}}\frac{1 - e^{- \eta}}{\eta}$</p>
+<p>$C_{\text{TC}}$中还应包括延伸电极的寄生电容</p>
+<p><strong>高频晶体管最大功率增益与最高振荡频率的定义与计算，影响功率增益的主要因素</strong></p>
+<p>最大功率增益为$K_{\text{pmax}} = \frac{P_{\text{omax}}}{P_{\text{in}}} = \frac{f_{T}}{8\pi r_{\text{bb}}^{‘}C_{\text{TC}}f^{2}}$</p>
+<p>高频优值$M = K_{\text{pmax}}f^{2} = \frac{f_{T}}{8\pi r_{\text{bb}}^{‘}C_{\text{TC}}}$：功率增益与频率平方的乘积称为高频优值，也称为功率增益-带宽乘积，是综合衡量晶体管的功率放大能力与频率特性的重要参数</p>
+<p>最高震荡频率$f_{M} = {(\frac{f_{T}}{8\pi r_{\text{bb}}^{‘}C_{\text{TC}}})}^{\frac{1}{2}} = \sqrt{M}$：当$K_{\text{pmax}}$下降到1时的频率</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>2267</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://2267.github.io/2018/01/01/micro-device2/">https://2267.github.io/2018/01/01/micro-device2/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) <a href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC-BY-NC-4.0</a> LICENSE， 转载请注明出处</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/01/01/micro-device1/">微电子器件笔记-1</a>
+            
+            
+            <a class="next" rel="next" href="/2018/01/01/semiconductor-phy/">半导体物理笔记</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 2267 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

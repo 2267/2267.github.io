@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="2267">
+
+
+
+
+
+<title>数字IC笔记 | 六鹢退飞</title>
+
+
+
+    <link rel="icon" href="/image/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">数字IC笔记</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 1, 2018&nbsp;&nbsp;0:00:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E9%9B%86%E6%88%90%E7%94%B5%E8%B7%AF/">集成电路</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>本科学习数字集成电路设计课程的笔记，当时这门我好像考了98还是97，是我所有课分数的最多的一门了，但是还是没有我的学霸室友考得高。latex公式估计在hexo主题上显示不出来，Typora支持的还是挺好的。</p>
+<p>器件 电路 逻辑门 模块 系统</p>
+<p><strong>MOS管关心的问题</strong>：亚阈值，阈值电压变化，闩锁效应，寄生电阻，速度饱和</p>
+<p>短沟道效应：</p>
+<p>电场较小时，速率与电场呈线性关系</p>
+<p>电场较大时，速率饱和（载流子碰撞—散射效应）</p>
+<p>现象：未达到V<del>GS</del>-V<del>T</del>就出现提前饱和，饱和电流小了，压控能力变弱</p>
+<p>短沟道，L越小，V<del>T</del>越小</p>
+<p>窄沟道，W越小，V<del>T</del>越大</p>
+<p>漏端感应势垒降低DIBL：</p>
+<p>短沟道下，漏源电场耦合，降低PN结势垒，V<del>TH</del>降低</p>
+<p>危害：V<del>DS</del>足够大时D和S可能短路</p>
+<p>闩锁效应：</p>
+<p>产生条件：</p>
+<p>1. 两个发射结均正偏</p>
+<p>2. β<del>1</del>*β<del>2</del>&gt;1</p>
+<p>3. I<del>POWER</del>&gt;I<del>H</del></p>
+<p>抗闩锁：1.减小R<del>S</del>和R<del>N</del> 2. 减小$\beta$<del>1</del>和β<del>2</del></p>
+<p>内部：充分且均匀地布置P衬底电源和N衬底地的欧姆接触孔，用金属线直接连接到地。工作电流较大的器件或状态同步转换集中的模块，一般采用保护环（N<del>+</del>环或P<del>+</del>环的结构）。</p>
+<p>外部：采用双环保护结构，而且保护环上要充分开孔，用金属线直接连接到电源或地。</p>
+<p><strong>CMOS特点：</strong></p>
+<p>1. 全电压摆幅，无比电路</p>
+<p>2. 输出电阻小，大扇出</p>
+<p>3. 输入电流小</p>
+<p>4. 无静态电流和功率</p>
+<p>5. 传输延时与自身电阻和负载电容有关</p>
+<p><strong>电压传输特性VTC</strong>：V<del>out</del>和V<del>in</del>关系</p>
+<p>V<del>IH</del>，V<del>IL</del> dV<del>out</del>/dV<del>in</del>=-1</p>
+<p>高电平噪声容限：NM<del>H</del>=V<del>OH</del>-V<del>IH</del></p>
+<p>低电平噪声容限：NM<del>L</del>=V<del>IL</del>-V<del>OL</del></p>
+<p>设计CMOS静态电路时一般要增大噪声容限，即曲线要对称</p>
+<p>开关阈值V<del>M</del>：V<del>out</del>=V<del>in</del></p>
+<p>估算：V<del>IH­</del>=V<del>M</del>-V<del>M</del>/g V<del>IL</del>=V<del>M</del>+(V<del>DD</del>-V<del>M</del>)/g</p>
+<p>g：在开关阈值的增益，即斜率，为负值，增大g的绝对值有利于提高噪声容限</p>
+<p>V<del>M</del>=rV<del>DD</del>/(1+r) r与PMOS和NMOS驱动强度比值有关，实际中取P：N=2：1</p>
+<p>可以通过改变供电电压和V<del>M</del>改变g</p>
+<p>V<del>DD</del>降低，过渡区变窄，g绝对值越大</p>
+<p>V<del>DD</del>降低限制：</p>
+<p>1. 延迟增大</p>
+<p>2. V<del>DD</del>与阈值电压差不多时，dc特性受影响大</p>
+<p>3. 串扰噪声小了，但抗外部噪声干扰能力降低</p>
+<p><strong>传输延时­­：t<del>p</del>=(t<del>pLH</del>+t<del>pHL</del>)/2</strong></p>
+<p>一阶RC电路：</p>
+<p>达到50%：t=0.69τ 达到90%：t=2.2τ</p>
+<p>负载电容：</p>
+<p>1. 本征MOS电容C<del>int</del>（弥勒电容，结电容）</p>
+<p>2. 外部MOS电容（扇出），线电容（互联电容）C<del>ext</del></p>
+<p>弥勒电容C→2C(C<del>L</del>)</p>
+<p>单极驱动C<del>L</del>：</p>
+<p>1. 减小C<del>L</del>（有源区寄生电容，减小漏极横向扩散；扇出；互联电容）</p>
+<p>2. 提高V<del>DD</del>（增大到一定值时回报很小，过大时会产生可靠性问题）</p>
+<p>3.<br>增加宽长比（P管增大时上拉变快，N管增大时下拉变快，取P：N=2：1，β<del>opt</del>=$\sqrt{\gamma}$<br>）</p>
+<p>同时增加宽长比时：</p>
+<p>本征延时$t_{p0} = 0.69RC_{\text{int}}$不变，只与工艺、版图有关</p>
+<p>总延时$t_{p} = t_{p0}(1 + \frac{C_{\text{ext}}}{SC_{\text{iref}}})$<br>原：$t_{p} = t_{p0}(1 + \frac{C_{\text{ext}}}{C_{\text{iref}}})$，极限值为t<del>p0</del>，但面积增加太大。S增大，开始时收益大，后段收益小。</p>
+<p>总延时$t_{p} = t_{p0}(1 + f/\gamma)$</p>
+<p>C<del>int</del>=γC<del>g</del> C<del>ext</del>=<em>f</em>C<del>g</del> γ是与尺寸无关的系数，<em>f</em>为扇出</p>
+<p>最小延迟时：$f = \sqrt[N]{\frac{C_{L}}{C_{g,1}}} = \sqrt[N]{F}$<br>F为总扇出</p>
+<p>等比例放大，INV链最快</p>
+<p>N最优值确定：级数太多，本征延迟占主导。级数太少，每级输出延时占主导。确定<em>f</em>=4</p>
+<p>输入斜率影响：</p>
+<p>t<del>s</del>&gt;t<del>p</del>时，呈线性增加</p>
+<p>ts的产生是由前级有限的驱动能力造成的</p>
+<p>是沿的上升时间小于门的延迟是非常有益的</p>
+<p>保持上升沿和下降沿小且相等不易</p>
+<p>线延迟影响：当L增大时急剧增加，将占主导</p>
+<p><strong>功耗：</strong></p>
+<p>动态功耗：开关功耗，短路功耗</p>
+<p>静态功耗：漏电功耗，直流功耗</p>
+<p>开关功耗：</p>
+<p>$P_{\text{switc}h\text{ing}} = CV_{\text{DD}}^{2}f_{\text{sw}} = \alpha CV_{\text{DD}}^{2}f_{\text{clock}}$<br>α=P(1-P)</p>
+<p>减小：开关活动性，电容，供电电压，频率</p>
+<p>关闭不使用的寄存器的时钟</p>
+<p>短路功耗：C<del>L</del>越大，短路电流越小</p>
+<p>漏电功耗：P<del>leak</del>=(I<del>sub</del>+I<del>gate</del>+I<del>junct</del>)V<del>DD</del><br>亚阈值漏电，门漏电，结漏电</p>
+<p>Stack Effect：串联的关闭的管子有更少漏电</p>
+<p><strong>标准CMOS逻辑：</strong></p>
+<p>上拉网络是PMOS，下拉网络是NMOS，不能对调，否则信号不完整，实际传输为V<del>DD</del>-V<del>TH</del></p>
+<p>确定W,L大小：栅的最小值L即特征线宽，一般是不变的，串联几个W翻几倍，并联不变（考虑最坏情况）。</p>
+<p>导通能力等效关系：并联电导相加宽相加，串联电阻相加长相加</p>
+<blockquote>
+<p>去掉所有输入为<strong>“0”</strong>的管子<br>去掉所有与输入为<strong>“0”</strong>的管子串联的支路</p>
+<p>重复使用晶体管等效原理简化剩余逻辑电路至倒相器为止<br>根据最后倒相器电路的宽长比即可估算该电路在该输入组合作用下的翻转时间</p>
+</blockquote>
+<p>三步法设计CMOS拓扑结构</p>
+<p>1. 化成非逻辑</p>
+<p>2. 设计N网络，与串联，或并联</p>
+<p>3. 设计P网络，对偶原理</p>
+<p>叉指结构：更少的扩散电容</p>
+<p>尽量避免高于4的扇入</p>
+<p>设计技巧：</p>
+<p>1. 最接近输出的管子最小，最接近地的管子电阻应最小即管子最大</p>
+<p>2. 晚到的信号靠近输出端，放电的节点更少</p>
+<p>3. 等价结构选择，避免大扇出</p>
+<p><strong>逻辑努力：</strong></p>
+<p>$t_{p} = t_{p0}(p + \text{gf}/\gamma)$</p>
+<p><em>f</em>等效扇出，这里又称为电气努力</p>
+<p><em>p</em>代表该复合门和简单反相器的本征（即无负载）延时的比，由内部电容决定，与门的拓扑结构和版图样式有关。n输入的与非门或非门为n，多路开关为2n，异或门为n^2n-1^</p>
+<p><em>g</em>逻辑努力，表示一个门与一个反相器提供相同的输出电流时所表现出的输入电容比反相器大多少。两输入与非门4/3，三输入5/3；两输入或非门5/3，三输入7/3</p>
+<p><em>h=gf</em>门努力</p>
+<p>以下<em>f</em>和<em>h</em>互换 d=p+f=p+gh</p>
+<p>路径逻辑努力：G=$\prod_{}^{}g$</p>
+<p>路径电气努力：H=$\frac{C_{\text{out} - \text{pat}h}}{C_{\text{in} - \text{pat}h}}$</p>
+<p>分支努力：$B = \prod_{}^{}b = \prod_{}^{}\frac{C_{\text{on}} + C_{\text{off}}}{C_{\text{on}}}$</p>
+<p>路径努力：F=BGH</p>
+<p>路径总延时D=P+D<del>F</del>=$\sum_{}^{}p + \sum_{}^{}f$=NF^1/N^+P</p>
+<p>时钟歪斜：</p>
+<p>等效：上升：2+1=3 下降：1+1/2=3/2</p>
+<p>HI-skew： 2+1/2=5/2</p>
+<p>g<del>u</del>=5/6 g<del>d</del>=5/3 g<del>avg</del>=5/4</p>
+<p>LO-skew： 1+1=2</p>
+<p>g<del>u</del>=4/3 g<del>d</del>=2/3 g<del>avg</del>=1</p>
+<p><strong>CMOS改进：</strong></p>
+<p>Pseudo-NMOS：P沟网络使用一个P型恒流源代替，工作在饱和区，管子数少，只需k+1个管子，输入电容小，有静态功耗，使用CMOS工艺</p>
+<p>恒流源负载的缺点：上升时间由恒流源电流和C<del>L­</del>共同决定，为限制功耗电流不能太大；下降时间由C<del>L</del>和R决定，为保证下降快于上升，R值要小</p>
+<p>传输管PT：使用了N个管子，无静态功耗，无比电路，双向传输。体效应更糟</p>
+<p>传输管逻辑为非再生信号，经过传输管后信号会下降，无放大功能，可以用INV再生</p>
+<p>差分传输管CPL：</p>
+<p>1. 总是存在互补的输入输出，对于复杂门有效减少管子</p>
+<p>2. 静态逻辑</p>
+<p>3. 可以模块化设计；拓扑逻辑相同，仅改变输入</p>
+<p>4. 异或门简单，可以用来设计全加器</p>
+<p>5. 快速</p>
+<p>6. 对于互补信号，布线开销小</p>
+<p>7. 静态功耗问题：非全电压摆幅</p>
+<p>传输门TG：主要缺点：P网络大，寄生效应大</p>
+<p>差分传输管逻辑DPTL：</p>
+<p>目的：消除大批的速度较慢的P管，以恢复NMOS传输网络的种种优点。</p>
+<p>将所有的输入变量进行差分编码（取非），将所有信号经过一个差分的传输网络，然后进行译码，将它译成正确的数据。</p>
+<p>不使用P管，由两组NMOS传输网络组成的，两组网络采用相同的控制信号，但所传送的是差分信号，其中一组不会有电平损失。全是N管速度快连线简单，寄生参数少，省硅片面积，但多使用了反相器和译码缓冲器</p>
+<p>差分级联电压开关逻辑DCVSL：</p>
+<p>有原、非量成对输入端</p>
+<p>两组输入支路满足互补或对偶关系</p>
+<p>有正反相互补的两个输出信号</p>
+<p>输出电压摆幅大：GND~V<del>DD</del></p>
+<p>在制造工艺上有好处，可以采用N阱工艺将少数P管放在阱内，大量的N管都可以做在阱外。</p>
+<p>因为混合处理逻辑原量和非量，设计更加灵活</p>
+<p>交链方式和级数有较多自由度，允许设计复杂的逻辑功能。</p>
+<p>缺点：等效P阵列较等效N阵列慢，在这段时间里往往造成P，N管同时导通，增加了静态功耗，电源电流中的毛刺、尖峰较大，整个电路延迟增加，限制了在高速电路中的使用</p>
+<p><strong>动态CMOS：</strong>预充电—求值逻辑</p>
+<p>预充电：将C<del>L</del>预充到V<del>DD</del>，各路输入信号要进入稳定态</p>
+<p>求值：不允许输入信号再有任何变化；节省器件，节省功率</p>
+<p>在多级级联上还有问题</p>
+<p>特点：</p>
+<p>1. 仅有动态功耗</p>
+<p>2. 寄生电容小（C<del>int</del>：输出端连接的管子少了<br>C<del>ext</del>：输出负载连接一个栅极而不是两个）</p>
+<p>3. 无毛刺</p>
+<p>但功耗可能会显著增加：开关活动性和时钟的开销</p>
+<p>阈值电压：动态量，V<del>M</del>=V<del>IH</del>=V<del>IL</del>=V<del>Tn</del> ，NM<del>L</del>更小</p>
+<p>如果求值时间较短，则大的噪声才能破坏信号，快速求值可减少毛刺影响</p>
+<p>功耗问题：</p>
+<p>上一次的输出为零时才有功耗</p>
+<p>动态逻辑的开关活动性较高</p>
+<p>信号完整性问题：</p>
+<p>电荷泄露：NMOS下拉器件和反偏二极管的亚阈值漏电。PMOS预充电器件也引起了一些漏电流，在某种程度上，PMOS的漏电电流抵消了下拉路径的漏电，故输出电压将由上拉和下拉路径构成的电阻分压器来决定。动态电路中的漏电可以通过降低求值期间输出节点上的输出阻抗来解决，通常是增加一个泄露晶体管，为一个伪NMOS型的上拉器件，通常该管电阻较高/尺寸较小，电路可以下拉，为避免静态功耗常以反馈形式出现。</p>
+<p>电荷分享：$\mathrm{\Delta}V_{\text{out}} &lt; V_{\text{Tn}}$时V<del>x</del>的终值为V<del>DD</del>-V<del>Tn</del>,$\ $</p>
+<blockquote>
+<p>$\mathrm{\Delta}V_{\text{out}} &gt; V_{\text{Tn}}$时V<del>x</del>的终值和V<del>out</del>相同，</p>
+<p>两种情形的边界$\frac{C_{a}}{C_{L}} = \frac{V_{\text{Tn}}}{V_{\text{DD}} - V_{\text{Tn}}}$</p>
+</blockquote>
+<p>解决方法：对关键的节点进行预充电</p>
+<p>电容耦合：1. 高阻抗输出对串扰敏感 2. 回栅（输出对输入）</p>
+<p>时钟馈通：电容耦合的一种特殊情况，是时钟输入和动态输出节点之间的电容耦合引起的效应</p>
+<p>级联问题：由于每一个门的输出被预充电到1，在求值期间会造成无意的放电，在预充电期间置所有的输入为0可以解决这个问题。</p>
+<p>多米诺逻辑：</p>
+<p>加反相器：低阻抗输出，抗噪声能力强；隔离内部和负载电容。</p>
+<p>1. 只能实现非反向逻辑。</p>
+<p>2. 可以达到很高的速度：只有上升沿的延时；扇出小了</p>
+<p>解决多米诺逻辑非反向的问题：</p>
+<p>1. 利用布尔变换重组逻辑</p>
+<p>2. 采用差分逻辑（代价较高）：双轨多米诺</p>
+<p>3.np-CMOS</p>
+<p>双轨多米诺：</p>
+<p>性能较高，在几款商业处理器中得到普遍应用</p>
+<p>输入互补，结果对偶，输出互补</p>
+<p>预充时，输出都是0</p>
+<p>求值时，输出肯定有一边要翻转，功耗较高</p>
+<p>晶体管数较多，但能实现任何逻辑</p>
+<p>虽然有交叉耦合PMOS，但仍是无比电路</p>
+<p>np-CMOS：版图密度较高，速度较快，注意P网络的优化</p>
+<p><strong>设计选择：</strong></p>
+<p>静态门：稳定性，适用于自动化，但面积、扇入</p>
+<p>动态逻辑：快、面积小，但电荷泄露、电荷共享、噪声、回栅、时钟馈通</p>
+<p>互补：特殊应用，XOR，adder</p>
+<p><strong>时序逻辑：</strong></p>
+<p>Mealy机：输出和当前状态和输入都有关</p>
+<p>Moore机：输出只和当前状态有关</p>
+<p>存储单元的分类：</p>
+<p>Latches：电平敏感</p>
+<p>时钟为高电平时，Q=input，透明模式</p>
+<p>时钟为低电平时，保持，保持模式</p>
+<p>正锁存器：高通；负锁存器：低通</p>
+<p>也有建立、保持时间</p>
+<p>Flipflops：沿触发，由Latches构建</p>
+<p><strong>三个重要的时序参数：</strong></p>
+<p>建立时间t<del>su</del>：时钟信号上升沿到来以前，数据稳定不变的时间</p>
+<p>保持时间t<del>hold</del>：时钟信号上升沿到来以后，数据稳定不变的时间（数据保持不变以便能够稳定读取）</p>
+<p>传输延时t<del>c-q</del>：建立、保持时间都满足的情况下输入端数据在最坏情况下复制到输出端</p>
+<p>满足两个条件：</p>
+<p>T≥ t<del>c-q</del>+t<del>plogic</del>+t<del>su</del></p>
+<p>t<del>cdregister</del>+t<del>cdlogic</del>≥t<del>hold</del></p>
+<p>T：时钟周期</p>
+<p>t<del>plogic</del>:一个逻辑的最坏延时</p>
+<p>t<del>cd</del>：最小延时，也称污染延时</p>
+<p>对于高性能系统，逻辑深度低，R<del>eq­</del>、传输延迟、建立时间很重要</p>
+<p><strong>存储单元：</strong></p>
+<p>静态存储单元：有电就能保持状态，通过正反馈来保持（信号再生）</p>
+<p>动态存储单元：靠寄生电容来保持状态，周期性刷新，通常比较简单，因此速度高功耗低</p>
+<p>双稳态：交叉耦合反相器。翻转区g绝对值大于1，A、B为双稳态区，C为亚稳态稳定区，稳定后g绝对值小于1。双稳电路另一个常用的名字是触发器</p>
+<p>改变到另一个稳定态：加触发脉冲，脉冲宽度要大于两倍反相器平均传播延时</p>
+<p>两种方法：</p>
+<p>切断反馈回路：MUX based，无比逻辑</p>
+<p>触发强度超过反馈环：要注意晶体管尺寸 SRAM，SR Latch，有比逻辑</p>
+<p>传输门构成的锁存器：有4个时钟的负载，效率不高；正负时钟不重叠</p>
+<p>传输管构成的锁存器：N管阈值损失影响开关性和噪声容限，静态功耗（第一个反相器的PMOS永远不会关断）。在V<del>DD</del>低V<del>t­</del>高时更严重</p>
+<p>多路开关型时钟负载高，时钟网络问题严重，可以采用有比电路降低时钟负载，但稳定性下降</p>
+<p>理想时钟：导线差别，负载差别</p>
+<p>非理想时钟问题：时钟歪斜导致时钟重叠，Q值冲掉，多驱动问题的亚稳态</p>
+<p><strong>动态时序逻辑：</strong></p>
+<p>静态时序采用双稳态和反馈，可以在电源开启时维持状态，适用于变化不频繁的电路。</p>
+<p>动态时序将状态保存在寄生电容上，只能保持一段时间，需要经常刷新，通常更简单，管子更少，速度更快，功耗更低</p>
+<p>锁存器：电平敏感</p>
+<p>触发器：沿敏感</p>
+<p>重叠问题：0-0：要保证主级采样不能冲掉从级；1-1：要保证主级不被冲掉。</p>
+<p>采用两相时钟：不重叠时间要尽量大，但需要给四个时钟布线</p>
+<p>稳定性问题：信号线与存储点的耦合；电荷泄露</p>
+<p>采用伪静态</p>
+<p>C^2^MOS：时钟歪斜不敏感电路</p>
+<p>流水线：优化时序电路的一种方法</p>
+<p>流水线CMOS：只要流水线之间所有逻辑块F（用静态逻辑实现）不是反相的，C^2^MOS的流水线电路即是无竞争的</p>
+<p>NORA-CMOS：非竞争流水线组成原则（同求值，同预充）</p>
+<p>真单向钟控锁存器TSPC：节点浮空，易受信号耦合影响；若驱动传输门，可能发生电荷共享；动态节点应当借助静态反相器隔离起来。可以嵌入逻辑，减小锁存器相关延迟。组成DFF由于只有一个时钟，无重叠问题，但沿必须陡峭</p>
+<p>简化的TSPC：交叉输出锁存器，限制了按比例缩小的程度</p>
+<p>其他类型的寄存器：脉冲型，灵敏放大型</p>
+<p>非双稳态时序电路：施密特触发器，单稳时序电路，不稳电路</p>
+<p>时钟策略的选择：</p>
+<p>双相时钟：</p>
+<p>1. 健壮，概念简单</p>
+<p>2. 需要产生和布线两个时钟信号</p>
+<p>3. 必须设计两个时钟之间歪斜的容量</p>
+<p>单相时钟：</p>
+<p>1. 只需要产生和布线一个时钟信号</p>
+<p>2. 支持大多数自动化设计策略</p>
+<p>3. 不用担心两个时钟之间的歪斜</p>
+<p>4. 必须考虑沿的倾斜</p>
+<p><strong>时序问题：</strong></p>
+<p>时序划分：</p>
+<p>同步系统：全局时钟，同时更新；满足时序约束：时钟歪斜、时钟抖动、脉冲宽度变化。歪斜和抖动都影响时钟周期。</p>
+<p>异步系统：自定时；握手开销</p>
+<p>混合系统：跨时钟域；异步、同步域</p>
+<p>歪斜：</p>
+<p>1. 制造偏差（驱动器），静态偏差</p>
+<p>2. 互联线（电容，电阻）层间电介质厚度不同-dummy层</p>
+<p>3. 温度（阈值，电迁移率，门控，hotspot）</p>
+<p>抖动：</p>
+<p>1. 时钟产生（模电，本征噪声，电源噪声，衬底耦合）</p>
+<p>2. 电容耦合-时钟和信号耦合，时钟负载-每周期不同</p>
+<p>3.<br>电源变化（开关，IR降，电感，门控切换）电压瞬间变化，网络中时钟抖动-去耦电容</p>
+<p>正时钟歪斜增强性能，负时钟歪斜降低性能，T变为T+δ ，t<del>hold</del>变为t<del>hold</del>+δ</p>
+<p>但增加偏差会使电路对竞争情况更加敏感，可能危及整个时序系统的正常工作，应尽量减小</p>
+<p>时钟抖动对性能造成直接影响，对保持时间也有影响，2t<del>jitter</del></p>
+<p>时钟分布技术：时钟网络消耗了大部分功率，必须要支持时钟管理</p>
+<p>设计自由度：导线材料、拓扑、驱动器尺寸、沿、负载划分</p>
+<p>基本原量：相对延迟</p>
+<p>均衡路径（树结构）：H树网络、均衡的RC树：适合规则结构，铺瓦片；可以插入门控单元；理想状态下偏差为零；实际上环境、稳定造成偏差、抖动（门控时钟加剧）</p>
+<p>时钟网格：小网格能减小绝对延迟，有较小的歪斜；允许设计后期的改动（每处都易得到时钟）；大线载，高功耗；较早阶段就考虑时钟分布</p>
+<p>复杂的网络验证：提取RC网络；模拟</p>
+<p>分层概念：每层可以门控-低功耗；偏差较难控制-时序验证工具</p>
+<p>全局时钟：窗格结构，每个窗格从四边来驱动，减少工艺偏差，同时利于散热，减小歪斜，各处都有时钟，但电容较大；</p>
+<p>Latch型流水的时钟</p>
+<p>DFF：高稳定性</p>
+<p>Latch：高性能，自动借时间，最多可借0.5T</p>
+<p>处理时钟偏差和抖动问题：</p>
+<p>1.<br>为使偏差最小，可以采用H树等树结构，使从中央时钟分配源到单个钟控元件的时钟路径均衡</p>
+<p>2. 采用本地时钟网络可以减少时钟偏差，但代价是增加了电容负载和功耗</p>
+<p>3.<br>如果数据沿一个方向流动，可使数据和时钟按相反方向布线，这可以消除竞争，代价是性能有所降低</p>
+<p>4. 使用门控时钟减少动态功耗会使抖动严重</p>
+<p>5.<br>通过将时钟线与相邻信号线屏蔽，可以避免与数据相关的噪声。把电源线放在时钟旁边可以减少或避免相邻信号网络的耦合</p>
+<p>6. 通过采用虚设填料提高绝缘层一致性减少时钟偏差，降低层间互联电容的变化</p>
+<p>7. 温度不均和电源供电不稳带来的影响</p>
+<p>异步电路的优势：</p>
+<p>1. 模块化特性突出，在设计电路时具有内在的灵活性，对信号延迟不敏感</p>
+<p>2. 有效避免复杂的时钟树设计及其时钟偏差问题</p>
+<p>3. 对电路工艺适应性较强</p>
+<p>4. 潜在的高性能特性：平均延时决定</p>
+<p>5. 电磁兼容性强</p>
+<p>6. 具有低功耗特性</p>
+<p>功能块设计：</p>
+<p>数据：执行单元（加法器，乘法器，除法器，移位器），寄存器，多路复用器，译码器</p>
+<p>控制：有限状态机FSM（PLA，ROM，随机逻辑）</p>
+<p>内部互联：开关，判决器，总线</p>
+<p>存储器：Caches（SRAMs），TLBs，DRAMs，缓冲器</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>2267</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://2267.github.io/2018/01/01/ic-note/">https://2267.github.io/2018/01/01/ic-note/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) <a href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC-BY-NC-4.0</a> LICENSE， 转载请注明出处</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/01/22/memory-basic/">内存相关知识整理</a>
+            
+            
+            <a class="next" rel="next" href="/2018/01/01/micro-device3/">微电子器件笔记-3</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 2267 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

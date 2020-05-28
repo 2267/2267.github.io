@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="2267">
+
+
+
+
+
+<title>微电子器件笔记-1 | 六鹢退飞</title>
+
+
+
+    <link rel="icon" href="/image/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">微电子器件笔记-1</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 1, 2018&nbsp;&nbsp;0:00:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E9%9B%86%E6%88%90%E7%94%B5%E8%B7%AF/">集成电路</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>当时为了喜欢的人备考某大学时自学的课程的笔记。公式语法在hexo主题上可能显示的不好。</p>
+<p><strong>PN结：</strong></p>
+<p><strong>突变结与线性缓变结的定义</strong></p>
+<p>理想突变结：P型区和N型区的掺杂浓度N<del>A</del>和N<del>D</del>都是均匀分布的，杂质浓度在结面处发生阶跃式的突变</p>
+<p>单边突变结：突变结某一侧的掺杂浓度远大于另一侧</p>
+<p>缓变结：P区和N区交界处的杂质分布不是突然低从均匀的受主浓度突变到均匀的施主浓度，而是逐渐变化的</p>
+<p>线性缓变结：冶金结附近的杂质浓度是随距离进行线性变化的</p>
+<p><strong>PN结空间电荷区的形成</strong></p>
+<p><strong>耗尽近似与中性近似</strong></p>
+<p>耗尽近似：假设空间电荷区内的自由载流子已完全耗尽，电离杂质构成空间电荷区内电荷的唯一来源</p>
+<p>中性近似：认为耗尽区以外区域中的多子浓度仍等于电离杂质浓度，因此这部分区域保持了完全的电中性，采用中性近似时这部分区域可称为中性区</p>
+<p><strong>耗尽区宽度，内建电场，内建电势的计算</strong></p>
+<p>内建电场：</p>
+<p>N区：$\frac{\text{dE}}{\text{dx}} = \frac{q}{\varepsilon_{s}}N_{D}\text{\ \ \ \ \ \ \ \ }E\left( x \right) = \frac{q}{\varepsilon_{s}}N_{D}\left( x - x_{n} \right)\text{\ \ \ \ \ \ \ \ \ \ \ \ \ }0 \leq x \leq x_{n}$</p>
+<p>P区：$\frac{\text{dE}}{\text{dx}} = - \frac{q}{\varepsilon_{s}}N_{A}\text{\ \ \ \ \ \ \ \ }E\left( x \right) = - \frac{q}{\varepsilon_{s}}N_{A}\left( x + x_{p} \right)\text{\ \ \ \ \ } - x_{p} \leq x \leq 0$</p>
+<p>内建电场的方向是从右侧的N区指向左侧的P区，为负值</p>
+<p>耗尽区宽度：</p>
+<p>$\left| E \right|<em>{\max} = \left| E\left( 0 \right) \right| = \frac{q}{\varepsilon</em>{s}}N_{D}x_{n} = \frac{q}{\varepsilon_{s}}N_{A}x_{p}$<br>$qN_{D}x_{n} = qN_{A}x_{p}$</p>
+<p>$x_{n} = \frac{\varepsilon_{s}}{qN_{D}}\left| E \right|<em>{\max}$<br>$x</em>{p} = \frac{\varepsilon_{s}}{qN_{A}}\left| E \right|_{\max}$</p>
+<p>$x_{d} = \frac{\varepsilon_{s}}{qN_{0}}\left| E \right|<em>{\max} = \frac{2V</em>{\text{bi}}}{\left| E \right|<em>{\max}}$<br>$N</em>{0} = \frac{N_{A}N_{D}\ }{N_{A}{+ N}_{D}}$，称为约化浓度</p>
+<p>N区，P区耗尽区中电荷量大小相等，掺杂浓度越高，耗尽区就越薄</p>
+<p>内建电势/扩散电势：</p>
+<p>$V_{\text{bi}} = \frac{\varepsilon_{s}}{2qN_{0}}{\left| E \right|<em>{\max}}^{2}$<br>$\left| E \right|</em>{\max} = {(\frac{2qN_{0}}{\varepsilon_{s}}V_{\text{bi}})}^{1/2}$</p>
+<p>$V_{\text{bi}} = \frac{\text{kT}}{q}\ln\frac{N_{A}N_{D}}{n_{i}^{2}}$</p>
+<p>对于单边突变结的简化：</p>
+<p>P^+^N：N<del>A</del>≫N­<del>D</del> N<del>0</del>$\approx$N<del>D</del> $x_{p} \approx 0$</p>
+<p>PN^+^：N<del>D</del>≫N­<del>A</del> N<del>0</del>$\approx$N<del>A</del> $x_{n} \approx 0$</p>
+<p>耗尽区主要分布在低掺杂的一侧，$\left| E \right|<em>{\max}$和$x</em>{d}$也主要取决于低掺杂一侧的杂质浓度</p>
+<p>对于线性缓变结：</p>
+<p>$N_{D} - N_{A} = ax$</p>
+<p>$\frac{\text{dE}}{\text{dx}} = \frac{q}{\varepsilon_{s}}{(N}<em>{D} - N</em>{A}) = \frac{q}{\varepsilon_{s}}\text{ax}$</p>
+<p>$\left| E\left( x \right) \right| = \left| E_{\max} \right|\lbrack 1 - {(\frac{2x}{x_{d}})}^{2}\rbrack$<br>$\left| E_{\max} \right| = \frac{\text{aq}x_{d}^{2}}{8\varepsilon_{s}}$</p>
+<p>$V_{\text{bi}} = \frac{\text{kT}}{q}\ln\frac{N_{A}N_{D}}{n_{i}^{2}} = \frac{2\text{kT}}{q}\ln\frac{ax_{d}}{2n_{i}} = \frac{2}{3}\left| E_{\max} \right|x_{d}$</p>
+<p>其中$N_{A}\left( - \frac{x_{d}}{2} \right) = N_{D}\left( \frac{x_{d}}{2} \right) = \frac{ax_{d}}{2}$</p>
+<p><strong>PN结的能带图</strong></p>
+<p>电位分布$\Psi(x)$乘以-q得到电位能分布</p>
+<p>载流子浓度分布</p>
+<p>势垒区内及边界：</p>
+<p>$n = n_{i}exp( - \frac{E_{i} - E_{F}}{\text{kT}})$<br>$p = n_{i}exp( - \frac{E_{F} - E_{i}}{\text{kT}})$</p>
+<p>$E_{i}\left( x \right) = E_{\text{in}} - q\Psi\left( x \right) = E_{\text{ip}} - q\Psi\left( x \right) - qV_{\text{bi}}$</p>
+<p>$n\left( x \right) = n_{n0}exp(\frac{q\Psi(x)}{\text{kT}})$<br>$p\left( x \right) = p_{p0}exp( - \frac{qV_{\text{bi}} + q\Psi(x)}{\text{kT}})$</p>
+<p>$n\left( x \right)p\left( x \right) = n_{n0}p_{p0}exp( - \frac{qV_{\text{bi}}}{\text{kT}})$</p>
+<p>$V_{\text{bi}} = \frac{\text{kT}}{q}\ln\frac{n_{n0}p_{p0}}{n_{i}^{2}} = \frac{\text{kT}}{q}\ln\frac{N_{A}N_{D}}{n_{i}^{2}}$</p>
+<p>$x = - x_{p}处：\Psi\left( x \right) = - V_{\text{bi}}\text{\ \ \ n}\left( x \right) = n_{p0} = n_{n0}exp( - \frac{qV_{\text{bi}}}{\text{kT}})\ \ \ \ \ p\left( x \right) = p_{p0}$</p>
+<p>$x = x_{n}处：\text{\ \ \ }\Psi\left( x \right) = 0\ \ \ \ \ \ \ \ \ n\left( x \right) = n_{n0}\text{\ \ \ \ \ p}\left( x \right) = p_{n0} = p_{p0}exp( - \frac{qV_{\text{bi}}}{\text{kT}})\ $</p>
+<p>设外加电压全部落在耗尽区上，只需将公式中的$V_{\text{bi}}$换成$(V_{\text{bi}} - V)$</p>
+<p>结定律：PN结有外加电压V时，边界处的少子等于平衡时的少子浓度乘以<br>exp($\frac{\text{qV}}{\text{kT}})$，对正反电压都适用，但正向时只适用于小注入</p>
+<p>$p_{n}\left( x_{n} \right) = p_{n0}\exp\left( \frac{\text{qV}}{\text{kT}} \right)\text{\ \ \ \ }$<br>$n_{p}\left( - x_{p} \right) = n_{p0}\exp\left( \frac{\text{qV}}{\text{kT}} \right)\text{\ \ }$</p>
+<p><strong>正向及反向电压下PN结中的载流子运动情况</strong></p>
+<p>掺杂的浓度不变时，电场的斜率应不变</p>
+<p>外加正向电压后，$x_{d}$与$\left| E_{\max} \right|$减小，PN结势垒高度降低为$q(V_{\text{bi}} - V)$</p>
+<p>势垒高度降低后不能再阻止N区电荷向P区扩散及P区空穴向N区扩散，于是形成正向电流。由于正向电流的电荷来源是多子，所以正向电流很大</p>
+<p>正向电流密度由三部分组成：</p>
+<p>1. 空穴扩散电流密度J<del>dp</del></p>
+<p>2. 电子扩散电流密度J<del>dn</del></p>
+<p>3. 势垒区复合电流密度J<del>r</del></p>
+<p>外加反向电压后，$x_{d}$与$\left| E_{\max} \right|$增大，PN结势垒高度增高到$q\left( V_{\text{bi}} - V \right)\ \ \ \ \ \ \ (V &lt; 0)$</p>
+<p>多子面临的势垒提高了，更不能扩散到对方区域中去了，但少子面临的势阱也更深了，所以更容易被反向电场拉入对方区域，从而形成反向电流。由于反向电流的电荷来源是少子，所以反向电流很小</p>
+<p>反向电流密度由三部分组成：</p>
+<p>1. 空穴扩散电流密度J<del>dp</del></p>
+<p>2. 电子扩散电流密度J<del>dn</del></p>
+<p>3. 势垒区产生电流密度J<del>g</del></p>
+<p><strong>PN结的少子分布图</strong></p>
+<p>少子浓度的边界条件：</p>
+<p>N区：<br>$p_{n}\left( x_{n} \right) = p_{n0}\exp\left( \frac{\text{qV}}{\text{kT}} \right)\text{\ \ \ \ \ }p_{n}|<em>{x \rightarrow \infty} = p</em>{n0}$</p>
+<p>P区：<br>$n_{p}\left( - x_{p} \right) = n_{p0}\exp\left( \frac{\text{qV}}{\text{kT}} \right)\text{\ \ \ \ \ }n_{p}|<em>{x \rightarrow - \infty} = n</em>{p0}$</p>
+<p>对于非平衡少子：</p>
+<p>N区：<br>$\mathrm{\Delta}p_{n}\left( x_{n} \right) = p_{n0}\lbrack\exp{\left( \frac{\text{qV}}{\text{kT}} \right) - 1\rbrack}\ \ \ \ \ \mathrm{\Delta}p_{n}|_{x \rightarrow \infty} = 0$</p>
+<p>P区：<br>$\mathrm{\Delta}n_{p}\left( - x_{p} \right) = n_{p0}\lbrack\exp{\left( \frac{\text{qV}}{\text{kT}} \right) - 1\rbrack}\ \ \ \ \ \mathrm{\Delta}n_{p}|_{x \rightarrow - \infty} = 0$</p>
+<p>中性区：足够长远大于扩散长度 $L_{p} = \sqrt{D_{p}\tau_{p}}$<br>$L_{n} = \sqrt{D_{n}\tau_{n}}$</p>
+<p>N区：<br>$\mathrm{\Delta}p_{n}\left( x_{n} \right) = p_{n0}\lbrack\exp{\left( \frac{\text{qV}}{\text{kT}} \right) - 1\rbrack}exp( - \frac{x - x_{n}}{L_{p}})$</p>
+<p>P区：<br>$\mathrm{\Delta}n_{p}\left( - x_{p} \right) = n_{p0}\lbrack\exp{\left( \frac{\text{qV}}{\text{kT}} \right) - 1\rbrack}exp(\frac{x + x_{p}}{L_{n}})$</p>
+<p>经过一个L的长度，非平衡载流子浓度将为1/e</p>
+<p><strong>PN结的直流伏安特性</strong></p>
+<p>N区内空穴扩散电流密度：$J_{\text{dp}} = \frac{qD_{p}p_{n0}}{L_{p}}\lbrack\exp{\left( \frac{\text{qV}}{\text{kT}} \right) - 1\rbrack}$</p>
+<p>P区内电子扩散电流密度：$J_{dn} = \frac{qD_{n}n_{p0}}{L_{n}}\lbrack\exp{\left( \frac{\text{qV}}{\text{kT}} \right) - 1\rbrack}$</p>
+<p>PN结总扩散电流密度：肖克莱方程（理想二极管的电流-电压方程）</p>
+<p>$J_{d} = J_{\text{dp}} + J_{\text{dn}} = J_{0}\lbrack\exp{\left( \frac{\text{qV}}{\text{kT}} \right) - 1\rbrack}\text{\ \ \ }$</p>
+<p>$\ J_{0} = q\left( \frac{D_{p}}{L_{p}}p_{n0} + \frac{D_{n}}{L_{n}}n_{p0} \right) = qn_{i}^{2}(\frac{D_{p}}{L_{p}N_{D}} + \frac{D_{n}}{L_{n}N_{A}})$</p>
+<p>$当V = 0时，J_{d} = 0$</p>
+<p>$当V \gg \frac{\text{kT}}{q}时，J_{d} = J_{0}\exp\left( \frac{\text{qV}}{\text{kT}} \right)$</p>
+<p>$当V &lt; 0且\left| V \right| \gg \frac{\text{kT}}{q}时，J_{d} = - J_{0}$</p>
+<p><strong>PN结反向饱和电流的计算及影响因素</strong></p>
+<p>$反向饱和电流：I_{0} = AJ_{0}$ A：PN结的结面积</p>
+<p>近似：</p>
+<p>1. 突变耗尽层近似</p>
+<p>2. 玻尔兹曼统计近似</p>
+<p>3. 小注入假设</p>
+<p>4. 忽略耗尽区内的产生-复合电流，并假设耗尽区内电子电流和空穴电流恒定</p>
+<p>影响<em>J<del>0</del></em>的因素：</p>
+<p>与材料种类的关系：$E_{G} \uparrow ，则n_{i} \downarrow ，J_{0} \downarrow$</p>
+<p>与掺杂浓度的关系：$N_{D}、N_{A} \uparrow ，则p_{n0}、n_{p0} \downarrow ，J_{0} \downarrow$，主要取决于低掺杂一侧的杂质浓度</p>
+<p>与温度T的关系：$T \uparrow ，则n_{i} \uparrow ，J_{0} \uparrow$，因此$J_{0}$具有正温度系数，这是影响PN结热稳定性的重要因素</p>
+<p>势垒区产生复合电流J<del>gr</del>：</p>
+<p>$J_{\text{gr}} = q\int_{- x_{p}}^{x_{n}}\text{Udx}$<br>，净复合率$U = \frac{\text{np} - n_{i}^{2}}{\tau(n + p + 2n_{i})}$<br>P区内：$U \approx \frac{\Delta n}{\tau_{n}}$<br>N区内：$U \approx \frac{\Delta p}{\tau_{p}}$</p>
+<p>外加电压时 $\text{np} = n_{i}^{2}exp(\frac{\text{qV}}{\text{kT}})$</p>
+<p>$当V = 0时$，$\text{np} = n_{i}^{2}$，U=0</p>
+<p>$当V &gt; 0时$，$\text{np} &gt; n_{i}^{2}$，U&gt;0，发生净复合</p>
+<p>$当V &lt; 0时$，$\text{np} &lt; n_{i}^{2}$，U&lt;0，发生净产生</p>
+<p>简化计算，势垒区内：</p>
+<p>$J_{\text{gr}} = qUx_{d} = \frac{qn_{i}x_{d}}{2\tau}\frac{\exp\left( \frac{\text{qV}}{\text{kT}} \right) - 1}{\exp\left( \frac{\text{qV}}{2kT} \right) - 1}$</p>
+<p>$当V = 0时$，J<del>gr</del>=0</p>
+<p>$当V \gg \frac{\text{kT}}{q}时$，$J_{r} \approx \frac{qn_{i}x_{d}}{2\tau}\exp\left( \frac{\text{qV}}{2kT} \right)$</p>
+<p>$当V &lt; 0且\left| V \right| \gg \frac{\text{kT}}{q}时，J_{g} \approx - \frac{qn_{i}x_{d}}{2\tau}$</p>
+<p>温度一定时，外加正向电压且$V \gg \frac{\text{kT}}{q}$：</p>
+<p>V比较小时，以J<del>r</del>为主，V比较大时，以J<del>d</del>为主，E<del>G</del>越大，则过渡电压越高</p>
+<p>外加反向电压且$|V| \gg \frac{\text{kT}}{q}$：</p>
+<p>温度较低时，以J<del>g</del>为主，温度较高时，以J<del>d</del>为主，E<del>G</del>越大，则过渡温度越高</p>
+<p>正向导通电压V<del>F</del>：</p>
+<p>影响正向导通电压的因素：和<em>J<del>0</del></em>相反，其中E<del>G</del>是影响最大的因素</p>
+<p><strong>薄基区二极管的特点</strong></p>
+<p>中性区的长度小于少子扩散长度，J<del>d­­</del>会因为少子浓度的边界条件不同而有所不同，但势垒区J<del>gr</del>的表达式无变化</p>
+<p>$\mathrm{\Delta}p_{n}\left( x_{n} \right) = p_{n0}\lbrack\exp{\left( \frac{\text{qV}}{\text{kT}} \right) - 1\rbrack}(1 - \frac{x}{W_{B}})$</p>
+<p>空穴扩散电流密度：$J_{\text{dp}} = \frac{qD_{p}p_{n0}}{W_{B}}\lbrack\exp{\left( \frac{\text{qV}}{\text{kT}} \right) - 1\rbrack}$，$W_{B}$替换$L_{p}$</p>
+<p>电子扩散电流密度：$J_{dn} = \frac{qD_{n}n_{p0}}{W_{E}}\lbrack\exp{\left( \frac{\text{qV}}{\text{kT}} \right) - 1\rbrack}$，$W_{E}$替换$L_{n}$</p>
+<p><strong>大注入效应</strong></p>
+<p>小注入条件：注入某区边界附近的非平衡少子浓度远小于该区的平衡多子浓度</p>
+<p>大注入条件：注入某区边界附近的非平衡少子浓度远大于该区的平衡多子浓度</p>
+<p>大注入下的结定律：$p_{n}\left( x_{n} \right) = n_{i}\exp\left( \frac{\text{qV}}{2\text{kT}} \right)\text{\ \ \ \ }$<br>$n_{p}\left( - x_{p} \right) = n_{i}\exp\left( \frac{\text{qV}}{2\text{kT}} \right)\text{\ \ }$</p>
+<p>大注入下的自建电场：$E(x) = - \frac{D_{n}}{\mu_{n}}\frac{1}{n_{n}}\frac{dn_{n}}{\text{dx}} = - - \frac{D_{p}}{\mu_{p}}\frac{1}{p_{n}}\frac{dp_{n}}{\text{dx}}$</p>
+<p>大注入条件下的PN结电流：</p>
+<p>$J_{p} = - q(2D_{p}\frac{dp_{n}}{\text{dx}})$<br>相当于空穴电流仍只由扩散电流组成，但扩散系数扩大了一倍，这个现象称为韦伯斯脱效应</p>
+<p>$J_{p} = \frac{\sqrt{2}qD_{p}n_{i}}{L_{p}}\exp\left( \frac{\text{qV}}{2\text{kT}} \right)$<br>$J_{n} = \frac{\sqrt{2}qD_{n}n_{i}}{L_{n}}\exp\left( \frac{\text{qV}}{2\text{kT}} \right)$</p>
+<p>转折电压/膝电压：注入程度的大小取决于外加正向电压的大小，V<del>k</del>为从小注入过渡到大注入的转折电压</p>
+<p>$V_{\text{KN}} = \frac{2kT}{q}ln(\frac{\sqrt{2}N_{D}}{n_{i}})$<br>$V_{\text{KP}} = \frac{2kT}{q}ln(\frac{\sqrt{2}N_{A}}{n_{i}})$</p>
+<p><strong>PN结击穿</strong></p>
+<p>击穿机理有三种：电击穿（雪崩倍增、隧道效应）、热击穿</p>
+<p>雪崩击穿：</p>
+<p>碰撞电离率α<del>in</del>/α<del>ip</del>：一个自由电子（或空穴）在单位距离内通过碰撞电离产生的新的电子空穴对的数目，与电场强烈有关，近似表达式为$\alpha_{i} = Aexp\lbrack - {(\frac{B}{E})}^{m}\rbrack$</p>
+<p>雪崩倍增因子：$M = \frac{1}{1 - \int_{0}^{x_{d}}{\alpha_{i}\text{dx}}}$，包括碰撞电离作用在内的流出耗尽层的总电流与未发生碰撞电离时的原始电流之比</p>
+<p>雪崩击穿条件：$\int_{0}^{x_{d}}{\alpha_{i}\text{dx}} \rightarrow 1$</p>
+<p>雪崩击穿电压的近似计算：当E<del>max</del>达到某临界电场E<del>C</del>时，即满足击穿条件，E<del>c</del>与结的典型值为E<del>c</del>=2*10^5^V/cm</p>
+<p>突变结：$V_{B} = \frac{\varepsilon_{s}}{2qN_{0}}{E_{c}}^{2}$<br>线性缓变结：$V_{B} = {(\frac{32\varepsilon_{s}}{9aq})}^{1/2}{E_{c}}^{3/2}$</p>
+<p>室温下：单边突变结：$V_{B} \approx 5.2*10^{13}{E_{G}}^{3/2}{N_{0}}^{- 3/4}$<br>线性缓变结：$V_{B} \approx 10^{10}{E_{G}}^{6/5}a^{- 2/5}$</p>
+<p>影响因素：N<del>0</del>，a，T</p>
+<p>齐纳击穿的机理及特点、热击穿的机理</p>
+<p>提高雪崩击穿电压的措施：</p>
+<p>掺杂浓度要低、浓度梯度要小</p>
+<p>低掺杂区的厚度要足够厚</p>
+<p>结深要深</p>
+<p>采用台面结构</p>
+<p>齐纳击穿：</p>
+<p>隧道效应：由于电子具有波动性，可以有一定的几率穿过势垒。势垒越薄，隧道效应就越明显</p>
+<p>齐纳击穿条件：$d_{\min} = \frac{E_{G}}{q{|E}_{\max}|}$足够小</p>
+<p>随着反向电压的提高，${|E}<em>{\max}|$增大，隧道长度d缩短，使得反向电流增大。当反向电压增大到使${|E}</em>{\max}|$达到临界值时，d足够小，使反向电流急剧增大，这种现象就称为齐纳击穿或隧道击穿。</p>
+<p>热击穿</p>
+<p><strong>PN结势垒电容与扩散电容的定义、计算与特点</strong></p>
+<p>势垒电容C<del>T</del>：</p>
+<p>外加电压有-ΔV的变化时，势垒区宽度发生变化，使势垒区中的空间电荷也发生相应的ΔQ的变化，全称为PN结势垒微分电容。</p>
+<p>$$C_{T} = \left| \frac{\text{dQ}}{\text{dV}} \right| = A\frac{\varepsilon_{s}}{x_{d}}$$</p>
+<p>势垒区中电离杂质电荷随外加电压的变化率</p>
+<p>正负电荷在空间上是分离的</p>
+<p>与直流偏压成幂函数关系</p>
+<p>正偏反偏下均存在，可作电容器使用</p>
+<p>$$C_{D} = \frac{qI_{F}\tau}{2kT} = \frac{1}{2}g_{D}\tau$$</p>
+<p>中性区中非平衡载流子电荷随外加电压的变化率</p>
+<p>正负电荷在空间上是重叠的</p>
+<p>与直流电流成线性关系，与直流偏压成指数关系</p>
+<p>只存在于正偏下</p>
+<p>直流增量电导：$g_{D} = \frac{dI_{F}}{dV_{0}} = \frac{qI_{F}}{\text{kT}}$<br>交流导纳：$Y = g_{D} + j\omega C_{D}$</p>
+<p><strong>PN结的交流小信号参数与等效电路</strong></p>
+<p>势垒电容C<del>T</del>，增量电导g<del>D</del>，扩散电容C<del>D</del></p>
+<p>寄生参数：漏电导g<del>1</del>，寄生电阻r<del>s</del></p>
+<p>直流分量：$I_{F} = Aq\left( J_{dp0} + J_{dn0} \right) = Aq(\frac{D_{P}p_{n0}}{L_{p}} + \frac{D_{n}n_{p0}}{L_{n}})exp(\frac{qV_{0}}{\text{kT}})$</p>
+<p>交流分量：$I_{1} = I_{F}\frac{qV_{1}}{\text{kT}}{(1 + j\omega\tau)}^{1/2}$</p>
+<p>扩散电流：$I = I_{F} + i = I_{F} + I_{1}e^{\text{jωt}}$</p>
+<p><strong>PN结的开关特性与少子存储效应</strong></p>
+<p>理想开关特性：</p>
+<p>直流特性：开电压为0，关电流为0</p>
+<p>瞬态特性：打开瞬间立刻出现稳态电流，关断瞬间电流立刻消失</p>
+<p>直流：正向时：r<del>s</del>越小越好，反向时：g<del>1</del>越小越好</p>
+<p>瞬态：存储时间t<del>s</del>，下降时间t<del>f</del>，反向恢复时间t<del>r</del>=t<del>s</del>+t<del>f</del>，t<del>r</del>持续的过程叫反向恢复过程</p>
+<blockquote>
+<p>$t_{r} = \tau_{p}\ln\left( \frac{I_{r} + I_{r}}{I_{r}} \right)$</p>
+</blockquote>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>2267</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://2267.github.io/2018/01/01/micro-device1/">https://2267.github.io/2018/01/01/micro-device1/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) <a href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC-BY-NC-4.0</a> LICENSE， 转载请注明出处</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/01/01/micro-device3/">微电子器件笔记-3</a>
+            
+            
+            <a class="next" rel="next" href="/2018/01/01/micro-device2/">微电子器件笔记-2</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 2267 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="2267">
+
+
+
+
+
+<title>微电子器件笔记-3 | 六鹢退飞</title>
+
+
+
+    <link rel="icon" href="/image/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">微电子器件笔记-3</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 1, 2018&nbsp;&nbsp;0:00:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E9%9B%86%E6%88%90%E7%94%B5%E8%B7%AF/">集成电路</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p><strong>MOSFET：</strong></p>
+<p><strong>场效应晶体管FET优点：</strong></p>
+<p>1.<br>输入阻抗高，有利于各级间的直接耦合，有利于在大功率晶体管中将各子晶体管并接，有利于输入端与微波系统的匹配。</p>
+<p>2. 温度稳定性好</p>
+<p>3. 噪声较小</p>
+<p>4. 在大电流情况下跨导基本不降</p>
+<p>5. 没有少子存储效应，因此开关速度快</p>
+<p>6. 功耗低</p>
+<p>7. 制造工艺简单</p>
+<p>8. 各管之间存在天然隔离，适宜于制作VLSI</p>
+<p>FET分为三类：</p>
+<p>结型场效应晶体管JFET：利用PN结为控制栅</p>
+<p>肖特基势垒场效应晶体管MESFET：利用肖特基势垒结为控制栅</p>
+<p>绝缘栅型场效应晶体管IGFET/金属-氧化物-半导体场效应管MOSFET</p>
+<p>电子/空穴在栅极附近的硅表面便形成了一个薄层，称之为<strong>反型层</strong>，反型层比下面的耗尽层要薄的多</p>
+<p>当硅表面处少子浓度达到或超过体内平衡多子浓度时，称为表面发生了<strong>强反型</strong></p>
+<p>强反型时，表面势近似为不变的数值，耗尽层电荷及耗尽层厚度有极大值，此时过剩栅压只是形成反型层电荷</p>
+<p>使栅下硅表面处开始发生强反型时的电压称为<strong>阈电压</strong>或开启电压</p>
+<p>MOS结构：</p>
+<p>理想情况：<strong>费米势</strong>：<br>$\phi_{\text{Fp}} = \frac{kT}{q}\ln\frac{N_{A}}{n_{i}} &gt; 0$<br>$\phi_{\text{Fn}} = - \frac{kT}{q}\ln\frac{N_{D}}{n_{i}} &lt; 0$</p>
+<p>实际情况：$金属半导体间的功函数差\phi_{\text{MS}} &lt; 0\ ，栅氧化层电荷面密度\ Q_{\text{OX}} &gt; 0$，使半导体一侧带负电荷</p>
+<p><strong>表面势</strong>：$\phi_{S} = - \phi_{\text{MS}} + \frac{Q_{\text{OX}}}{C_{\text{OX}}}$，为能带的弯曲量除以<em>q</em>，其中$C_{\text{OX}} = \frac{\varepsilon_{\text{OX}}}{T_{\text{OX}}}$</p>
+<p>V<del>G</del>=<strong>平带电压</strong>V<del>FB</del>：使半导体表面势恢复为零<br>，$V_{\text{FB}} = \phi_{\text{MS}} - \frac{Q_{\text{OX}}}{C_{\text{OX}}}$，是一个负值</p>
+<p>V<del>G</del>=V<del>T</del>时：$V_{G} - V_{\text{FB}} = V_{\text{OX}} + \phi_{S}$<br>，发生强反型的表面势$\phi_{S，\text{inv}} = 2\phi_{\text{FB}}$</p>
+<blockquote>
+<p>$V_{T} = V_{\text{FB}} + V_{\text{OX}} + 2\phi_{\text{FB}}$<br>其中$V_{\text{OX}} = \frac{- Q_{S}}{C_{\text{OX}}}$，Q<del>S</del>=Q<del>n</del>+Q<del>A</del>$\approx$Q<del>A</del></p>
+<p>半导体中的电荷面密度=反型层中的电子电荷面密度+耗尽区中的电离受主电荷面密度</p>
+</blockquote>
+<p>Q<del>A</del>是表面势的函数</p>
+<p>$V_{T} = \phi_{\text{MS}} - \frac{Q_{\text{OX}}}{C_{\text{OX}}} - \frac{Q_{A}(2\phi_{\text{Fp}})}{C_{\text{OX}}} + 2\phi_{\text{Fp}}$</p>
+<p>MOSFET结构：<strong>体因子</strong>$\mathbf{K}$</p>
+<p>N沟道：$V_{T} = V_{S} + \phi_{\text{MS}} - \frac{Q_{\text{OX}}}{C_{\text{OX}}} + K{\lbrack 2\phi_{\text{Fp}} + V_{S} - V_{B}\rbrack}^{\frac{1}{2}} + 2\phi_{\text{Fp}}$<br>P型衬底：$K = \frac{ {(2q\varepsilon_{s}N_{A})}^{1/2} }{C_{\text{OX} } }$</p>
+<p>P沟道：$V_{T} = V_{S} + \phi_{\text{MS}} - \frac{Q_{\text{OX}}}{C_{\text{OX}}} - K{\lbrack - (2\phi_{\text{Fn}} + V_{S} - V_{B})\rbrack}^{\frac{1}{2}} + 2\phi_{\text{Fn}}$<br>N型衬底：$K = \frac{ {(2q\varepsilon_{s}N_{D})}^{1/2} }{C_{\text{OX} } }$</p>
+<p><strong>影响阈电压的因素：</strong></p>
+<p>1. 栅氧化层厚度T<del>OX</del>：T<del>OX</del>越薄，|V<del>T</del>|越小</p>
+<p>2.<br>衬底费米势$\phi_{\text{FB}}$：与掺杂浓度有关，但影响不大，绝对值的典型值为0.3V</p>
+<p>3.<br>功函数差$\phi_{\text{MS}}$：与金属种类、半导体导电类型及掺杂浓度有关，典型值为-0.6V-$\phi_{\text{FB}}$</p>
+<p>4. 耗尽区电离杂质电荷面密度：近似Q<del>AD</del>∝N<del>AD</del>^1/2^</p>
+<blockquote>
+<p>N沟：$Q_{A} = - qN_{Ax_{d}} = - {(4qN_{A}\varepsilon_{s}\phi_{\text{Fp}})}^{1/2}$&lt;0</p>
+<p>P沟：$Q_{D} = qN_{Dx_{d}} = {( - 4qN_{D}\varepsilon_{s}\phi_{Fn})}^{1/2}$&gt;0</p>
+</blockquote>
+<p>5. 栅氧化层中的电荷面密度Q<del>OX</del>：与制造工艺及晶向有关，和氧化以后的工艺</p>
+<p>调整阈电压主要是通过改变掺杂浓度N和改变栅氧化层厚度T<del>OX</del>来实现</p>
+<p>离子注入对阈电压的影响：注入的杂质与衬底杂质类型相同时，N沟道MOSFET阈电压向正方向调整</p>
+<p><strong>衬底偏置效应（体效应）：</strong>V<del>T</del>随V<del>BS</del>的变化而变化，V<del>BS</del>绝对值增大时，NMOS阈电压向正方向变化，PMOS阈电压向负方向变化。T<del>OX</del>越厚、N越高，衬底偏置效应就越严重</p>
+<p>阈电压的测量：</p>
+<p>1. 联立方程法</p>
+<p>2. $\sqrt{I_{\text{Dsat}}} - V_{\text{GS}}$法：横坐标截距为V<del>T</del></p>
+<p>3. 1μA法：根据宽长比调整测试电流I<del>DT</del></p>
+<p><strong>直流电流电压方程：增益因子β=</strong>$\frac{\mathbf{Z}}{\mathbf{L}}\mathbf{\mu}<em>{\mathbf{n}}\mathbf{C}</em>{\mathbf{\text{OX}}}$</p>
+<p>非饱和区的简化：萨之唐方程：$I_{D} = \beta(V_{\text{GS}} - V_{T} - \frac{1}{2}V_{\text{DS}})V_{\text{DS}}$</p>
+<p>饱和漏极电流：$I_{D} = \frac{\beta}{2}{(V_{\text{GS}} - V_{T})}^{2}$</p>
+<p>饱和漏极电压：V<del>Dsat</del>=V<del>GS</del>-V<del>T</del></p>
+<p>有效沟道长度调制效应：沟道有效长度随V<del>DS</del>的增大而缩短的现象</p>
+<p>漏区静电场对沟道的反馈作用：耗尽区宽度接近有效沟道长度，漏区的电力线有一部分终止于沟道上，使沟道电子的数量增多导致电流增大。</p>
+<p>衬底为中等或较高掺杂时有效沟道长度调制效应占主导，掺杂浓度低时漏区与沟道间的经典耦合为主</p>
+<p><strong>亚阈区导电：</strong></p>
+<p>弱反型：表面势位于$\phi_{\text{Fp}}$和$2\phi_{\text{Fp}}$之间</p>
+<p>亚阈漏极电流（次开启电流）I<del>Dsub</del>：</p>
+<p>亚阈区I<del>Dsub</del>和V­<del>GS</del>呈指数关系</p>
+<p>V<del>DS</del>=0时I<del>Dsub</del>=0；V<del>DS</del>较小时I<del>Dsub</del>随V<del>DS</del>增大而增大；V<del>DS</del>≫kT/q后,I<del>Dsub</del>与V<del>DS</del>无关</p>
+<p><strong>亚阈区栅源电压摆幅S</strong>：$S \equiv \frac{dV_{\text{GS}}}{d(lnI_{\text{Dsub}})} = \frac{\text{nkT}}{q} = \frac{\text{kT}}{q}(1 + \frac{C_{D}}{C_{\text{OX}}})$<br>C<del>D</del>是沟道下的耗尽层电容</p>
+<p>S的意义：使I<del>Dsub</del>扩大e倍所需要的栅源电压V<del>GS</del>的增量，代表亚阈区V<del>GS</del>对I<del>Dsub</del>的控制能力，S越大控制能力越弱。作为开关管要求S尽量小，S极限值为kT/q，S<del>min</del>=26mV<br>(/e倍)</p>
+<p><strong>MOSFET的直流参数：</strong></p>
+<p>1. <strong>阈电压V<del>T</del></strong></p>
+<p>2.<br><strong>饱和漏极电流</strong>$\mathbf{I}<em>{\mathbf{\text{DSS}}} = \pm \frac{Z}{2L}\mu C</em>{\text{OX}}V_{T}^{2}$：耗尽型MOSFET当V<del>GS</del>=0，V<del>DS</del>足够大且恒定的漏极电流饱和值</p>
+<p>3.<br><strong>截止漏极电流</strong>：只适用于增强型MOSFET，当V<del>GS</del>=0，外加V<del>DS</del>后的亚阈电流与PN结反向电流引起的微小电流</p>
+<p>4.<br><strong>导通电阻R<del>on</del></strong>=$\frac{1}{\beta(V_{\text{GS}} - V_{T})}$：MOSFET工作于线性区且V<del>DS­­</del>很小的沟道电阻</p>
+<p>5. <strong>栅极电流I<del>G</del></strong>：表示从栅极穿过栅氧化层到沟道之间的电流。</p>
+<p><strong>温度特性：</strong></p>
+<p>阈电压与温度的关系：NMOS阈电压具有负温系数，PMOS阈电压具有正温系数。|$\frac{dV_{T}}{dT}$|大约为每度几个mV，</p>
+<p>V<del>T</del>的温度系数的绝对值随|V<del>BS</del>|增加而减小</p>
+<p>漏极电流与温度的关系：总的来说，MOSFET有较好的温度稳定性</p>
+<p>V<del>GS</del>-V<del>T</del>较大时，漏极电流温度系数$\frac{dI_{D}}{dT} &gt; 0$</p>
+<p>V<del>GS</del>-V<del>T</del>较小时，$\ \frac{dI_{D}}{dT} &lt; 0$</p>
+<p>V<del>GS</del>-V<del>T</del>$= \frac{\mu(dV_{T}/dT)}{(d\mu_{n}/dT)} + \frac{1}{2}V_{\text{DS}}$时，$\frac{dI_{D}}{dT} = 0$</p>
+<p>其他：</p>
+<p>亚阈区摆幅S变大</p>
+<p>泄露电流变大</p>
+<p>迁移率降低，跨导降低</p>
+<p>金属线电阻变大</p>
+<p><strong>击穿电压：</strong></p>
+<p>1. 源漏击穿电压BV<del>DS</del>：</p>
+<p>漏PN结雪崩击穿：由于源栅之间存在电场，此击穿电压远低于相同掺杂和结深的PN结</p>
+<p>源、漏之间的穿通V<del>pt</del>：L越小，N<del>A­</del>越小，穿通电压就越低</p>
+<p>2. 栅源击穿电压BV<del>GS</del></p>
+<p><strong>小信号交流参数：</strong></p>
+<p>1.<br><strong>跨导g<del>m</del></strong>：${\frac{\partial I_{D}}{\partial V_{\text{GS}}}|}<em>{V</em>{\text{DS}} = 常数}$，栅源电压对漏电流的控制能力</p>
+<p>非饱和区：g<del>m</del>=βV<del>DS\ ­</del>饱和区：g<del>m</del>=β(V<del>GS</del>-V<del>T</del>)</p>
+<p>2.<br><strong>漏源电导g<del>ds</del></strong>：${\frac{\partial I_{D}}{\partial V_{\text{DS}}}|}<em>{V</em>{\text{GS}} = 常数}$，漏极电流随漏源电压的变化而变化的情况</p>
+<p>非饱和区：g<del>ds</del>=β(V<del>GS</del>-V<del>T</del>-V<del>DS</del>)，V<del>DS</del>很小时g<del>ds</del>=β(V<del>GS</del>-V<del>T</del>)=1/R<del>on</del><br>饱和区(g<del>ds</del>)<del>sat</del>=0，实际略大于0</p>
+<p>3.<br><strong>电压放大系数μ</strong>：${- \frac{\partial V_{DS}}{\partial V_{\text{GS}}}|}<em>{I</em>{D}}$=$\frac{g_{m}}{g_{\text{ds}}} = \frac{V_{\text{DS}}}{V_{GS} - V_{T} - V_{\text{DS}}}$<br>饱和区：μ<del>s</del>→$\infty$实际上为有效值，希望μ<del>s</del>尽量大</p>
+<p><strong>小信号高频等效电路：</strong></p>
+<p>跨导的截止频率<em>f</em><del>gm­</del>：代表跨导|g<del>m</del>(ω)|下降到低频值的$\frac{1}{\sqrt{2}}$</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>2267</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://2267.github.io/2018/01/01/micro-device3/">https://2267.github.io/2018/01/01/micro-device3/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) <a href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC-BY-NC-4.0</a> LICENSE， 转载请注明出处</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2018/01/01/ic-note/">数字IC笔记</a>
+            
+            
+            <a class="next" rel="next" href="/2018/01/01/micro-device1/">微电子器件笔记-1</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 2267 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
