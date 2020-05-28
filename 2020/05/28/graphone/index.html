@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="2267">
+
+
+
+
+
+<title>动态图框架GraphOne使用方法，测试用例说明 | 六鹢退飞</title>
+
+
+
+    <link rel="icon" href="/image/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">动态图框架GraphOne使用方法，测试用例说明</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">May 28, 2020&nbsp;&nbsp;19:01:19</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E5%9B%BE%E8%AE%A1%E7%AE%97/">图计算</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">-v: Vertex count<span class="_">-e</span>: Edge count, required only <span class="keyword">for</span> streaming analytics as <span class="built_in">exit</span> criteria.</span><br><span class="line">-i: input directory-o: output directory. This option will also persist the edge <span class="built_in">log</span>.</span><br><span class="line">-j: job number. Default: 0</span><br><span class="line">-r: Various meanings.</span><br><span class="line">-t: Thread count. Default: Cores <span class="keyword">in</span> your system - 1</span><br><span class="line">-d: Direction, 0 <span class="keyword">for</span> undirected(default), 1 <span class="keyword">for</span> directed, 2 <span class="keyword">for</span> unidirected.</span><br><span class="line">-s: Data <span class="built_in">source</span>. 0 <span class="keyword">for</span> text files(default), 1 <span class="keyword">for</span> binary files.</span><br><span class="line">-h: This message.</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">case</span> <span class="number">0</span>:  test_ingestion    将所有的文件中的edge 转换到adjancency <span class="built_in">list</span>，column ingestion, table</span><br><span class="line"><span class="keyword">case</span> <span class="number">1</span>:  test_logging    将所有的edge保留在edge <span class="built_in">log</span>，不转换到adjancency <span class="built_in">list</span>，column logging, table </span><br><span class="line"><span class="keyword">case</span> <span class="number">2</span>:  test_archive    指在给定threshold的情况下archive速率，column archiving， table &amp; fig <span class="number">13</span></span><br><span class="line"><span class="keyword">case</span> <span class="number">3</span>:  test_mix     When we only convert some edges of the edge <span class="built_in">log</span> to adjacency <span class="built_in">list</span>, <span class="keyword">and</span> leave rest of them in the edge <span class="built_in">log</span>. Fig. <span class="number">13</span> except archiving rate shows <span class="keyword">this</span> impact on the analytics performance.    当只部分edge转换到<span class="built_in">list</span>中，另一部分还在edge中，测试算法的影响的情况，fig <span class="number">13</span></span><br><span class="line"><span class="keyword">case</span> <span class="number">4</span>:  recover_test</span><br></pre></td></tr></table></figure>
+
+
+
+<p>./graphone32 -i ~/data/kron-21/bin/ -j 1 -v 2097152 -s 1 -o ./out/ : -j1 only does logging, and runs bfs from the edge list data. </p>
+<p>./graphone32 -i ~/data/kron-21/bin/ -j 2 -v 2097152 -t2 -s1 -r 16 : -j2 does archiving at the rate of (1&lt;&lt;16) edges at a time. change -r flag to any number to change the archiving threshold. </p>
+<p>./graphone32 -i ~/data/kron-21/bin/ -j 3 -v 2097152 -t2 -s1 -o ./out/ : -j3 converts (1&lt;&lt;18) edges to adjacency list, and leaves the rest as edge list in the edge log.  Useful for testing the BFS performance in a mix of adjacency list and edge list. </p>
+<p>./graphone32 -j 4 -v 2097152 -s 1 -i ./out/friend.elog -r 16: -j 4 recovers adjacency list by using the durable edge log. -r 16 tells us that only (1&lt;&lt;16) edges will be converted to adjacency list at a time.</p>
+<ul>
+<li>Archiving is the process to convert edge log to adjacency list</li>
+<li>logging is defined as logging the incoming stream data (in this case from text/binary files) to an in-memory edge log</li>
+<li>Durability is achieved by write the edge log data to disk periodically. Hence, the input data is always same in all of the testcases.</li>
+<li>Because of data-visibility concept, the edge log data will only periodically be converted to adjacency list format, but an analytic can choose to work at any update level (granularity), thus it can choose to work on whatever adjacency list is ready at this moment, plus non-archived edges</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>2267</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://2267.github.io/2020/05/28/graphone/">https://2267.github.io/2020/05/28/graphone/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) <a href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC-BY-NC-4.0</a> LICENSE， 转载请注明出处</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2020/05/28/sniper/">sniper模拟器用法整合</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 2267 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

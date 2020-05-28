@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="2267">
+
+
+
+
+
+<title>sniper模拟器用法整合 | 六鹢退飞</title>
+
+
+
+    <link rel="icon" href="/image/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">sniper模拟器用法整合</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">May 28, 2020&nbsp;&nbsp;19:00:10</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E6%A8%A1%E6%8B%9F%E5%99%A8/">体系结构模拟器</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="基本命令行"><a href="#基本命令行" class="headerlink" title="基本命令行"></a>基本命令行</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">./run-sniper </span><br><span class="line"></span><br><span class="line">-n &lt;ncores (1)&gt;</span><br><span class="line">-d &lt;outputdir (.)&gt;</span><br><span class="line">-c &lt;sniper-config&gt;</span><br><span class="line">-c [objname:]&lt;name[.cfg]&gt;,&lt;name2[.cfg]&gt;,...</span><br><span class="line">-c &lt;sniper-options: section/key=value&gt;</span><br><span class="line"></span><br><span class="line">--fast-forward   整个仿真采用fast-forward</span><br><span class="line">--cache-only     整个仿真采用cache-only</span><br><span class="line"></span><br><span class="line">--roi            启用roi</span><br><span class="line">--roi-script     忽略程序中的SimRoiStart和SimRoiEnd，在脚本中指定,和roi不能同时使用</span><br><span class="line">--no-cache-warming  进入roi前采用fast-forwar而不是cache-only,离开roi是cache-only</span><br><span class="line">-s &lt;script&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">--viz:  可视化生成  (带--power: +mcpat)</span><br><span class="line">--power 生成功耗</span><br><span class="line">--profile        CPU相关数据</span><br><span class="line">--memory-profile 内存相关数据</span><br><span class="line">--save-output    保存输出</span><br><span class="line">--save-patch     生成diff-patch</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">-- &lt;exe args&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">tools&#x2F;cpistack.py</span><br><span class="line">tools&#x2F;mcpat.py</span><br><span class="line">tools&#x2F;dumpstats.py</span><br><span class="line">tools&#x2F;gen_topology.py</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="SimUser"><a href="#SimUser" class="headerlink" title="SimUser"></a>SimUser</h1><p>SimUser是magicinstruction的一种，可以用来扩展ISA，脚本控制</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sim</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">My</span>:</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">setup</span><span class="params">(self, args)</span>:</span></span><br><span class="line">    args = (args <span class="keyword">or</span> <span class="string">''</span>).split(<span class="string">':'</span>)</span><br><span class="line">    self.v = <span class="string">'v'</span> <span class="keyword">in</span> args</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">hook_magic_marker</span><span class="params">(self, thread, core, a, b, s)</span>:</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">'marker %d %d %s'</span> % (a,b,s)</span><br><span class="line">    sim.stats.marker(thread, core, a, b, s)</span><br><span class="line">    sim.stats.write(<span class="string">'%s'</span> % s )</span><br><span class="line">    <span class="keyword">if</span> self.v <span class="keyword">and</span> s==<span class="string">"classify"</span>:</span><br><span class="line">            <span class="keyword">if</span> a == <span class="number">1</span>:</span><br><span class="line">                sim.control.set_roi(<span class="literal">True</span>)</span><br><span class="line">                self.state = <span class="string">'detailed'</span></span><br><span class="line">            <span class="keyword">elif</span> a == <span class="number">2</span>:</span><br><span class="line">                sim.control.set_roi(<span class="literal">False</span>)</span><br><span class="line">                sim.control.set_instrumentation_mode(sim.control.WARMUP)</span><br><span class="line">                self.state = <span class="string">'warmup'</span></span><br><span class="line">    <span class="keyword">elif</span> <span class="keyword">not</span> self.v <span class="keyword">and</span> s==<span class="string">"archive"</span>:</span><br><span class="line">            <span class="keyword">if</span> a == <span class="number">1</span>:</span><br><span class="line">                sim.control.set_roi(<span class="literal">True</span>)</span><br><span class="line">                self.state = <span class="string">'detailed'</span></span><br><span class="line">            <span class="keyword">elif</span> a == <span class="number">2</span>:</span><br><span class="line">                sim.control.set_roi(<span class="literal">False</span>)</span><br><span class="line">                sim.control.set_instrumentation_mode(sim.control.WARMUP)</span><br><span class="line">                self.state = <span class="string">'warmup'</span></span><br><span class="line">sim.util.register(My())</span><br></pre></td></tr></table></figure>
+
+<p>c++控制</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> SInt64 <span class="title">hook_config</span><span class="params">(UInt64 addr_global_reg, UInt64 _argument)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   MagicServer::MagicMarkerType* argument = (MagicServer::MagicMarkerType*)_argument;</span><br><span class="line">   <span class="built_in">printf</span>(<span class="string">"#%d-%d  :  %lu %lu\n"</span>,argument-&gt;thread_id, argument-&gt;core_id, argument-&gt;arg0, argument-&gt;arg1);</span><br><span class="line">   <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> HooksManager::init(<span class="keyword">void</span>)</span><br><span class="line">&#123;</span><br><span class="line">   HooksPy::init();</span><br><span class="line">   <span class="comment">//registerHook(HookType::HOOK_PERIODIC, (HookCallbackFunc)hook_print_core0_ipc, NULL);      </span></span><br><span class="line">   registerHook(HookType::HOOK_MAGIC_USER, hook_config, (UInt64)(&amp;global_reg));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="脚本控制"><a href="#脚本控制" class="headerlink" title="脚本控制"></a>脚本控制</h1><h2 id="示例：script-markers"><a href="#示例：script-markers" class="headerlink" title="示例：script/markers"></a>示例：script/markers</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sim</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Marker</span>:</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">setup</span><span class="params">(self, args)</span>:</span></span><br><span class="line">    args = (args <span class="keyword">or</span> <span class="string">''</span>).split(<span class="string">':'</span>)</span><br><span class="line">    self.write_terminal = <span class="string">'verbose'</span> <span class="keyword">in</span> args</span><br><span class="line">    self.write_markers = <span class="string">'markers'</span> <span class="keyword">in</span> args</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">hook_magic_marker</span><span class="params">(self, thread, core, a, b, s)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> self.write_terminal:</span><br><span class="line">      <span class="keyword">print</span> <span class="string">'[SCRIPT] Magic marker from thread %d: a = %d,'</span> % (thread, a),</span><br><span class="line">      <span class="keyword">if</span> s:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'str = %s'</span> % s</span><br><span class="line">      <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'b = %d'</span> % b</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> self.write_markers:</span><br><span class="line">      sim.stats.marker(thread, core, a, b, s)  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> self.write_stats:</span><br><span class="line">      sim.stats.write(<span class="string">'marker-%d-%d'</span> % (a, b))</span><br><span class="line">    <span class="comment"># 在数据中加入marker</span></span><br><span class="line">    <span class="comment"># tools/cpistack.py --partial=marker-1-4:marker-2-4</span></span><br><span class="line">    </span><br><span class="line">sim.util.register(Marker())</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"sim_api.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">int</span> b = <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">for</span> ( <span class="keyword">int</span> i =<span class="number">0</span> ; b &lt; <span class="number">20</span> ;i++)&#123;</span><br><span class="line">        b = a + b;</span><br><span class="line">        SimMarker(a,b);</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; i &lt;&lt; <span class="string">"\n"</span>; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">./run-sniper -s markers:verbose:markers -- ./a.out</span><br><span class="line"></span><br><span class="line">[SCRIPT] Magic marker from thread 0: a = 2, b = 12</span><br><span class="line">[SCRIPT] Magic marker from thread 0: a = 2, b = 14</span><br><span class="line">[SCRIPT] Magic marker from thread 0: a = 2, b = 16</span><br><span class="line">[SCRIPT] Magic marker from thread 0: a = 2, b = 18</span><br><span class="line">[SCRIPT] Magic marker from thread 0: a = 2, b = 20</span><br><span class="line"><span class="comment"># SimMarker(a,b) &amp; SimNamedMarker(a, str) -&gt; hook_magic_marker(self, core, thread, a, b, str)</span></span><br><span class="line"></span><br><span class="line"> ../tools/cpistack.py --partial=marker-2-12:marker-2-14</span><br><span class="line"> <span class="comment"># '--partial' requires sim.stats.marker(thread, core, a, b, s)</span></span><br><span class="line"> <span class="comment"># sniper中不会修改数据，而是根据marker做减法，没有partial的默认值是roi begin到end</span></span><br><span class="line"> </span><br><span class="line">                        CPI       Time</span><br><span class="line">  base                 0.25     12.90%</span><br><span class="line">  depend-int           0.08      4.29%</span><br><span class="line">  depend-branch        0.04      1.83%</span><br><span class="line">  issue-port2          0.03      1.48%</span><br><span class="line">  branch               0.28     14.57%</span><br><span class="line">  ifetch               0.92     47.67%</span><br><span class="line">  mem-l1d              0.09      4.75%</span><br><span class="line">  mem-l3               0.05      2.58%</span><br><span class="line">  mem-dram             0.16      8.05%</span><br><span class="line">  other                0.04      1.86%</span><br><span class="line"></span><br><span class="line">  total                1.94    100.00%</span><br></pre></td></tr></table></figure>
+
+<h2 id="示例：my"><a href="#示例：my" class="headerlink" title="示例：my"></a>示例：my</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sim</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">My</span>:</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">setup</span><span class="params">(self, args)</span>:</span></span><br><span class="line">    args = (args <span class="keyword">or</span> <span class="string">''</span>).split(<span class="string">':'</span>)</span><br><span class="line">    self.v = <span class="string">'v'</span> <span class="keyword">in</span> args</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">hook_magic_marker</span><span class="params">(self, thread, core, a, b, s)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> self.v:</span><br><span class="line">      <span class="keyword">if</span> a % <span class="number">4</span>:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'[SCRIPT] beginning ROI for %d '</span> % a</span><br><span class="line">        sim.control.set_roi(<span class="literal">True</span>)</span><br><span class="line">        self.state = <span class="string">'detailed'</span></span><br><span class="line">      <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'[SCRIPT] ending ROI for %d '</span> % a</span><br><span class="line">        sim.control.set_roi(<span class="literal">False</span>)</span><br><span class="line">        self.state = <span class="string">'warmup'</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">      <span class="keyword">if</span> <span class="keyword">not</span> a % <span class="number">4</span>:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'[SCRIPT] beginning ROI for %d '</span> % a</span><br><span class="line">        sim.control.set_roi(<span class="literal">True</span>)</span><br><span class="line">        self.state = <span class="string">'detailed'</span></span><br><span class="line">      <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'[SCRIPT] ending ROI for %d '</span> % a</span><br><span class="line">        sim.control.set_roi(<span class="literal">False</span>)</span><br><span class="line">        self.state = <span class="string">'warmup'</span></span><br><span class="line"></span><br><span class="line">      </span><br><span class="line">    sim.stats.marker(thread, core, a, b, s)</span><br><span class="line">    sim.stats.write(<span class="string">'marker-%d-%d'</span> % (a, b))</span><br><span class="line">    </span><br><span class="line">sim.util.register(My())</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">..&#x2F;run-sniper -s my  -- .&#x2F;a.out</span><br><span class="line">[SNIPER] Warning: Unable to use physical addresses for shared memory simulation.</span><br><span class="line">[SNIPER] Start</span><br><span class="line">Executing Python script &#x2F;home&#x2F;jiacheng&#x2F;c&#x2F;sniper&#x2F;test-my&#x2F;sim.scripts.py</span><br><span class="line">[SNIPER] --------------------------------------------------------------------------------</span><br><span class="line">[SNIPER] Sniper using SIFT&#x2F;trace-driven frontend</span><br><span class="line">[SNIPER] Running full application in DETAILED mode</span><br><span class="line">[SNIPER] --------------------------------------------------------------------------------</span><br><span class="line">[SNIPER] Enabling performance models</span><br><span class="line">[SNIPER] Setting instrumentation mode to DETAILED</span><br><span class="line">[RECORD-TRACE] Using the Pin frontend (sift&#x2F;recorder)</span><br><span class="line">[SCRIPT] beginning ROI for 12</span><br><span class="line">0</span><br><span class="line">[SCRIPT] ending ROI for 14</span><br><span class="line">[SNIPER] Disabling performance models</span><br><span class="line">[SNIPER] Leaving ROI after 11.93 seconds</span><br><span class="line">[SNIPER] Simulated 2.1M instructions, 2.4M cycles, 0.88 IPC</span><br><span class="line">[SNIPER] Simulation speed 178.3 KIPS (178.3 KIPS &#x2F; target core - 5609.9ns&#x2F;instr)</span><br><span class="line">[SNIPER] Setting instrumentation mode to FAST_FORWARD</span><br><span class="line">1</span><br><span class="line">[SCRIPT] beginning ROI for 16</span><br><span class="line">[SNIPER] Enabling performance models</span><br><span class="line">[SNIPER] Setting instrumentation mode to DETAILED</span><br><span class="line">2</span><br><span class="line">[SCRIPT] ending ROI for 18</span><br><span class="line">[SNIPER] Disabling performance models</span><br><span class="line">[SNIPER] Leaving ROI after 0.03 seconds</span><br><span class="line">[SNIPER] Simulated 0.0M instructions, 2.4M cycles, 0.00 IPC</span><br><span class="line">[SNIPER] Simulation speed 22.6 KIPS (22.6 KIPS &#x2F; target core - 44190.7ns&#x2F;instr)</span><br><span class="line">[SNIPER] Sampling: executed 99.97% of simulated time in detailed mode</span><br><span class="line">[SNIPER] Setting instrumentation mode to FAST_FORWARD</span><br><span class="line">3</span><br><span class="line">[SCRIPT] beginning ROI for 20</span><br><span class="line">[SNIPER] Enabling performance models</span><br><span class="line">[SNIPER] Setting instrumentation mode to DETAILED</span><br><span class="line">4</span><br><span class="line">[TRACE:0] -- DONE --</span><br><span class="line">[SNIPER] Disabling performance models</span><br><span class="line">[SNIPER] Leaving ROI after 1.14 seconds</span><br><span class="line">[SNIPER] Simulated 0.0M instructions, 2.4M cycles, 0.00 IPC</span><br><span class="line">[SNIPER] Simulation speed 7.6 KIPS (7.6 KIPS &#x2F; target core - 131558.4ns&#x2F;instr)</span><br><span class="line">[SNIPER] Sampling: executed 99.94% of simulated time in detailed mode</span><br><span class="line">[SNIPER] Setting instrumentation mode to FAST_FORWARD</span><br><span class="line">[SNIPER] End</span><br><span class="line">[SNIPER] Elapsed time: 13.79 seconds</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">../run-sniper -s my:v  -- ./a.out</span><br><span class="line">[SNIPER] Warning: Unable to use physical addresses <span class="keyword">for</span> shared memory simulation.</span><br><span class="line">[SNIPER] Start</span><br><span class="line">Executing Python script /home/jiacheng/c/sniper/<span class="built_in">test</span>-my/sim.scripts.py</span><br><span class="line">[SNIPER] --------------------------------------------------------------------------------</span><br><span class="line">[SNIPER] Sniper using SIFT/trace-driven frontend</span><br><span class="line">[SNIPER] Running full application <span class="keyword">in</span> DETAILED mode</span><br><span class="line">[SNIPER] --------------------------------------------------------------------------------</span><br><span class="line">[SNIPER] Enabling performance models</span><br><span class="line">[SNIPER] Setting instrumentation mode to DETAILED</span><br><span class="line">[RECORD-TRACE] Using the Pin frontend (sift/recorder)</span><br><span class="line">[SCRIPT] ending ROI <span class="keyword">for</span> 12</span><br><span class="line">[SNIPER] Disabling performance models</span><br><span class="line">[SNIPER] Leaving ROI after 11.51 seconds</span><br><span class="line">[SNIPER] Simulated 2.1M instructions, 2.4M cycles, 0.88 IPC</span><br><span class="line">[SNIPER] Simulation speed 183.7 KIPS (183.7 KIPS / target core - 5444.6ns/instr)</span><br><span class="line">[SNIPER] Setting instrumentation mode to FAST_FORWARD</span><br><span class="line">0</span><br><span class="line">[SCRIPT] beginning ROI <span class="keyword">for</span> 14</span><br><span class="line">[SNIPER] Enabling performance models</span><br><span class="line">[SNIPER] Setting instrumentation mode to DETAILED</span><br><span class="line">1</span><br><span class="line">[SCRIPT] ending ROI <span class="keyword">for</span> 16</span><br><span class="line">[SNIPER] Disabling performance models</span><br><span class="line">[SNIPER] Leaving ROI after 0.01 seconds</span><br><span class="line">[SNIPER] Simulated 0.0M instructions, 2.4M cycles, 0.00 IPC</span><br><span class="line">[SNIPER] Simulation speed 93.5 KIPS (93.5 KIPS / target core - 10691.2ns/instr)</span><br><span class="line">[SNIPER] Sampling: executed 99.50% of simulated time <span class="keyword">in</span> detailed mode</span><br><span class="line">[SNIPER] Setting instrumentation mode to FAST_FORWARD</span><br><span class="line">2</span><br><span class="line">[SCRIPT] beginning ROI <span class="keyword">for</span> 18</span><br><span class="line">[SNIPER] Enabling performance models</span><br><span class="line">[SNIPER] Setting instrumentation mode to DETAILED</span><br><span class="line">3</span><br><span class="line">[SCRIPT] ending ROI <span class="keyword">for</span> 20</span><br><span class="line">[SNIPER] Disabling performance models</span><br><span class="line">[SNIPER] Leaving ROI after 0.00 seconds</span><br><span class="line">[SNIPER] Simulated 0.0M instructions, 2.4M cycles, 0.00 IPC</span><br><span class="line">[SNIPER] Simulation speed 651.8 KIPS (651.8 KIPS / target core - 1534.3ns/instr)</span><br><span class="line">[SNIPER] Sampling: executed 99.47% of simulated time <span class="keyword">in</span> detailed mode</span><br><span class="line">[SNIPER] Setting instrumentation mode to FAST_FORWARD</span><br><span class="line">4</span><br><span class="line">[TRACE:0] -- DONE --</span><br><span class="line">[SNIPER] End</span><br><span class="line">[SNIPER] Elapsed time: 13.12 seconds</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="数据分析工具的详细参数"><a href="#数据分析工具的详细参数" class="headerlink" title="数据分析工具的详细参数"></a>数据分析工具的详细参数</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">tools&#x2F;cpistack.pytools&#x2F;cpistack.py </span><br><span class="line">[-h (help)] [-d &lt;resultsdir (default:  .)&gt;] </span><br><span class="line">[--partial&lt;sec-begin&gt;:&lt;sec-end&gt;] </span><br><span class="line">[-o &lt;output-filename (cpi-stack)&gt;] </span><br><span class="line">[--without-roi]</span><br><span class="line">[--simplified] </span><br><span class="line">[--no-collapse] </span><br><span class="line">[--no-simple-mem] </span><br><span class="line">[--time|--cpi|--abstime(default:  time)] </span><br><span class="line">[--aggregate]</span><br><span class="line">-d &lt;dir&gt;— Look into&lt;dir&gt;to find the necessary files to compute aCPI-stack</span><br><span class="line">--partial—  Compute  CPI  stack  over  time  span  between  specificstatistics markers (default:roi-begin:roi-end)</span><br><span class="line">-o &lt;file&gt;— Save gnuplot plotted data to file.png</span><br><span class="line">--simplified— Create a CPI stack merging all items into the fol-lowing categories:  compute, communicate, synchronize</span><br><span class="line">--no-collapse— Show all items, even if they are zero or below thethreshold for merging them into the category other.</span><br><span class="line">--time— Display CPI-stacks with execution time penalties insteadof using CPI</span><br><span class="line">--cpi— Display stacks with CPI data</span><br><span class="line">--abstime— Normalize each thread’s time to 1.0</span><br><span class="line">--aggregate—  Merge  all  CPI-stacks  from  multiple  threads  into  asingle CPI-stack</span><br><span class="line"></span><br><span class="line">tools&#x2F;mcpat.py</span><br><span class="line">[-h (help)] </span><br><span class="line">[-d &lt;resultsdir (default:  .)&gt;] </span><br><span class="line">[--partial&lt;sec-begin&gt;:&lt;sec-end&gt;] </span><br><span class="line">[-t &lt;type:  dynamic|rundynamic|static|total|area&gt;]</span><br><span class="line">[-v &lt;Vdd&gt;] </span><br><span class="line">[-o &lt;output-file (power.png,.txt,.py)&gt;]</span><br><span class="line">-d &lt;dir&gt;— Look into&lt;dir&gt;to find the necessary files to compute apower stack</span><br><span class="line">--partial— Compute power over time span between specific statis-tics markers (default:roi-begin:roi-end)</span><br><span class="line">-o &lt;file&gt;— Save gnuplot plotted data to file.png</span><br><span class="line">-t &lt;type&gt;—  Output  type  of  McPAT  to  plot:   dynamic  (dynamicpower), rundynamic (runtime dynamic), static, total (dynamic + static),area</span><br><span class="line">-v &lt;vdd&gt;— Override the process’ default Vdd (V)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">tools&#x2F;viz.py</span><br><span class="line">[-h|--help (help)] [-d &lt;resultsdir (default:  .)&gt;]</span><br><span class="line">[-t &lt;title&gt;] </span><br><span class="line">[-n &lt;num-intervals (default:  allintervals)&gt;] </span><br><span class="line">[-i&lt;interval (default:  smallestinterval)&gt;] </span><br><span class="line">[-o &lt;outputdir&gt;] </span><br><span class="line">[--mcpat][-v|--verbose]</span><br><span class="line">-d &lt;resultsdir&gt;— Look into&lt;resultsdir&gt;to find the necessaryfiles to generate the visualizations-t &lt;title&gt;— Name of the application,  will be used as title of thevisualization</span><br><span class="line">-n &lt;num-intervals&gt;— The visualization will be generated for&lt;num-intervals&gt;intervals</span><br><span class="line">-i &lt;interval&gt;— The used interval size will be&lt;interval&gt;</span><br><span class="line">-o &lt;outputdir&gt;— Save the result to&lt;outputdir&gt;</span><br><span class="line">--mcpat— Generate visualizations for McPAT</span><br><span class="line">-v|--verbose— Verbose output24</span><br><span class="line"></span><br><span class="line">tools&#x2F;viz&#x2F;level2.py</span><br><span class="line">Generate the visualization of the cycle stacks over time</span><br><span class="line">[-h|--help (help)] </span><br><span class="line">[-d &lt;resultsdir (default:.)&gt;] </span><br><span class="line">[-t &lt;title&gt;] </span><br><span class="line">[-n &lt;num-intervals (default:  allintervals)&gt;]</span><br><span class="line">[-i &lt;interval (default:  smallestinterval)&gt;] </span><br><span class="line">[-o &lt;outputdir&gt;] [--mcpat][-v|--verbose]</span><br><span class="line">-d &lt;resultsdir&gt;— Look into&lt;resultsdir&gt;to find the necessaryfiles to generate the visualizations</span><br><span class="line">-t &lt;title&gt;— Name of the application,  will be used as title of thevisualization</span><br><span class="line">-n &lt;num-intervals&gt;— The visualization will be generated for&lt;num-intervals&gt;intervals</span><br><span class="line">-i &lt;interval&gt;— The used interval size will be&lt;interval&gt;</span><br><span class="line">-o &lt;outputdir&gt;— Save the result to&lt;outputdir&gt;</span><br><span class="line">--mcpat— Generate visualizations for McPAT</span><br><span class="line">-v|--verbose— Verbose output</span><br><span class="line"></span><br><span class="line">tools&#x2F;viz&#x2F;level3.py</span><br><span class="line">Generate the 3D Time-Cores-IPC visualization.tools&#x2F;viz&#x2F;level3.py </span><br><span class="line">[-h|--help (help)] </span><br><span class="line">[-d &lt;resultsdir (default:.)&gt;] </span><br><span class="line">[-t &lt;title&gt;] </span><br><span class="line">[-n &lt;num-intervals (default:  allintervals)&gt;]</span><br><span class="line">[-i &lt;interval (default:  smallestinterval)&gt;] </span><br><span class="line">[-o &lt;outputdir&gt;] </span><br><span class="line">[-v|--verbose]</span><br><span class="line">-d &lt;resultsdir&gt;— Look into&lt;resultsdir&gt;to find the necessaryfiles to generate the visualizations</span><br><span class="line">-t &lt;title&gt;— Name of the application,  will be used as title of thevisualization</span><br><span class="line">-n &lt;num-intervals&gt;— The visualization will be generated for&lt;num-intervals&gt;intervals</span><br><span class="line">-i &lt;interval&gt;— The used interval size will be&lt;interval&gt;</span><br><span class="line">-o &lt;outputdir&gt;— Save the result to&lt;outputdir&gt;</span><br><span class="line">-v|--verbose— Verbose output</span><br></pre></td></tr></table></figure>
+
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>2267</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://2267.github.io/2020/05/28/sniper/">https://2267.github.io/2020/05/28/sniper/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) <a href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC-BY-NC-4.0</a> LICENSE， 转载请注明出处</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/05/28/graphone/">动态图框架GraphOne使用方法，测试用例说明</a>
+            
+            
+            <a class="next" rel="next" href="/2020/03/03/diff-patch/">diff, patch 文件差异比较及打补丁</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 2267 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
