@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="2267">
+
+
+
+
+
+<title>genereate for和for的不同 | 六鹢退飞</title>
+
+
+
+    <link rel="icon" href="/image/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">genereate for和for的不同</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">June 19, 2020&nbsp;&nbsp;8:34:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E9%9B%86%E6%88%90%E7%94%B5%E8%B7%AF/">集成电路</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>在编写格雷码转二进制码的时候，我发现了一个很有意思的问题。格雷码转二进制码的方法是，bin[n-1]=grey[n-1], bin[n-2]=grey[n-2]^bin[n-1], …. bin[i] = grey[i]^bin[i+1] ….</p>
+<p>使用for完成时，当i从0到n-2递增和从n-2到0递减时，结果不同。递增代码结果如下</p>
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">module</span> tobin(<span class="keyword">input</span> [<span class="number">7</span>:<span class="number">0</span>] grey, <span class="keyword">output</span> <span class="keyword">reg</span> [<span class="number">7</span>:<span class="number">0</span>] bin);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">integer</span> i;</span><br><span class="line"><span class="keyword">always</span> @(grey)</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    bin[<span class="number">7</span>] = grey[<span class="number">7</span>];</span><br><span class="line">    <span class="keyword">for</span>(i = <span class="number">0</span> ; i &lt;= <span class="number">6</span> ; i=i+<span class="number">1</span>)   <span class="comment">// 1 -&gt; 6</span></span><br><span class="line">        bin[i] = grey[i] ^ bin[i+<span class="number">1</span>];</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">  0: 00000000 -&gt; 00000000 -&gt; 00xxxxxx</span><br><span class="line"> 10: 00000001 -&gt; 00000001 -&gt; 000xxxxx</span><br><span class="line"> 20: 00000010 -&gt; 00000011 -&gt; 0000xxxx</span><br><span class="line"> 30: 00000011 -&gt; 00000010 -&gt; 00000xxx</span><br><span class="line"> 40: 00000100 -&gt; 00000110 -&gt; 000001xx</span><br><span class="line"> 50: 00000101 -&gt; 00000111 -&gt; 0000010x</span><br><span class="line"> 60: 00000110 -&gt; 00000101 -&gt; 00000111</span><br><span class="line"> 70: 00000111 -&gt; 00000100 -&gt; 00000111</span><br><span class="line"> 80: 00001000 -&gt; 00001100 -&gt; 00001111</span><br><span class="line"> 90: 00001001 -&gt; 00001101 -&gt; 00001010</span><br><span class="line">100: 00001010 -&gt; 00001111 -&gt; 00001010</span><br></pre></td></tr></table></figure>
+
+<p>递减的结果如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">  0: 00000000 -&gt; 00000000 -&gt; 00000000</span><br><span class="line"> 10: 00000001 -&gt; 00000001 -&gt; 00000001</span><br><span class="line"> 20: 00000010 -&gt; 00000011 -&gt; 00000010</span><br><span class="line"> 30: 00000011 -&gt; 00000010 -&gt; 00000011</span><br><span class="line"> 40: 00000100 -&gt; 00000110 -&gt; 00000100</span><br><span class="line"> 50: 00000101 -&gt; 00000111 -&gt; 00000101</span><br><span class="line"> 60: 00000110 -&gt; 00000101 -&gt; 00000110</span><br><span class="line"> 70: 00000111 -&gt; 00000100 -&gt; 00000111</span><br><span class="line"> 80: 00001000 -&gt; 00001100 -&gt; 00001000</span><br><span class="line"> 90: 00001001 -&gt; 00001101 -&gt; 00001001</span><br><span class="line">100: 00001010 -&gt; 00001111 -&gt; 00001010</span><br></pre></td></tr></table></figure>
+
+<p>可见递减是正确的，也就是说结果和代码的顺序有关。</p>
+<p>有趣的是当使用generate for语法，无论递增递减都能得到正确的结果</p>
+<figure class="highlight verilog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">module</span> tobin(<span class="keyword">input</span> [<span class="number">7</span>:<span class="number">0</span>] grey, <span class="keyword">output</span> [<span class="number">7</span>:<span class="number">0</span>] bin);</span><br><span class="line">   <span class="keyword">assign</span> bin[<span class="number">7</span>] = grey[<span class="number">7</span>];</span><br><span class="line">   <span class="keyword">genvar</span> i;</span><br><span class="line">   <span class="keyword">generate</span></span><br><span class="line">       <span class="keyword">for</span>(i = <span class="number">0</span> ; i &lt;= <span class="number">6</span> ; i=i+<span class="number">1</span>)  <span class="comment">// or from 6 -&gt; 1</span></span><br><span class="line">   <span class="keyword">begin</span>: name</span><br><span class="line">       <span class="keyword">assign</span>  bin[i] = grey[i] ^ bin[i+<span class="number">1</span>];</span><br><span class="line">   <span class="keyword">end</span></span><br><span class="line">   <span class="keyword">endgenerate</span></span><br><span class="line"><span class="keyword">endmodule</span></span><br></pre></td></tr></table></figure>
+
+<p>也许这就印证了for是串行的，generate for是并行的的说法</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>2267</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://2267.github.io/2020/06/19/ic-generate/">https://2267.github.io/2020/06/19/ic-generate/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) <a href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC-BY-NC-4.0</a> LICENSE， 转载请注明出处</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2020/05/28/graphone/">动态图框架GraphOne使用方法，测试用例说明</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 2267 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
