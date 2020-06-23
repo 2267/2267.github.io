@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="2267">
+
+
+
+
+
+<title>基本SDC控制 | 六鹢退飞</title>
+
+
+
+    <link rel="icon" href="/image/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">基本SDC控制</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">June 23, 2020&nbsp;&nbsp;13:38:16</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E9%9B%86%E6%88%90%E7%94%B5%E8%B7%AF/">集成电路</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>时钟相关约束</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">create_clock 建立时钟和虚拟时钟</span><br><span class="line">set_clock_uncertainty 设置不确定范围（skew jitter）</span><br><span class="line">set_clock_latency 设置时钟网络延迟和时钟源延迟</span><br><span class="line">set_clock_transition 设置时钟转换延迟</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 创建时钟</span></span><br><span class="line">create_clock -period 10 -waveform &#123;0,5&#125; -name clk_name [get_ports CLK]</span><br><span class="line">create_clock -period 10 -waveform &#123;0,5&#125; -name clk_name # 虚拟时钟</span><br><span class="line">create_generated_clock -name DIV2CLK -divide_by 2 -source [get_ports CLK] [get_pins I_DIV_FF/Q] #从现有时钟中生成时钟</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 配置时钟</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 时钟的不确定：包括skew、jitter的影响</span></span><br><span class="line">set_clock_uncertainty -setup 0.5 [get_clocks CLK]</span><br><span class="line">set_clock_uncertainty -rise 0.2 -fall 0.4 [get_clocks CLK]</span><br><span class="line">set_clock_uncerteinty -setup 0.21 -from [get_clocks CLK1] -to [get_clocks CLK2]</span><br><span class="line"><span class="meta">#</span><span class="bash"> 时钟延迟：包括时钟源到时钟输入引脚、时钟输入引脚到寄存器时钟端</span></span><br><span class="line">set_clock_latency -source -max 3 [get_ckocks CLK] #时钟源延迟</span><br><span class="line">set_clock_latency -max 1 [get_clocks CLK] #时钟网络延迟</span><br><span class="line">set_propagated_clock [get_clocks CLK] #布线后使用时钟树延迟覆盖时钟网络延迟</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 时钟转换延迟</span></span><br><span class="line">set_clock_transition -max 0.2 [get_clocks CLK]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 约束例外</span></span><br><span class="line">set_clock_group -logically_exclusive | -physically_exclusive | -asynchronous -group CLKA -group CLKB</span><br><span class="line">set_false_path -from [get_clocks Asynch_CLKA] -to [get_clocks Asynch_CLKB]</span><br><span class="line">set_multicycle_path -setup 4 -from -from A_reg -through U_Mult/Out -to B_reg</span><br><span class="line">set_multicycle_path -hold 4 -from -from A_reg -through U_Mult/Out -to B_reg</span><br></pre></td></tr></table></figure>
+
+<p>输入输出约束</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">set_input_delay -max 0.6 -clock clk [all_inputs]</span><br><span class="line">set_input_delay -max 0.3 -clock clk -clock_fall -add_delay [get_ports "B E"]</span><br><span class="line">set_input_delay -max 0.5 -clock -network_latency_included clk [get_ports "A C F"]</span><br><span class="line">set_output_delay -max 0.8 -clock -source_latency_included clk [all_outputs]</span><br><span class="line">set_output_delay -max 1.1 -clock clk [get_ports "OUT2 OUT7"]</span><br></pre></td></tr></table></figure>
+
+
+
+<p>环境约束</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">set_max_capacitance 1.2 [all_outputs]</span><br><span class="line">set_max_transistion 0.6 [all_outputs]</span><br><span class="line">set_max_fanout 16 [all_inputs] # 上一级cell的输出的最大扇出</span><br><span class="line">set_fanout_load 16 [all_outtpus] # 下一级cell的输入的load，不常用，单位pF</span><br><span class="line">set_max_area 10000 #设为0 最大面积优化</span><br><span class="line">set_load 0.080 [all_outputs]</span><br><span class="line">set_load [expr [load_of slow_proc/NAND3_3/A]*4 ] [get_portsOUT3]</span><br><span class="line">set_load 0.12 [all_inputs]</span><br><span class="line">set_inputs_transition 0.12 [remove_from_collection [all_inputs] [get_ports B]]</span><br><span class="line">set_drive 10 [all_inputs] # 电阻值， 0为最大强度</span><br><span class="line">set_driving_cell -lib_cell FD1 -pin Q [get_ports B]</span><br></pre></td></tr></table></figure>
+
+
+
+<p>检查约束</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">report_clock</span><br><span class="line">report_clock -skew -attr</span><br><span class="line">report_port -verbose</span><br><span class="line">report_path_group</span><br><span class="line">report_timing_requirements -ignored</span><br><span class="line">report_auto_ungroup</span><br><span class="line">report_interclock_relation</span><br><span class="line">check_timing</span><br></pre></td></tr></table></figure>
+
+<p>删除约束</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">reset_path -from FF1_reg</span><br><span class="line">remove_clock</span><br><span class="line">remove_clock_transition</span><br><span class="line">remove_clock_uncertainty</span><br><span class="line">remove_input_delay</span><br><span class="line">remove_output_delay</span><br><span class="line">remove_driving_cell</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>报告</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">read_db library_file.db</span><br><span class="line">list_libs</span><br><span class="line">redirect -file reports/lib.rpt &#123;report_lib &lt;lib_name&gt;&#125;</span><br><span class="line">report_hierarchy [-noleaf]</span><br><span class="line">report_resources</span><br><span class="line">report_cell [get_cells -hier *]</span><br><span class="line"></span><br><span class="line">report_constraint -all</span><br><span class="line">report_timing</span><br><span class="line">report_congestion</span><br></pre></td></tr></table></figure>
+
+
+
+<p>对象获取</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">get_ports</span><br><span class="line">get_pins</span><br><span class="line">get_designs</span><br><span class="line">get_cells</span><br><span class="line">get_nets</span><br><span class="line">get_clocks</span><br><span class="line">get_nets -of_objects [get_pins FF1_reg&#x2F;Q]</span><br><span class="line"></span><br><span class="line">get_libs &lt;lib_name&gt;</span><br><span class="line">get_lib_cells &lt;lib_name&#x2F;cell_names&gt;</span><br><span class="line">get_lib_pins &lt;lib_name&#x2F;cell_name&#x2F;pin_names&gt;</span><br><span class="line"></span><br><span class="line">all_inputs</span><br><span class="line">all_outputs</span><br><span class="line">all_clocks</span><br><span class="line">all_registers</span><br><span class="line">all_connected</span><br><span class="line">all_tanin</span><br><span class="line">all_tanout</span><br><span class="line">all_ideal_nets</span><br><span class="line"></span><br><span class="line">get_attribte &lt;cell_name&gt; dont_touch</span><br></pre></td></tr></table></figure>
+
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>2267</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://2267.github.io/2020/06/23/ic-sdc/">https://2267.github.io/2020/06/23/ic-sdc/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) <a href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC-BY-NC-4.0</a> LICENSE， 转载请注明出处</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2020/06/19/ic-fsm/">fsm三段式写法</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 2267 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
