@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="2267">
+
+
+
+
+
+<title>STA中的四种路径 | 六鹢退飞</title>
+
+
+
+    <link rel="icon" href="/image/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">首页</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">首页</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/categories">分类</a>
+                
+                    <a class="menu-item" href="/fr">法语</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">STA中的四种路径</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">June 24, 2020&nbsp;&nbsp;10:42:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E9%9B%86%E6%88%90%E7%94%B5%E8%B7%AF/">集成电路</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>时序分析包括四种情况，为两类起点（输入端，触发器时钟端）和两类终点（输出端，触发器数据输入端）的两两对应</p>
+<ul>
+<li>输入端口到触发器的数据端口</li>
+<li>触发器时钟端到输出端口</li>
+<li>触发器时钟端到触发器的数据端口</li>
+<li>输入端口到输出端口</li>
+</ul>
+<p>需要考虑建立时间和保持时间两种情况，建立时间的延时计算考虑最慢情况，保持时间考虑最快情况</p>
+<ul>
+<li>到达时间（arrival time）：根据各部分延时计算的到达终点的时间</li>
+<li>要求时间（require time）：能正常工作的要求时间</li>
+<li>时序裕量（slack）：正数表示满足时序，负数表示不满足<ul>
+<li>建立时间：要求时间-到达时间</li>
+<li>保持时间：到达时间-要求时间</li>
+</ul>
+</li>
+</ul>
+<p>四种情况的时序分析，其中建立时间和保持时间的到达时间一样</p>
+<ol>
+<li><p>输入端口到触发器的数据端口，优化目标：模块内的逻辑延迟</p>
+<ol>
+<li><p>到达时间：外部时钟延迟（源+网络）+输入延迟+模块内的逻辑延迟</p>
+</li>
+<li><p>要求时间：</p>
+<ul>
+<li><p>建立时间：内部时钟延迟（源+网络+时钟周期）-时钟建立的不确定量（uncertainty_setup)-建立时间</p>
+</li>
+<li><p>保持时间：内部时钟延迟（源+网络）+时钟保持的不确定量（uncertainty_hold）+保持时间</p>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>触发器时钟端到输出端口，优化目标：模块内的逻辑延迟</p>
+<ol>
+<li><p>到达时间：内部时钟延迟（源+网络）+触发器c-q延迟+模块内逻辑延迟</p>
+</li>
+<li><p>要求时间</p>
+<ul>
+<li><p>建立时间：外部时钟延迟（源+网络+时钟周期）-时钟不确定量-输出延迟</p>
+</li>
+<li><p>保持时间：外部时钟延迟（源+网络）+时钟不确定量+保持时间-输出延迟</p>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>触发器时钟端到触发器的数据端口，优化目标：触发器间的逻辑延迟</p>
+<ol>
+<li><p>到达时间：发射时钟延迟（源+网络）+触发器c-q延迟+逻辑延迟</p>
+</li>
+<li><p>要求时间：</p>
+<ul>
+<li><p>建立时间：捕获时钟延迟（源+网络+时钟周期）-时钟不确定量-建立时间</p>
+</li>
+<li><p>保持时间：捕获时钟延迟（源+网络）+时钟不确定量+保持时间</p>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>输入端口到输出端口</p>
+<ol>
+<li>到达时间：外部发射时钟延迟（源+网络）+输入延迟+逻辑延迟</li>
+<li>要求时间：<ul>
+<li>建立时间：外部捕获时钟延迟（源+网络+时钟周期）-时钟不确定量-输出延时</li>
+<li>保持时间：外部捕获时钟延迟（源+网络+时钟周期）+时钟不确定量+保持时间-输出延时</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>2267</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://2267.github.io/2020/06/24/ic-sta-path/">https://2267.github.io/2020/06/24/ic-sta-path/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) <a href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC-BY-NC-4.0</a> LICENSE， 转载请注明出处</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2020/06/23/ic-sdc/">基本SDC控制</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 2267 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
