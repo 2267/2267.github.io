@@ -12,7 +12,7 @@
 
 
 
-<title>diff, patch 文件差异比较及打补丁 | 六鹢退飞</title>
+<title>set_max_fanout和set_fanout_load | 六鹢退飞</title>
 
 
 
@@ -108,21 +108,21 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">diff, patch 文件差异比较及打补丁</h1>
+            <h1 class="post-title">set_max_fanout和set_fanout_load</h1>
             
                 <div class="post-meta">
                     
 
                     
                         <span class="post-time">
-                        Date: <a href="#">March 3, 2020&nbsp;&nbsp;10:04:46</a>
+                        Date: <a href="#">May 19, 2020&nbsp;&nbsp;15:00:00</a>
                         </span>
                     
                     
                         <span class="post-category">
                     Category:
                             
-                                <a href="/categories/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/">工具使用</a>
+                                <a href="/categories/%E9%9B%86%E6%88%90%E7%94%B5%E8%B7%AF/">集成电路</a>
                             
                         </span>
                     
@@ -131,20 +131,25 @@
         </header>
 
         <div class="post-content">
-            <p>假设存在两个文件夹，old和new，new是在old的代码上进行了一系列的修改的新文件夹</p>
-<p>diff -ruN old new &gt; 1.patch， 这里的 patch文件包含了不同的内容的信息</p>
-<p>假设有人同样有old文件夹，将patch分享给他，它可以将old文件夹和patch文件放在同一文件夹后<br>patch -s -p0 &lt; 1.patch</p>
-<p>或者进入old文件夹，把patch文件放在old中之后<br>patch -s -p1 &lt; 1.patch</p>
-<p>解释：<br>diff</p>
+            <ol>
+<li><p>fanout_load：是指input pin的扇出值</p>
+</li>
+<li><p>set_max_fanout，用于约束input port和design</p>
+<p> 约束（input port驱动的和design内所有的）net后连接cell的input pin的fanout_load值的总和，而该fanout_load值由lib库中的default_fanout_load定义，这个值一般都为1。所以可以简单理解为set_max_fanout约束了某条net上驱动的所有cell的个数的总和，而这条net可以由input port驱动</p>
+<p> set_max_fanout命令不用来约束output ports，因为一个输出端口可能会连有很多条net</p>
+</li>
+<li><p>set_fanout_load：设置output port的fanout_load</p>
+<p> 不常用。dc保证驱动该output port的driver的pin的fanout_load之和不超过这个值。注意这里set_fanout_load和lib库中default_fanout_load的值是没有关系的；</p>
+</li>
+<li><p>max_fanout：指output pin的最大扇出值</p>
+</li>
+<li><p>set_load：设置output pin/port的电容</p>
+</li>
+</ol>
+<p>参考：</p>
 <ul>
-<li>r：递归的比较，用于文件夹</li>
-<li>u：貌似不加这个参数也行，据说的增加可读性</li>
-<li>N：不带这个参数的话，new中有新文件，新文件的内容不会被记录在patch中（diff的输出里）</li>
-</ul>
-<p>patch</p>
-<ul>
-<li>s：只显示错误的信息</li>
-<li>p：去除diff输出中文件夹路径的层级数目</li>
+<li><a href="https://blog.csdn.net/xiangyuqxq/article/details/7276966" target="_blank" rel="noopener">https://blog.csdn.net/xiangyuqxq/article/details/7276966</a></li>
+<li><a href="http://bbs.eetop.cn/thread-241766-1-1.html" target="_blank" rel="noopener">http://bbs.eetop.cn/thread-241766-1-1.html</a></li>
 </ul>
 
         </div>
@@ -160,7 +165,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="https://2267.github.io/2020/03/03/diff-patch/">https://2267.github.io/2020/03/03/diff-patch/</a></span>
+                        <span><a href="https://2267.github.io/2020/05/19/ic-dc-fanout/">https://2267.github.io/2020/05/19/ic-dc-fanout/</a></span>
                     </p>
                 
                 
@@ -175,10 +180,10 @@
         
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2020/05/19/ic-dc-fanout/">set_max_fanout和set_fanout_load</a>
+                <a class="prev" rel="prev" href="/2020/05/19/ic-block/">阻塞赋值与非阻塞赋值的使用场景</a>
             
             
-            <a class="next" rel="next" href="/2020/02/21/gem5-pim/">gem5中pim的一种实现</a>
+            <a class="next" rel="next" href="/2020/03/03/diff-patch/">diff, patch 文件差异比较及打补丁</a>
             
         </section>
 
